@@ -1,6 +1,7 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
+from flask_assets import Bundle, Environment
 
 
 def create_app(test_config=None):
@@ -27,6 +28,18 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    assets = Environment(app)
+    css = Bundle("src/main.css", output="dist/main.css")
+    js = Bundle("src/*.js", output="dist/main.js")
+    assets.register("css", css)
+    assets.register("js", js)
+    css.build()
+    js.build()
+
+    @app.route("/")
+    def homepage():
+        return render_template("index.html")
 
     # a simple page that says hello
     @app.route("/hello")
