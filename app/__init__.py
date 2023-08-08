@@ -12,6 +12,14 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
     )
 
+    from . import auth
+
+    app.register_blueprint(auth.bp)
+
+    from . import data
+
+    app.register_blueprint(data.bp)
+
     from . import db
 
     db.init_app(app)

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+<h1>Register</h1>
+{% block content %}
+<form hx-post="/auth/register">
+  <div hx-target="this" hx-swap="outerHTML">
+    <label for="email">Email</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      hx-post="/auth/email"
+      maxlength="100"
+    />
+  </div>
+  <label for="firstname">First Name:</label>
+  <input type="text" id="firstname" name="firstname" required />
+  <label for="lastname">Last name:</label>
+  <input type="text" id="lastname" name="lastname" required />
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required />
+  <button type="submit">Submit</button>
+</form>
+{% endblock content %}

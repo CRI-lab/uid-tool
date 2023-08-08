@@ -1,0 +1,43 @@
+{% if email_is_valid %}
+<div hx-target="this" hx-swap="outerHTML">
+  <label for="email">Email:</label>
+  <input
+    type="text"
+    id="email"
+    name="email"
+    hx-post="/auth/email"
+    required
+    maxlength="100"
+    value="{{email}}"
+  />
+  <p>This email is valid.</p>
+</div>
+{% elif email_exists %}
+<div hx-target="this" hx-swap="outerHTML">
+  <label for="email">Email:</label>
+  <input
+    type="text"
+    id="email"
+    name="email"
+    hx-post="/auth/email"
+    required
+    maxlength="100"
+    value="{{email}}"
+  />
+  <p>This email already exists.</p>
+  {% else %}
+  <div hx-target="this" hx-swap="outerHTML">
+    <label for="email">Email:</label>
+    <input
+      type="text"
+      id="email"
+      name="email"
+      hx-post="/auth/email"
+      required
+      maxlength="100"
+      value="{{email}}"
+    />
+    <p>This email is not valid.</p>
+  </div>
+  {% endif %}
+</div>

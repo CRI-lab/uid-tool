@@ -31,6 +31,11 @@ def init_db():
     db.commit()
 
 
+def populate_db():
+    db = get_db()
+    cur = db.cursor()
+
+
 def init_app(app: Flask):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
