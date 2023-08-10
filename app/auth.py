@@ -17,6 +17,11 @@ from app.db import get_db
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
+def is_valid_email(email):
+    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+    return bool(re.match(pattern, email))
+
+
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
@@ -26,6 +31,9 @@ def register():
         password = request.form["password"]
         db = get_db()
         cursor = db.cursor()
+
+        if not is_valid_email(email):
+            return "Please enter a valid email!"
 
         try:
             print("uploading to db")
@@ -38,8 +46,7 @@ def register():
             print(f"Error registering user. Please try again later.")
         else:
             print("upload successful")
-            return redirect(url_for("auth.login"))
-
+            return render_template("auth/login.html")
     return render_template("auth/register.html")
 
 
@@ -51,11 +58,6 @@ def login():
         cursor = get_db().cursor()
 
     return render_template("auth/login.html")
-
-
-def is_valid_email(email):
-    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    return bool(re.match(pattern, email))
 
 
 @bp.post("/email")
