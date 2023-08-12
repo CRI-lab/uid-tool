@@ -2,7 +2,6 @@ import re
 
 from flask import (
     Blueprint,
-    flash,
     g,
     redirect,
     render_template,
@@ -29,35 +28,51 @@ def register():
         firstname = request.form["firstname"]
         lastname = request.form["lastname"]
         password = request.form["password"]
+        error = None
         db = get_db()
         cursor = db.cursor()
 
         if not is_valid_email(email):
-            return "Please enter a valid email!"
+            error = "Please enter a valid email!"
 
-        try:
-            print("uploading to db")
-            cursor.execute(
-                "INSERT INTO users (email, firstname, lastname, password) VALUES (%s, %s, %s, %s)",
-                (email, firstname, lastname, generate_password_hash(password)),
-            )
-            db.commit()
-        except db.IntegrityError:
-            print(f"Error registering user. Please try again later.")
-        else:
-            print("upload successful")
-            return render_template("auth/login.html")
+        if error is None:
+            try:
+                cursor.execute(
+                    "INSERT INTO users (email, firstname, lastname, password) VALUES (%s, %s, %s, %s)",
+                    (email, firstname, lastname, generate_password_hash(password)),
+                )
+                db.commit()
+            except Exception as e:
+                print("There was an error in registering user:", e)
+                error = "Error registering user."
+                return render_template("auth/error.html", url=url_for("auth.register"))
+            else:
+                return redirect(url_for("auth.login"))
     return render_template("auth/register.html")
 
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
-        username = request.form["username"]
+        username = request.form["email"]
         password = request.form["password"]
+        error = None
         cursor = get_db().cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s", (username,))
+        user = cursor.fetchone()
 
-    return render_template("auth/login.html")
+        if user is None:
+            error = "Incorrect Username."
+        elif not check_password_hash(user["password"], password=password):
+            error = "Incorrect Password."
+
+        if error is None:
+            session.clear()
+            session["user_id"] = user["user_id"]
+            return redirect(url_for("data.display"))
+        return error
+
+    return render_template("auth/login.html", title="Login Page")
 
 
 @bp.post("/email")

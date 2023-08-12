@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, session, url_for
 from flask_assets import Bundle, Environment
 
 
@@ -11,6 +11,9 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
     )
+    app.secret_key = "test123"
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
     from . import auth
 
@@ -47,7 +50,9 @@ def create_app(test_config=None):
 
     @app.route("/")
     def homepage():
-        return render_template("index.html")
+        if session["user_id"]:
+            return redirect(url_for("data.datapage"))
+        return redirect(url_for("auth.login"))
 
     # a simple page that says hello
     @app.route("/hello")
