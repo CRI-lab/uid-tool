@@ -21,6 +21,16 @@ def is_valid_email(email):
     return bool(re.match(pattern, email))
 
 
+def is_logged_in():
+    return "user_id" in session
+
+
+@bp.before_request
+def redirect_if_logged_in():
+    if is_logged_in():
+        return redirect(url_for("data.display"))
+
+
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":

@@ -1,6 +1,7 @@
-{% extends "base.html" %} {% block content %}
-<h1>Submit Data</h1>
-<form hx-post="/data/create">
+{% extends "base.html" %} {% block header %}
+<h1>{% block title %}Submit Data{% endblock %}</h1>
+{% endblock %} {% block content %}
+<form hx-post="/data/create" hx-target="#body" hx-swap="innerHTML">
   <div hx-target="this" hx-swap="outerHTML">
     <label for="data-name">Data Name:</label>
     <input
