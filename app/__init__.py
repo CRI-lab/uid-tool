@@ -50,8 +50,8 @@ def create_app(test_config=None):
 
     @app.route("/")
     def homepage():
-        if session["user_id"]:
-            return redirect(url_for("data.datapage"))
+        if session.get("user_id"):
+            return redirect(url_for("data.display"))
         return redirect(url_for("auth.login"))
 
     # a simple page that says hello

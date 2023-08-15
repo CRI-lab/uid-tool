@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block header %}
 <h1>{% block title %}Oops! There was an error!{% endblock %}</h1>
 {% endblock %} {% block content %}
-<a href="{{ url }}"><p>Click here to go back!</p></a>
+<a href="{{ url_for(auth.register) }}"><p>Click here to go back!</p></a>
 {% endblock content %}

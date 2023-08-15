@@ -55,7 +55,7 @@ def register():
             except Exception as e:
                 print("There was an error in registering user:", e)
                 error = "Error registering user."
-                return render_template("auth/error.html", url=url_for("auth.register"))
+                return render_template("auth/error.html")
             else:
                 return redirect(url_for("auth.login"))
     return render_template("auth/register.html")
