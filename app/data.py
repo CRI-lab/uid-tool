@@ -16,7 +16,6 @@ def display():
         " ORDER BY d.created DESC"
     )
     data_entries = cursor.fetchall()
-    print(data_entries[0])
     return render_template("data/index.html", data_entries=data_entries)
 
 
@@ -37,20 +36,29 @@ def create():
 
         try:
             if project2 is not None and coastal6 is not None:
+                # select project id from project table should return two project names and ids
                 cursor.execute(
-                    "SELECT project_id, code FROM project WHERE project_name=%s OR project_name=%s",
+                    "SELECT project_id FROM project WHERE project_name=%s OR project_name=%s",
                     (project1, project2),
                 )
-                [project1, project1_code] = cursor.fetchone()
 
-                uid = f"CRCYYMMDD001{project1_code}XX"
+                project1_code = "TS"
+                project2_code = "AS"
+
+                # get id from last entry
+                cursor.execute(
+                    "SELECT data_id FROM data ORDER BY data_id DESC LIMIT 1",
+                )
+                data_id = str(cursor.fetchone()[0] + 1).zfill(3)
+
+                uid = f"CRCYYMMDD{data_id}{project1_code}{project2_code}"
 
                 cursor.execute(
                     "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, file_location, coastal6, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
                     (
                         user_id,
-                        project1,
-                        project2,
+                        1,
+                        2,
                         db_created,
                         data_name,
                         location,
