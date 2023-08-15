@@ -21,6 +21,11 @@ def display():
 
 @bp.route("/create", methods=["GET", "POST"])
 def create():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM project")
+    project_list = cursor.fetchall()
+
     if request.method == "POST":
         user_id = session["user_id"]
         data_name = request.form["data-name"]
@@ -76,4 +81,4 @@ def create():
         else:
             return redirect(url_for("data.create"))
 
-    return render_template("data/create.html")
+    return render_template("data/create.html", projects=project_list)

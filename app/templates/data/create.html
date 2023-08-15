@@ -14,11 +14,14 @@
   </div>
   <label for="project1">Project 1:</label>
   <select name="project1" id="project1">
-    <option value="test">test</option>
+    {% for project in projects %}
+    <option value="{{ project.project_id }}">{{ project.project_name }}</option>
+    {% endfor %}
   </select>
-  <label for="project2">Project 2:</label>
   <select name="project2" id="project2">
-    <option value="test">asdf</option>
+    {% for project in projects %}
+    <option value="{{ project.project_id }}">{{ project.project_name }}</option>
+    {% endfor %}
   </select>
   <label for="file-location">File Location:</label>
   <input type="text" id="file-location" name="file-location" required />
