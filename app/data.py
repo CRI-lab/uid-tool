@@ -5,9 +5,19 @@ from datetime import datetime
 bp = Blueprint("data", __name__, url_prefix="/data")
 
 
-@bp.route("/", methods=["GET", "POST"])
+@bp.route("/")
 def display():
-    return render_template("data/index.html")
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "SELECT data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
+        " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
+        " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
+        " ORDER BY d.created DESC"
+    )
+    data_entries = cursor.fetchall()
+    print(data_entries[0])
+    return render_template("data/index.html", data_entries=data_entries)
 
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -32,7 +42,6 @@ def create():
                     (project1, project2),
                 )
                 [project1, project1_code] = cursor.fetchone()
-                project2 = 1
 
                 uid = f"CRCYYMMDD001{project1_code}XX"
 

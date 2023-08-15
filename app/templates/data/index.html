@@ -1,5 +1,41 @@
 {% extends "base.html" %} {% block header %}
 <h1>{% block title %}Data{% endblock %}</h1>
+<a href="{{ url_for('data.create') }}">Create new data</a>
 {% endblock %} {% block content %}
 <p>Data here</p>
+<table class="table-auto border-collapse border border-slate-500">
+  <thead>
+    <tr>
+      <th class="border border-slate-600 px-4 py-2">Dataset Name</th>
+      <th class="border border-slate-600 px-4 py-2">Created</th>
+      <th class="border border-slate-600 px-4 py-2">Creator</th>
+      <th class="border border-slate-600 px-4 py-2">File Location</th>
+      <th class="border border-slate-600 px-4 py-2">Coastal6</th>
+      <th class="border border-slate-600 px-4 py-2">Project 1</th>
+      <th class="border border-slate-600 px-4 py-2">Project 2</th>
+      <th class="border border-slate-600 px-4 py-2">UID</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for data in data_entries %}
+    <td class="border border-slate-600 px-4 py-2">{{data['data_name']}}</td>
+    <td class="border border-slate-600 px-4 py-2">{{data['created']}}</td>
+    <td class="border border-slate-600 px-4 py-2">
+      {{ data['email'] + " " + data['firstname'] + " " + data['lastname'] }}
+    </td>
+    <td class="border border-slate-600 px-4 py-2">
+      {{ data['file_location'] }}
+    </td>
+    <td class="border border-slate-600 px-4 py-2">{{ data['coastal6'] }}</td>
+    <td class="border border-slate-600 px-4 py-2">
+      {{ data['project1_name'] }}
+    </td>
+    <td class="border border-slate-600 px-4 py-2">
+      {{ data['project2_name'] }}
+    </td>
+    <td class="border border-slate-600 px-4 py-2">{{ data['uid'] }}</td>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock content %}
