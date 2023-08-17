@@ -27,7 +27,7 @@ CREATE TABLE Data (
   data_name VARCHAR(255) NOT NULL UNIQUE,
   file_location VARCHAR(255) NOT NULL,
   coastal6 BOOLEAN,
-  uid VARCHAR(16) NOT NULL UNIQUE,
+  uid VARCHAR(18) NOT NULL UNIQUE,
   FOREIGN KEY (creator_id) REFERENCES Users (user_id),
   FOREIGN KEY (project_id_1) REFERENCES Project(project_id),
   FOREIGN KEY (project_id_2) REFERENCES Project(project_id)
@@ -42,3 +42,7 @@ CREATE TABLE Coastal6 (
 INSERT INTO public.project(
 	project_id, created, project_name, code)
 	VALUES (1, '2023-08-08 11:02:29', 'test', 'TS');
+
+INSERT INTO public.project(
+	project_id, created, project_name, code)
+	VALUES (2, '2023-08-08 11:02:29', 'asdf', 'AS');

@@ -2,7 +2,7 @@
   {% block header %}
   <h1>{% block title %}Register{% endblock %}</h1>
   {% endblock %} {% block content %}
-  <form hx-post="/auth/register" hx-target="#body" hx-swap="innerHTML">
+  <form method="POST">
     <label for="email">Email</label>
     <input
       type="email"

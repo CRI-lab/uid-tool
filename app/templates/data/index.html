@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block header %}
 <h1>{% block title %}Data{% endblock %}</h1>
 <a href="{{ url_for('data.create') }}">Create new data</a>
+<a href="{{ url_for('auth.logout')}}">Logout</a>
 {% endblock %} {% block content %}
 <p>Data here</p>
 <table class="table-auto border-collapse border border-slate-500">

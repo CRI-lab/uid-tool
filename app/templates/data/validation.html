@@ -1,0 +1,7 @@
+{% if exists %}
+<p>A dataset with this name already exists.</p>
+<button type="submit" disabled>Submit</button>
+{% else %}
+<p>Dataset is valid.</p>
+<button type="submit">Submit</button>
+{% endif %}

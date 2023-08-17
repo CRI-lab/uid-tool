@@ -19,6 +19,17 @@ def display():
     return render_template("data/index.html", data_entries=data_entries)
 
 
+@bp.post("/data_name")
+def check_data_exists():
+    db = get_db()
+    cursor = db.cursor()
+    data_name = request.form["data-name"]
+    cursor.execute("SELECT * FROM data where data_name=%s", (data_name,))
+    exists = cursor.fetchone()
+
+    return render_template("data/validation.html", exists=exists)
+
+
 @bp.route("/create", methods=["GET", "POST"])
 def create():
     db = get_db()
@@ -34,51 +45,52 @@ def create():
         location = request.form["file-location"]
         created_date = datetime.now()
         db_created = created_date.strftime("%Y-%m-%d %H:%M:%S")
+        id_date = created_date.strftime("%Y%m%d")
         coastal6 = False if request.form.get("coastal6") is None else True
 
-        db = get_db()
-        cursor = db.cursor()
-
         try:
-            if project2 is not None and coastal6 is not None:
-                # select project id from project table should return two project names and ids
+            if project2 != "" and project1 is not project2:
                 cursor.execute(
-                    "SELECT project_id FROM project WHERE project_name=%s OR project_name=%s",
+                    "SELECT code FROM project WHERE project_id=%s OR project_id=%s ",
                     (project1, project2),
                 )
-
-                project1_code = "TS"
-                project2_code = "AS"
-
-                # get id from last entry
+                [[project1_code], [project2_code]] = cursor.fetchall()
+            else:
                 cursor.execute(
-                    "SELECT data_id FROM data ORDER BY data_id DESC LIMIT 1",
+                    "SELECT code FROM project WHERE project_id=%s",
+                    (project1),
                 )
-                data_id = str(cursor.fetchone()[0] + 1).zfill(3)
+                [project1_code] = cursor.fetchone()
+                project2_code = "XX"
+                project2 = None
 
-                uid = f"CRCYYMMDD{data_id}{project1_code}{project2_code}"
+            # get id from last entry
+            cursor.execute(
+                "SELECT data_id FROM data ORDER BY data_id DESC LIMIT 1",
+            )
+            data_id = cursor.fetchone()[0]
+            data_id = str(data_id + 1).zfill(3) if data_id else 1
+            uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
 
-                cursor.execute(
-                    "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, file_location, coastal6, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
-                    (
-                        user_id,
-                        1,
-                        2,
-                        db_created,
-                        data_name,
-                        location,
-                        coastal6,
-                        uid,
-                    ),
-                )
-                db.commit()
-                data_id = cursor.fetchone()[0]
-                cursor.execute("INSERT INTO coastal6 (data_id) VALUES (%s)", (data_id,))
-                db.commit()
+            cursor.execute(
+                "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, file_location, coastal6, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
+                (
+                    user_id,
+                    project1,
+                    project2,
+                    db_created,
+                    data_name,
+                    location,
+                    coastal6,
+                    uid,
+                ),
+            )
+            db.commit()
+            data_id = cursor.fetchone()[0]
+            cursor.execute("INSERT INTO coastal6 (data_id) VALUES (%s)", (data_id,))
+            db.commit()
         except Exception as error:
-            print(project1)
             print("There was an error in inserting data to db:", error)
         else:
             return redirect(url_for("data.create"))
-
     return render_template("data/create.html", projects=project_list)

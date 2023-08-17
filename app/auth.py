@@ -2,7 +2,6 @@ import re
 
 from flask import (
     Blueprint,
-    g,
     redirect,
     render_template,
     request,
@@ -25,10 +24,10 @@ def is_logged_in():
     return "user_id" in session
 
 
-@bp.before_request
-def redirect_if_logged_in():
-    if is_logged_in():
-        return redirect(url_for("data.display"))
+# @bp.before_request
+# def redirect_if_logged_in():
+#     if is_logged_in():
+#         return redirect(url_for("data.display"))
 
 
 @bp.route("/register", methods=("GET", "POST"))
@@ -83,6 +82,13 @@ def login():
         return error
 
     return render_template("auth/login.html", title="Login Page")
+
+
+@bp.route("/logout")
+def logout():
+    print("you logged out")
+    session.clear()
+    return redirect(url_for("auth.login"))
 
 
 @bp.post("/email")

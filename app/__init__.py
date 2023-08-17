@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, session, url_for
 from flask_assets import Bundle, Environment
 
 
@@ -50,8 +50,6 @@ def create_app(test_config=None):
 
     @app.route("/")
     def homepage():
-        if session.get("user_id"):
-            return redirect(url_for("data.display"))
         return redirect(url_for("auth.login"))
 
     # a simple page that says hello

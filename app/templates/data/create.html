@@ -1,24 +1,26 @@
 {% extends "base.html" %} {% block header %}
 <h1>{% block title %}Submit Data{% endblock %}</h1>
 {% endblock %} {% block content %}
-<form hx-post="/data/create" hx-target="#body" hx-swap="innerHTML">
-  <div hx-target="this" hx-swap="outerHTML">
-    <label for="data-name">Data Name:</label>
-    <input
-      type="text"
-      id="data-name"
-      name="data-name"
-      hx-post="/data/data_name"
-      required
-    />
-  </div>
+<form method="POST">
+  <label for="data-name">Data Name:</label>
+  <input
+    type="text"
+    id="data-name"
+    name="data-name"
+    hx-target="#error"
+    hx-swap="innerHTML"
+    hx-post="/data/data_name"
+    required
+  />
   <label for="project1">Project 1:</label>
-  <select name="project1" id="project1">
+  <select name="project1" id="project1" required>
+    <option value=""></option>
     {% for project in projects %}
     <option value="{{ project.project_id }}">{{ project.project_name }}</option>
     {% endfor %}
   </select>
   <select name="project2" id="project2">
+    <option value=""></option>
     {% for project in projects %}
     <option value="{{ project.project_id }}">{{ project.project_name }}</option>
     {% endfor %}
@@ -27,6 +29,8 @@
   <input type="text" id="file-location" name="file-location" required />
   <input type="checkbox" id="coastal6" name="coastal6" />
   <label for="coastal6">Coastal6</label>
-  <button type="submit">Submit</button>
+  <div id="error">
+    <button type="submit">Submit</button>
+  </div>
 </form>
 {% endblock content %}
