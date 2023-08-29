@@ -23,6 +23,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(data.bp)
 
+    from . import project
+
+    app.register_blueprint(project.bp)
+
     from . import db
 
     db.init_app(app)
@@ -51,10 +55,5 @@ def create_app(test_config=None):
     @app.route("/")
     def homepage():
         return redirect(url_for("auth.login"))
-
-    # a simple page that says hello
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
 
     return app
