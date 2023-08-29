@@ -1,0 +1,16 @@
+<tr class="">
+  <td class="border border-slate-600 px-4 py-2">{{data['data_name']}}</td>
+  <td class="border border-slate-600 px-4 py-2">{{data['created']}}</td>
+  <td class="border border-slate-600 px-4 py-2">
+    {{ data['email'] + " " + data['firstname'] + " " + data['lastname'] }}
+  </td>
+  <td class="border border-slate-600 px-4 py-2">{{ data['file_location'] }}</td>
+  <td class="border border-slate-600 px-4 py-2">{{ data['coastal6'] }}</td>
+  <td class="border border-slate-600 px-4 py-2">{{ data['project1_name'] }}</td>
+  <td class="border border-slate-600 px-4 py-2">{{ data['project2_name'] }}</td>
+  <td class="border border-slate-600 px-4 py-2">{{ data['uid'] }}</td>
+  <td class="border border-slate-600 px-4 py-2">
+    <button type="button" hx-get="/data/{{ data['data_id']}}/edit">edit</button>
+    <button type="button" hx-delete="/data/{{ data['data_id']}}">remove</button>
+  </td>
+</tr>
