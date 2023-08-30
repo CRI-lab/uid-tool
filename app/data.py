@@ -48,14 +48,18 @@ def create():
         id_date = created_date.strftime("%Y%m%d")
         coastal6 = False if request.form.get("coastal6") is None else True
 
+        print(type(project2))
+
         try:
-            if project2 != -1 and project1 is not project2:
+            if project2 != "-1" and project1 != project2:
                 cursor.execute(
                     "SELECT code FROM project WHERE project_id=%s OR project_id=%s ",
                     (project1, project2),
                 )
                 [[project1_code], [project2_code]] = cursor.fetchall()
-            elif project1 == project2:
+                print(project1_code)
+                print(project2)
+            else:
                 cursor.execute(
                     "SELECT code FROM project WHERE project_id=%s",
                     (project1),

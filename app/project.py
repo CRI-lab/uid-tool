@@ -17,5 +17,16 @@ def display():
     cursor = db.cursor()
     cursor.execute("SELECT * FROM project")
     projects = cursor.fetchall()
-    print(projects)
-    return render_template("data/index.html", projects=projects)
+    return render_template("project/index.html", projects=projects)
+
+
+# @bp.route("/create")
+# def create():
+
+
+# @bp.route("/update/<int:project_id>")
+# def update(project_id):
+
+
+# @bp.route("/delete/<int:project_id>")
+# def delete(project_id):

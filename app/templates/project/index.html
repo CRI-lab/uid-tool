@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block header %}
+<h1>{% block title %}Data{% endblock %}</h1>
+<a href="{{ url_for('data.create') }}">Create new data</a>
+<a href="{{ url_for('data.update') }}">Update Data</a>
+<a href="{{ url_for('project.display')}}">Project list</a>
+<a href="{{ url_for('auth.logout')}}">Logout</a>
+{% endblock %} {% block content %}
+<table class="table-auto border-collapse border border-slate-500">
+  <thead>
+    <tr>
+      <th class="border border-slate-600 px-4 py-2">Project Name</th>
+      <th class="border border-slate-600 px-4 py-2">Created</th>
+      <th class="border border-slate-600 px-4 py-2">Code</th>
+      <th class="border border-slate-600 px-4 py-2">File Location</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for project in projects[1:] %}
+    <tr>
+      <td class="border border-slate-600 px-4 py-2">
+        {{project['project_name']}}
+      </td>
+      <td class="border border-slate-600 px-4 py-2">{{project['created']}}</td>
+      <td class="border border-slate-600 px-4 py-2">{{project['code']}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
