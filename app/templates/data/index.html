@@ -2,7 +2,7 @@
 <h1>{% block title %}Data{% endblock %}</h1>
 <a href="{{ url_for('data.create') }}">Create new data</a>
 <a href="{{ url_for('data.update') }}">Update Data</a>
-<a href="{{ url_for('project.display')}}">Project list</a>
+<a href="{{ url_for('project.display_page')}}">Project list</a>
 <a href="{{ url_for('auth.logout')}}">Logout</a>
 {% endblock %} {% block content %}
 <table class="table-auto border-collapse border border-slate-500">

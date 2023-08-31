@@ -1,4 +1,12 @@
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import (
+    Blueprint,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+    send_file,
+)
 from app.db import get_db
 from datetime import datetime
 
@@ -47,8 +55,6 @@ def create():
         db_created = created_date.strftime("%Y-%m-%d %H:%M:%S")
         id_date = created_date.strftime("%Y%m%d")
         coastal6 = False if request.form.get("coastal6") is None else True
-
-        print(type(project2))
 
         try:
             if project2 != "-1" and project1 != project2:
@@ -99,8 +105,23 @@ def create():
         except Exception as error:
             print("There was an error in inserting data to db:", error)
         else:
-            return redirect(url_for("data.create"))
+            return redirect(url_for("data.download_readme", data_id=data_id))
     return render_template("data/create.html", projects=project_list)
+
+
+@bp.get("/download/<int:data_id>")
+def download_readme(data_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT uid FROM data where data_id=%s", (data_id,))
+    uid = cursor.fetchone()[0]
+    print(uid)
+    filename = "./README.txt"
+
+    with open(filename, "w") as f:
+        f.write(uid)
+
+    return send_file(filename, as_attachment=True)
 
 
 @bp.route("/update", methods=["GET", "POST"])
@@ -121,11 +142,39 @@ def update():
     )
 
 
-@bp.route("/<int:data_id>", methods=["GET", "PUT", "DELETE"])
-def handle_data(data_id):
+@bp.get("/<int:data_id>")
+def fetch_data(data_id):
     db = get_db()
     cursor = db.cursor()
-    if request.method == "GET":
+    cursor.execute(
+        "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
+        " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
+        " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
+        " WHERE data_id=%s",
+        (data_id,),
+    )
+    data = cursor.fetchone()
+    return data
+
+
+@bp.put("/<int:data_id>")
+def update_data(data_id):
+    db = get_db()
+    cursor = db.cursor()
+    data_name = request.form["data_name"]
+    location = request.form["data_location"]
+    coastal6 = False if request.form.get("coastal6") is None else True
+    try:
+        cursor.execute(
+            "UPDATE data"
+            " SET data_name=%s, file_location=%s, coastal6=%s"
+            " WHERE data_id=%s",
+            (data_name, location, coastal6, data_id),
+        )
+        db.commit()
+    except Exception as e:
+        print("There was an error updated data: " + e)
+    else:
         cursor.execute(
             "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
             " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
@@ -134,40 +183,20 @@ def handle_data(data_id):
             (data_id,),
         )
         data = cursor.fetchone()
-        return data
-    elif request.method == "PUT":
-        data_name = request.form["data_name"]
-        location = request.form["data_location"]
-        coastal6 = False if request.form.get("coastal6") is None else True
-        try:
-            cursor.execute(
-                "UPDATE data"
-                " SET data_name=%s, file_location=%s, coastal6=%s"
-                " WHERE data_id=%s",
-                (data_name, location, coastal6, data_id),
-            )
-            db.commit()
-        except Exception as e:
-            print("There was an error updated data: " + e)
-        else:
-            cursor.execute(
-                "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
-                " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
-                " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
-                " WHERE data_id=%s",
-                (data_id,),
-            )
-            data = cursor.fetchone()
-            return render_template("data/row.html", data=data)
-    elif request.method == "DELETE":
-        try:
-            cursor.execute("DELETE FROM data WHERE data_id=%s", (data_id,))
-            db.commit()
-        except Exception as e:
-            print("There was an error deleting data: " + e)
-        else:
-            return "<td>Delete Successful</td>"
-    return "Invalid Operation"
+        return render_template("data/row.html", data=data)
+
+
+@bp.delete("/<int:data_id>")
+def remove_data(data_id):
+    db = get_db()
+    cursor = db.cursor()
+    try:
+        cursor.execute("DELETE FROM data WHERE data_id=%s", (data_id,))
+        db.commit()
+    except Exception as e:
+        print("There was an error deleting data: " + e)
+    else:
+        return "<td>Delete Successful</td>"
 
 
 @bp.route("/<int:data_id>/row")
