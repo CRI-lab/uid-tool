@@ -14,7 +14,7 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody hx-target="closest tr" hx-swap="outerHTML">
     {% for project in projects[1:] %}
     <tr>
       <td class="border border-slate-600 px-4 py-2">
@@ -23,8 +23,27 @@
       <td class="border border-slate-600 px-4 py-2">{{project['created']}}</td>
       <td class="border border-slate-600 px-4 py-2">{{project['code']}}</td>
       <td class="border border-slate-600 px-4 py-2">{{project['finished']}}</td>
+      <td class="border border-slate-600 px-4 py-2">
+        <button type="button" hx-get="/project/{{ project['project_id']}}/edit">
+          edit
+        </button>
+        <button type="button" hx-delete="/project/{{ project['project_id']}}">
+          remove
+        </button>
+      </td>
     </tr>
     {% endfor %}
+    <tr
+      hx-get="/project/create"
+      hx-trigger="click"
+      hx-target="this"
+      hx-swap="beforebegin"
+    >
+      <td>
+        <div>Add New Project</div>
+      </td>
+    </tr>
   </tbody>
 </table>
+
 {% endblock content %}

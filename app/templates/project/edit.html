@@ -1,0 +1,34 @@
+<tr class="editting">
+  <td class="border border-slate-600 px-4 py-2">
+    <input
+      type="text"
+      name="project_name"
+      class="border-0 w-full"
+      value="{{ project['project_name'] }}"
+    />
+  </td>
+  <td class="border border-slate-600 px-4 py-2">{{project['created']}}</td>
+  <td class="border border-slate-600 px-4 py-2">{{project['code']}}</td>
+  <td class="border border-slate-600 px-4 py-2">
+    <input
+      type="checkbox"
+      name="finished"
+      {%
+      if
+      project.finished
+      %}checked{%
+      endif
+      %}
+    />
+  </td>
+  <td>
+    <button type="button" hx-get="/project/{{ project_id }}/row">Cancel</button>
+    <button
+      type="button"
+      hx-put="/project/{{ project_id }}"
+      hx-include="closest tr"
+    >
+      Save
+    </button>
+  </td>
+</tr>
