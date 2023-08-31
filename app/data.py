@@ -1,3 +1,4 @@
+import io
 from flask import (
     Blueprint,
     redirect,
@@ -6,6 +7,7 @@ from flask import (
     session,
     url_for,
     send_file,
+    after_this_request,
 )
 from app.db import get_db
 from datetime import datetime
@@ -63,8 +65,6 @@ def create():
                     (project1, project2),
                 )
                 [[project1_code], [project2_code]] = cursor.fetchall()
-                print(project1_code)
-                print(project2)
             else:
                 cursor.execute(
                     "SELECT code FROM project WHERE project_id=%s",
@@ -105,7 +105,13 @@ def create():
         except Exception as error:
             print("There was an error in inserting data to db:", error)
         else:
-            return redirect(url_for("data.download_readme", data_id=data_id))
+            download_url = url_for("data.download_readme", data_id=data_id)
+            data_page_url = url_for("data.display")
+            return render_template(
+                "data/download.html",
+                download_url=download_url,
+                data_page_url=data_page_url,
+            )
     return render_template("data/create.html", projects=project_list)
 
 
@@ -115,13 +121,16 @@ def download_readme(data_id):
     cursor = db.cursor()
     cursor.execute("SELECT uid FROM data where data_id=%s", (data_id,))
     uid = cursor.fetchone()[0]
-    print(uid)
-    filename = "./README.txt"
+    buffer = io.BytesIO()
+    buffer.write(uid.encode("utf-8"))
+    buffer.seek(0)
 
-    with open(filename, "w") as f:
-        f.write(uid)
-
-    return send_file(filename, as_attachment=True)
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="UID_README.txt",
+        mimetype="text/plain",
+    )
 
 
 @bp.route("/update", methods=["GET", "POST"])

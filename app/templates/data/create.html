@@ -2,7 +2,7 @@
 <h1>{% block title %}Submit Data{% endblock %}</h1>
 <a href="{{ url_for('data.display')}}">View Data</a>
 {% endblock %} {% block content %}
-<form method="POST">
+<form hx-post="/data/create" hx-target="#error" hx-swap="innerHTML">
   <label for="data-name">Data Name:</label>
   <input
     type="text"

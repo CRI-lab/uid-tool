@@ -1,0 +1,22 @@
+<script type="text/javascript">
+  var counter = 4;
+  var countdown = setInterval(function downloadTimer() {
+    document.getElementById("counter").innerHTML = counter;
+    counter --;
+
+    if (counter == 0) {
+      fetch("{{download_url}}")
+        .then((response) => response.blob())
+        .then((blob) => {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "UID_README.txt";
+          link.click();
+        });
+
+    window.location.replace("{{ data_page_url }}")
+    }
+  }, 1000);
+</script>
+
+<p>Downloading in <div id="counter">5</div></p>
