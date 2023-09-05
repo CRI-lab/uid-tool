@@ -16,7 +16,7 @@ bp = Blueprint("data", __name__, url_prefix="/data")
 
 
 @bp.route("/")
-def display():
+def display_page():
     db = get_db()
     cursor = db.cursor()
     cursor.execute(
@@ -41,7 +41,7 @@ def check_data_exists():
 
 
 @bp.route("/create", methods=["GET", "POST"])
-def create():
+def create_data():
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM project")
@@ -134,7 +134,7 @@ def download_readme(data_id):
 
 
 @bp.route("/update", methods=["GET", "POST"])
-def update():
+def update_page():
     db = get_db()
     cursor = db.cursor()
     cursor.execute(

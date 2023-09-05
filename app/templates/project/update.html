@@ -1,8 +1,5 @@
 {% extends "base.html" %} {% block header %}
 <h1>{% block title %}Projects{% endblock %}</h1>
-<a href="{{ url_for('data.display') }}">Data</a>
-<a href="{{ url_for('project.update_page')}}">Project Update</a>
-<a href="{{ url_for('auth.logout')}}">Logout</a>
 {% endblock %} {% block content %}
 <table class="table-auto border-collapse border border-slate-500">
   <thead>
