@@ -1,0 +1,22 @@
+{
+  "name": "uid-tool",
+  "version": "1.0.0",
+  "description": "## Requirements   - Python 3.8 or higher   - Flask   - psycopg2   - [pytailwindcss](https://pypi.org/project/pytailwindcss/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CRI-lab/uoi-tool.git"
+  },
+  "author": "Skyler Kimura",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CRI-lab/uoi-tool/issues"
+  },
+  "homepage": "https://github.com/CRI-lab/uoi-tool#readme",
+  "devDependencies": {
+    "daisyui": "^3.6.5"
+  }
+}

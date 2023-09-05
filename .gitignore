@@ -16,3 +16,6 @@ build/
 *.egg-info/
 
 app/static/.webassets-cache/
+
+node_modules/
+package-lock.json
