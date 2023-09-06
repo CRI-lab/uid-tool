@@ -1,27 +1,29 @@
 {% extends "base.html" %} {% block header %}
-<h1>{% block title %}Projects{% endblock %}</h1>
+<h1 class="text-3xl pl-64">{% block title %}Projects{% endblock %}</h1>
 {% endblock %} {% block content %}
-<table class="table-auto border-collapse border border-slate-500">
-  <thead>
-    <tr>
-      <th class="border border-slate-600 px-4 py-2">Project Name</th>
-      <th class="border border-slate-600 px-4 py-2">Created</th>
-      <th class="border border-slate-600 px-4 py-2">Code</th>
-      <th class="border border-slate-600 px-4 py-2">Finished</th>
-    </tr>
-  </thead>
+<div class="flex justify-center item-center">
+  <div class="overflow-x-auto w-3/4">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Project Name</th>
+          <th>Created</th>
+          <th>Code</th>
+          <th>Finished</th>
+        </tr>
+      </thead>
 
-  <tbody>
-    {% for project in projects[1:] %}
-    <tr>
-      <td class="border border-slate-600 px-4 py-2">
-        {{project['project_name']}}
-      </td>
-      <td class="border border-slate-600 px-4 py-2">{{project['created']}}</td>
-      <td class="border border-slate-600 px-4 py-2">{{project['code']}}</td>
-      <td class="border border-slate-600 px-4 py-2">{{project['finished']}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+      <tbody>
+        {% for project in projects[1:] %}
+        <tr>
+          <td>{{project['project_name']}}</td>
+          <td>{{project['created']}}</td>
+          <td>{{project['code']}}</td>
+          <td>{{project['finished']}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock content %}
