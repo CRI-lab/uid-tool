@@ -1,20 +1,19 @@
-{% extends "base.html" %} 
- {% block header %}
-<h1>{% block title %}Login{% endblock %}</h1>
-{% endblock %}
-{% block content %}
-<form method="POST">
-    <label for="email">Email:</label>
-    <input
-      type="text"
-      id="email"
-      name="email"
-      required
-      maxlength="100"
-    />
-  </div>
-  <label for="password">Password:</label>
-  <input type="password" id="password" name="password" />
-  <button type="submit">Submit</button>
-</form>
+{% extends "base.html" %} {% block header %}
+<h1 class="text-3xl pl-64">{% block title %}Login{% endblock %}</h1>
+{% endblock %} {% block content %}
+<div class="flex justify-center items-center">
+  <form method="POST">
+    <div class="form-control w-full max-w-xs">
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" required maxlength="100" />
+    </div>
+    <div class="form-control w-full max-w-xs">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+    </div>
+    <div class="flex pt-4">
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
 {% endblock content %}
