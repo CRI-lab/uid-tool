@@ -1,0 +1,38 @@
+{% if location == "coastal6" %}
+<div class="form-control w-full max-w-xs" id="coastal6-location">
+  <label class="label">
+    <span class="label-text">Coastal6 File Location:</span>
+  </label>
+  <input
+    type="text"
+    placeholder="Type here"
+    class="input input-bordered w-full max-w-xs"
+    name="coastal6-location"
+    required
+  />
+  <label class="label">
+    <span class="label-text-alt">
+      Format of location "/Data/example/example.zip"
+    </span>
+  </label>
+</div>
+{% elif location == "other" %}
+<div class="form-control w-full max-w-xs" id="other-location">
+  <label class="label">
+    <span class="label-text">Other File Location:</span>
+  </label>
+  <input
+    type="text"
+    placeholder="Type here"
+    class="input input-bordered w-full max-w-xs"
+    name="other-location"
+    required
+  />
+  <label class="label">
+    <span class="label-text-alt">
+      Format of location "Device:/path/dataset.zip" (Ex.
+      Google-Drive:/Data/Example/Example.zip)
+    </span>
+  </label>
+</div>
+{% else %} {% endif %}

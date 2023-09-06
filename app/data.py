@@ -237,3 +237,9 @@ def edit_data(data_id):
     data = cursor.fetchone()
     data_id = data["data_id"]
     return render_template("data/edit.html", data=data, data_id=data_id)
+
+
+@bp.post("data-location")
+def data_location_field():
+    location = request.form["dataset-location"]
+    return render_template("data/location.html", location=location)
