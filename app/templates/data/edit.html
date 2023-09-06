@@ -1,27 +1,28 @@
 <tr class="editting">
-  <td class="border border-slate-600 px-4 py-2">
+  <td>
     <input
       type="text"
       name="data_name"
-      class="border-0 w-full"
+      class="input w-full max-w-xs"
       value="{{ data['data_name'] }}"
     />
   </td>
-  <td class="border border-slate-600 px-4 py-2">{{data['created']}}</td>
-  <td class="border border-slate-600 px-4 py-2">
+  <td>{{data['created']}}</td>
+  <td>
     {{ data['email'] + ' ' + data['firstname'] + ' ' + data['lastname'] }}
   </td>
-  <td class="border border-slate-600 px-4 py-2">
+  <td>
     <input
       type="text"
       name="data_location"
-      class="border-0 w-full"
+      class="input w-full max-w-xs"
       value="{{ data['file_location'] }}"
     />
   </td>
-  <td class="border border-slate-600 px-4 py-2">
+  <td>
     <input
       type="checkbox"
+      class="checkbox"
       name="coastal6"
       {%
       if
@@ -31,9 +32,9 @@
       %}
     />
   </td>
-  <td class="border border-slate-600 px-4 py-2">{{ data['project1_name'] }}</td>
-  <td class="border border-slate-600 px-4 py-2">{{ data['project2_name'] }}</td>
-  <td class="border border-slate-600 px-4 py-2">{{ data['uid'] }}</td>
+  <td>{{ data['project1_name'] }}</td>
+  <td>{{ data['project2_name'] }}</td>
+  <td>{{ data['uid'] }}</td>
   <td>
     <button type="button" hx-get="/data/{{ data_id }}/row">Cancel</button>
     <button type="button" hx-put="/data/{{ data_id }}" hx-include="closest tr">
