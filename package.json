@@ -4,7 +4,8 @@
   "description": "## Requirements   - Python 3.8 or higher   - Flask   - psycopg2   - [pytailwindcss](https://pypi.org/project/pytailwindcss/)",
   "main": "index.js",
   "scripts": {
-    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
+    "tailwind-build" : "npx tailwind -i ./app/static/src/main.css -o ./app/static/dist/main.css",
+    "tailwind-watch" : "npx tailwind -i ./app/static/src/main.css -o ./app/static/dist/main.css --watch"
   },
   "repository": {
     "type": "git",
