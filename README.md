@@ -1,7 +1,7 @@
 # UID Tool
 
 ## Requirements
-  - Python 3.8 or higher
+  - Python 3.10 or higher
   - Flask
   - psycopg2
-  - [pytailwindcss](https://pypi.org/project/pytailwindcss/)
+  - Poetry Dependency Manager
