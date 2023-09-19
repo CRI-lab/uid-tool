@@ -6,6 +6,7 @@ from flask import (
     session,
     url_for,
     send_file,
+    g
 )
 from app.db import get_db
 from app.auth import login_required
@@ -52,12 +53,23 @@ def create_data():
         data_name = request.form["data-name"]
         project1 = request.form["project1"]
         project2 = request.form["project2"]
-        location = request.form["file-location"]
+        description = request.form["description"]
         created_date = datetime.now()
         db_created = created_date.strftime("%Y-%m-%d %H:%M:%S")
         id_date = created_date.strftime("%Y%m%d")
-        coastal6 = False if request.form.get("coastal6") is None else True
+        invenio = False if request.form.get("invenio") is None else True
 
+        # TODO Refactor this later
+        if request.form["local-location"]:
+            file_location_type = "local"
+            file_location = request.form["local-location"]
+        elif request.form["coastal6-location"]:
+            file_location_type = "coastal6"
+            file_location = request.form["coastal6-location"]
+        else:
+            file_location_type = "other"
+            file_location = request.form["other-location"]
+        
         try:
             if project2 != "-1" and project1 != project2:
                 cursor.execute(
@@ -86,21 +98,22 @@ def create_data():
             uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
 
             cursor.execute(
-                "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, file_location, coastal6, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
+                "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, file_location_type, file_location, invenio_stored, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
                 (
                     user_id,
                     project1,
                     project2,
                     db_created,
                     data_name,
-                    location,
-                    coastal6,
+                    file_location_type,
+                    file_location,
+                    invenio,
                     uid,
                 ),
             )
             db.commit()
             data_id = cursor.fetchone()[0]
-            cursor.execute("INSERT INTO coastal6 (data_id) VALUES (%s)", (data_id,))
+            cursor.execute("INSERT INTO invenio_stored (data_id) VALUES (%s)", (data_id,))
             db.commit()
         except Exception as error:
             print("There was an error in inserting data to db:", error)
@@ -139,11 +152,14 @@ def download_readme(data_id):
 def update_page():
     db = get_db()
     cursor = db.cursor()
+    user_id = g.user[0]
     cursor.execute(
         "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
         " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
         " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
-        " ORDER BY d.created DESC"
+        " WHERE u.user_id=%s"
+        " ORDER BY d.created DESC",
+        (user_id,),
     )
     data_entries = cursor.fetchall()
     cursor.execute("SELECT * FROM project")
@@ -167,6 +183,16 @@ def fetch_data(data_id):
     data = cursor.fetchone()
     return data
 
+@bp.get("/<int:user_id>/")
+def fetch_user_data(user_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
+        " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
+        " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
+        " WHERE data_id=%s",
+    )
 
 @bp.put("/<int:data_id>")
 @login_required

@@ -1,4 +1,20 @@
-{% if location == "coastal6" %}
+{% if location == "local" %}
+<div class="form-control w-full max-w-xs" id="local-location">
+  <label class="label">
+    <span class="label-text">Local File Location</span>
+  </label>
+  <input
+    type="text"
+    placeholder="Type here"
+    class="input input-bordered w-full max-w-xs"
+    name="local-location"
+    required
+  />
+  <label class="label">
+    <span class="label-text-alt"> Format of location "D:\Local\Stored" </span>
+  </label>
+</div>
+{% elif location == "coastal6" %}
 <div class="form-control w-full max-w-xs" id="coastal6-location">
   <label class="label">
     <span class="label-text">Coastal6 File Location:</span>
@@ -35,4 +51,4 @@
     </span>
   </label>
 </div>
-{% else %} {% endif %}
+{% endif %}
