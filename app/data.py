@@ -58,18 +58,9 @@ def create_data():
         db_created = created_date.strftime("%Y-%m-%d %H:%M:%S")
         id_date = created_date.strftime("%Y%m%d")
         invenio = False if request.form.get("invenio") is None else True
+        file_location_type = request.form["location-type"]
+        file_location = request.form["data-location"]
 
-        # TODO Refactor this later
-        if request.form["local-location"]:
-            file_location_type = "local"
-            file_location = request.form["local-location"]
-        elif request.form["coastal6-location"]:
-            file_location_type = "coastal6"
-            file_location = request.form["coastal6-location"]
-        else:
-            file_location_type = "other"
-            file_location = request.form["other-location"]
-        
         try:
             if project2 != "-1" and project1 != project2:
                 cursor.execute(
@@ -271,8 +262,8 @@ def edit_data(data_id):
     return render_template("data/edit.html", data=data, data_id=data_id)
 
 
-@bp.post("data-location")
+@bp.post("location-type")
 @login_required
 def data_location_field():
-    location = request.form["dataset-location"]
+    location = request.form["location-type"]
     return render_template("data/location.html", location=location)

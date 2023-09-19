@@ -1,11 +1,14 @@
 {% extends "base.html" %} {% block header %}
-<h1 class="text-3xl pl-64">{% block title %}Submit Dataset{% endblock %}</h1>
+<h1 class="text-3xl pl-64">{% block title %}Curate Dataset{% endblock %}</h1>
 {% endblock %} {% block content %}
 <div class="flex justify-center items-center pt-4">
-  <form hx-post="/data/create" hx-target="#error" hx-swap="innerHTML">
+  <form action="/data/create" method="POST" class="w-80">
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Dataset Name:</span>
+        <div class="tooltip tooltip-top" data-tip="hello">
+          <img src="../../static/img/circle-question-regular.svg"/>
+        </div>
       </label>
       <input
         type="text"
@@ -23,6 +26,9 @@
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Project 1:</span>
+        <div class="tooltip tooltip-top" data-tip="hello">
+          <img src="../../static/img/circle-question-regular.svg"/>
+        </div>
       </label>
       <select class="select select-bordered" name="project1">
         <option disabled selected>Pick one</option>
@@ -36,9 +42,12 @@
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Project 2:</span>
+        <div class="tooltip tooltip-top" data-tip="hello">
+          <img src="../../static/img/circle-question-regular.svg"/>
+        </div>
       </label>
       <select class="select select-bordered" name="project2">
-        <option disabled selected>Pick one (Optional)</option>
+        <option value="-1" selected>Pick one (if needed)</option>
         {% for project in projects[1:] %}
         <option value="{{ project.project_id }}">
           {{ project.project_name }}
@@ -49,14 +58,18 @@
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Dataset Location:</span>
+        <div class="tooltip tooltip-top" data-tip="hello">
+          <img src="../../static/img/circle-question-regular.svg"/>
+        </div>
       </label>
       <select
         class="select select-bordered"
-        name="dataset-location"
-        id="dataset-location"
-        hx-post="/data/data-location"
+        name="location-type"
+        id="location-type"
+        hx-post="/data/location-type"
         hx-target="#location-field"
         hx-trigger="change"
+        required
       >
         <option disabled selected>Where do you plan on storing data?</option>
         <option value="local">Locally Stored</option>
@@ -67,7 +80,21 @@
         <span class="label-text-alt"></span>
       </div>
     </div>
-    <div id="location-field"></div>
+    <div id="location-field">
+    </div>
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Description: </span>
+        <div class="tooltip tooltip-top" data-tip="hello">
+          <img src="../../static/img/circle-question-regular.svg"/>
+        </div>
+      </label>
+      <!-- TODO: Add additional examples for placeholder-->
+      <textarea class="textarea textarea-bordered h-24" placeholder="Example Descriptions:" name="description" required></textarea>
+      <label class="label">
+        <span class="label-text-alt">Enter any additional information about data.</span>
+      </label>
+    </div>
     <div class="form-control max-w-xs w-full">
       <label class="label cursor-pointer">
         <span class="label-text pr-10">Planning on uploading to Invenio?</span>
