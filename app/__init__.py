@@ -12,24 +12,19 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
     )
-    app.secret_key = "test123"
     app.config["SESSION_COOKIE_SECURE"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
     from . import auth
-
     app.register_blueprint(auth.bp)
 
     from . import data
-
     app.register_blueprint(data.bp)
 
     from . import project
-
     app.register_blueprint(project.bp)
 
     from . import db
-
     db.init_app(app)
 
     if test_config is None:

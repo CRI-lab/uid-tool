@@ -1,15 +1,14 @@
 import io
 from flask import (
     Blueprint,
-    redirect,
     render_template,
     request,
     session,
     url_for,
     send_file,
-    after_this_request,
 )
 from app.db import get_db
+from app.auth import login_required
 from datetime import datetime
 
 bp = Blueprint("data", __name__, url_prefix="/data")
@@ -41,6 +40,7 @@ def check_data_exists():
 
 
 @bp.route("/create", methods=["GET", "POST"])
+@login_required
 def create_data():
     db = get_db()
     cursor = db.cursor()
@@ -116,6 +116,7 @@ def create_data():
 
 
 @bp.get("/download/<int:data_id>")
+@login_required
 def download_readme(data_id):
     db = get_db()
     cursor = db.cursor()
@@ -134,6 +135,7 @@ def download_readme(data_id):
 
 
 @bp.route("/update", methods=["GET", "POST"])
+@login_required
 def update_page():
     db = get_db()
     cursor = db.cursor()
@@ -167,6 +169,7 @@ def fetch_data(data_id):
 
 
 @bp.put("/<int:data_id>")
+@login_required
 def update_data(data_id):
     db = get_db()
     cursor = db.cursor()
@@ -196,6 +199,7 @@ def update_data(data_id):
 
 
 @bp.delete("/<int:data_id>")
+@login_required
 def remove_data(data_id):
     db = get_db()
     cursor = db.cursor()
@@ -209,6 +213,7 @@ def remove_data(data_id):
 
 
 @bp.route("/<int:data_id>/row")
+@login_required
 def render_datarow(data_id):
     db = get_db()
     cursor = db.cursor()
@@ -224,6 +229,7 @@ def render_datarow(data_id):
 
 
 @bp.get("/<int:data_id>/edit")
+@login_required
 def edit_data(data_id):
     db = get_db()
     cursor = db.cursor()
@@ -240,6 +246,7 @@ def edit_data(data_id):
 
 
 @bp.post("data-location")
+@login_required
 def data_location_field():
     location = request.form["dataset-location"]
     return render_template("data/location.html", location=location)

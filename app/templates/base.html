@@ -15,7 +15,11 @@
   <body id="body">
     <nav class="navbar bg-base-100">
       <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl">UID Tool</a>
+        <a
+          href="{{ url_for('data.display_page') }}"
+          class="btn btn-ghost normal-case text-xl"
+          >UID Tool</a
+        >
       </div>
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
@@ -30,7 +34,11 @@
             </details>
           </li>
           <li><a href="{{ url_for('project.display_page')}}">Projects</a></li>
+          {% if g.user: %}
           <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+          {% else %}
+          <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+          {% endif %}
         </ul>
       </div>
     </nav>

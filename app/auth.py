@@ -1,4 +1,5 @@
 import re
+import functools
 
 from flask import (
     Blueprint,
@@ -7,6 +8,7 @@ from flask import (
     request,
     session,
     url_for,
+    g
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -23,12 +25,28 @@ def is_valid_email(email):
 def is_logged_in():
     return "user_id" in session
 
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        
+        return view(**kwargs)
 
-# @bp.before_request
-# def redirect_if_logged_in():
-#     if is_logged_in():
-#         return redirect(url_for("data.display"))
+    return wrapped_view
 
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        cursor = get_db().cursor()
+        cursor.execute(
+            'SELECT * FROM users WHERE user_id = %s', (user_id,)
+        )
+        g.user = cursor.fetchone()
 
 @bp.route("/register", methods=("GET", "POST"))
 def register():
@@ -78,7 +96,7 @@ def login():
         if error is None:
             session.clear()
             session["user_id"] = user["user_id"]
-            return redirect(url_for("data.display"))
+            return redirect(url_for("data.display_page"))
         return error
 
     return render_template("auth/login.html", title="Login Page")
