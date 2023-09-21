@@ -2,7 +2,7 @@
 <h1 class="text-3xl pl-64">{% block title %}Curate Dataset{% endblock %}</h1>
 {% endblock %} {% block content %}
 <div class="flex justify-center items-center pt-4">
-  <form action="/data/create" method="POST" class="w-80">
+  <form hx-post="/data/create" hx-target="#download-popup" class="w-80">
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Dataset Name:</span>
@@ -98,6 +98,7 @@
     <div class="form-control max-w-xs w-full">
       <label class="label cursor-pointer">
         <span class="label-text pr-10">Planning on uploading to Invenio?</span>
+        <p class="text-sm">Yes</p>
         <input class="checkbox" type="checkbox" id="invenio" name="invenio" />
       </label>
     </div>
@@ -105,6 +106,7 @@
       <button class="btn btn-primary row-end-auto" type="submit">Submit</button/div>
     </div>
   </form>
+  <div id="download-popup"></div>
 </div>
 
 {% endblock content %}

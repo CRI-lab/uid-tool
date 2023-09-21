@@ -1,8 +1,19 @@
+<dialog id="download-modal" class="modal">
+  <div class="modal-box">
+    <span
+      >Downloading in
+      <div id="counter">5</div></span
+    >
+  </div>
+</dialog>
+
 <script type="text/javascript">
   var counter = 4;
+  var modal = document.getElementById("download-modal");
+  modal.showModal();
   var countdown = setInterval(function downloadTimer() {
     document.getElementById("counter").innerHTML = counter;
-    counter --;
+    counter--;
 
     if (counter == 0) {
       fetch("{{download_url}}")
@@ -14,9 +25,7 @@
           link.click();
         });
 
-    window.location.replace("{{ data_page_url }}")
+      window.location.replace("{{ data_page_url }}");
     }
   }, 1000);
 </script>
-
-<p>Downloading in <div id="counter">5</div></p>

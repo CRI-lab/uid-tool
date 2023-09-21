@@ -48,9 +48,9 @@ INSERT INTO public.project(
 
 
 INSERT INTO public.project(
-	project_id, created, project_name, code)
-	VALUES (1, '2023-08-08 11:02:29', 'test', 'TS');
+	project_id, created, project_name, code, finished)
+	VALUES (1, '2023-08-08 11:02:29', 'test', 'TS', False);
 
 INSERT INTO public.project(
-	project_id, created, project_name, code)
-	VALUES (2, '2023-08-08 11:02:29', 'asdf', 'AS');
+	project_id, created, project_name, code, finished)
+	VALUES (2, '2023-08-08 11:02:29', 'asdf', 'AS', False);
