@@ -14,18 +14,32 @@ from datetime import datetime
 
 bp = Blueprint("data", __name__, url_prefix="/data")
 
+def fetch_user_data(user):
+    db = get_db()
+    cursor = db.cursor()
+    if user == 'all':
+        cursor.execute(
+            "SELECT data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_location, invenio, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
+            " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
+            " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
+            " ORDER BY d.created DESC"
+        )
+    else:
+        cursor.execute(
+            "SELECT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_location, invenio, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
+            " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
+            " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
+            " WHERE u.user_id=%s"
+            " ORDER BY d.created DESC",
+            (user,),
+        )
+    data_entries = cursor.fetchall()
+    return data_entries
+
 
 @bp.route("/")
 def display_page():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute(
-        "SELECT data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
-        " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
-        " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
-        " ORDER BY d.created DESC"
-    )
-    data_entries = cursor.fetchall()
+    data_entries = fetch_user_data(user='all')
     return render_template("data/index.html", data_entries=data_entries)
 
 
@@ -53,13 +67,14 @@ def create_data():
         data_name = request.form["data-name"]
         project1 = request.form["project1"]
         project2 = request.form["project2"]
-        description = request.form["description"]
+        data_description = request.form["data-description"]
+        invenio = False if request.form.get("invenio") is None else True
+        data_location_type= request.form["data-location-type"]
+        data_location= request.form["data-location"]
         created_date = datetime.now()
         db_created = created_date.strftime("%Y-%m-%d %H:%M:%S")
         id_date = created_date.strftime("%Y%m%d")
-        invenio = False if request.form.get("invenio") is None else True
-        file_location_type = request.form["location-type"]
-        file_location = request.form["data-location"]
+
 
         try:
             if project2 != "-1" and project1 != project2:
@@ -87,30 +102,31 @@ def create_data():
             else:
                 data_id = str(data_id[0] + 1).zfill(3)
             uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
-
+            
             cursor.execute(
-                "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, file_location_type, file_location, invenio_stored, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
+                "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, data_description, data_location_type, data_location, invenio, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
                 (
                     user_id,
                     project1,
                     project2,
                     db_created,
                     data_name,
-                    file_location_type,
-                    file_location,
+                    data_description,
+                    data_location_type,
+                    data_location,
                     invenio,
                     uid,
                 ),
             )
             db.commit()
             data_id = cursor.fetchone()[0]
-            cursor.execute("INSERT INTO invenio_stored (data_id) VALUES (%s)", (data_id,))
-            db.commit()
+            # cursor.execute("INSERT INTO invenio_stored (data_id) VALUES (%s)", (data_id,))
+            # db.commit()
         except Exception as error:
             print("There was an error in inserting data to db:", error)
         else:
             download_url = url_for("data.download_readme", data_id=data_id)
-            data_page_url = url_for("data.display")
+            data_page_url = url_for("data.display_page")
             return render_template(
                 "data/download.html",
                 download_url=download_url,
@@ -141,23 +157,10 @@ def download_readme(data_id):
 @bp.route("/update", methods=["GET", "POST"])
 @login_required
 def update_page():
-    db = get_db()
-    cursor = db.cursor()
     user_id = g.user[0]
-    cursor.execute(
-        "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
-        " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
-        " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
-        " WHERE u.user_id=%s"
-        " ORDER BY d.created DESC",
-        (user_id,),
-    )
-    data_entries = cursor.fetchall()
-    cursor.execute("SELECT * FROM project")
-    project_list = cursor.fetchall()
+    data_entries = fetch_user_data(user_id)
     return render_template(
-        "data/update.html", data_entries=data_entries, projects=project_list
-    )
+        "data/update.html", data_entries=data_entries)
 
 
 @bp.get("/<int:data_id>")
@@ -165,7 +168,7 @@ def fetch_data(data_id):
     db = get_db()
     cursor = db.cursor()
     cursor.execute(
-        "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
+        "SELECT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_location coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
         " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
         " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
         " WHERE data_id=%s",
@@ -174,31 +177,21 @@ def fetch_data(data_id):
     data = cursor.fetchone()
     return data
 
-@bp.get("/<int:user_id>/")
-def fetch_user_data(user_id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute(
-        "SELECT data_id, data_name, u.firstname, u.lastname, d.created, file_location, coastal6, u.email, p1.project_name as project1_name, p2.project_name as project2_name, uid"
-        " FROM public.data d JOIN public.users u on d.creator_id=u.user_id"
-        " JOIN project p1 ON d.project_id_1=p1.project_id JOIN project p2 on d.project_id_2=p2.project_id"
-        " WHERE data_id=%s",
-    )
-
 @bp.put("/<int:data_id>")
 @login_required
 def update_data(data_id):
     db = get_db()
     cursor = db.cursor()
     data_name = request.form["data_name"]
-    location = request.form["data_location"]
+    data_location_type = request.form["data_location_type"]
+    data_location = request.form["data_location"]
     coastal6 = False if request.form.get("coastal6") is None else True
     try:
         cursor.execute(
             "UPDATE data"
-            " SET data_name=%s, file_location=%s, coastal6=%s"
+            " SET data_name=%s, data_location=%s, data_location_type = %s, coastal6=%s"
             " WHERE data_id=%s",
-            (data_name, location, coastal6, data_id),
+            (data_name, data_location, data_location_type, coastal6, data_id),
         )
         db.commit()
     except Exception as e:
@@ -265,5 +258,5 @@ def edit_data(data_id):
 @bp.post("location-type")
 @login_required
 def data_location_field():
-    location = request.form["location-type"]
+    location = request.form["data-location-type"]
     return render_template("data/location.html", location=location)

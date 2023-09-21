@@ -30,8 +30,8 @@
           <img src="../../static/img/circle-question-regular.svg"/>
         </div>
       </label>
-      <select class="select select-bordered" name="project1">
-        <option disabled selected>Pick one</option>
+      <select class="select select-bordered" name="project1" required>
+        <option disabled selected value="">Pick one</option>
         {% for project in projects[1:] %}
         <option value="{{ project.project_id }}">
           {{ project.project_name }}
@@ -64,14 +64,14 @@
       </label>
       <select
         class="select select-bordered"
-        name="location-type"
-        id="location-type"
+        name="data-location-type"
+        id="data-location-type"
         hx-post="/data/location-type"
         hx-target="#location-field"
         hx-trigger="change"
         required
       >
-        <option disabled selected>Where do you plan on storing data?</option>
+        <option value="" disabled selected>Where do you plan on storing data?</option>
         <option value="local">Locally Stored</option>
         <option value="coastal6">Coastal6</option>
         <option value="other">Other</option>
@@ -90,7 +90,7 @@
         </div>
       </label>
       <!-- TODO: Add additional examples for placeholder-->
-      <textarea class="textarea textarea-bordered h-24" placeholder="Example Descriptions:" name="description" required></textarea>
+      <textarea class="textarea textarea-bordered h-24" placeholder="Example Descriptions:" name="data-description" required></textarea>
       <label class="label">
         <span class="label-text-alt">Enter any additional information about data.</span>
       </label>
