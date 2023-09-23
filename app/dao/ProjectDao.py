@@ -46,3 +46,19 @@ class Project:
             "DELETE FROM project WHERE project_id=%d", (project_id,)
         )
         self.__db.commit()
+
+    def get_project_from_id(self, project1, project2=None):
+        if project2 is not None:
+            self.__cursor.execute(
+                "SELECT code FROM project WHERE project_id=%s OR project_id=%s ",
+                (project1, project2),
+            )
+            [[project1_code], [project2_code]] = self.__cursor.fetchall()
+        else:
+            self.__cursor.execute(
+                "SELECT code FROM project WHERE project_id=%s",
+                (project1),
+            )
+            [project1_code] = self.__cursor.fetchone()
+            project2_code = "XX"
+        return project1_code, project2_code

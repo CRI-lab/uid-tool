@@ -10,9 +10,8 @@ from flask import (
     url_for,
     g
 )
-from werkzeug.security import check_password_hash, generate_password_hash
-
-from app.db import get_db
+from werkzeug.security import check_password_hash
+from app.db import get_userdao
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -42,33 +41,24 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        cursor = get_db().cursor()
-        cursor.execute(
-            'SELECT * FROM users WHERE user_id = %s', (user_id,)
-        )
-        g.user = cursor.fetchone()
+        g.user = get_userdao().fetch_user_by_id(user_id)
 
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
-        email = request.form["email"]
-        firstname = request.form["firstname"]
-        lastname = request.form["lastname"]
-        password = request.form["password"]
+        user_info = dict()
+        user_info["email"] = request.form["email"]
+        user_info["firstname"] = request.form["firstname"]
+        user_info["lastname"] = request.form["lastname"]
+        user_info["password"] = request.form["password"]
         error = None
-        db = get_db()
-        cursor = db.cursor()
 
-        if not is_valid_email(email):
+        if not is_valid_email(user_info["email"]):
             error = "Please enter a valid email!"
 
         if error is None:
             try:
-                cursor.execute(
-                    "INSERT INTO users (email, firstname, lastname, password) VALUES (%s, %s, %s, %s)",
-                    (email, firstname, lastname, generate_password_hash(password)),
-                )
-                db.commit()
+                get_userdao().create_user()
             except Exception as e:
                 print("There was an error in registering user:", e)
                 error = "Error registering user."
@@ -81,12 +71,10 @@ def register():
 @bp.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
-        username = request.form["email"]
+        email = request.form["email"]
         password = request.form["password"]
         error = None
-        cursor = get_db().cursor()
-        cursor.execute("SELECT * FROM users WHERE email = %s", (username,))
-        user = cursor.fetchone()
+        user = get_userdao().fetch_user_by_email(email) 
 
         if user is None:
             error = "Incorrect Username."
@@ -112,10 +100,8 @@ def logout():
 @bp.post("/email")
 def validate_email():
     email = request.form["email"]
-    cursor = get_db().cursor()
     if email and is_valid_email(email):
-        cursor.execute("SELECT * FROM users WHERE email = %s;", (email,))
-        exists = cursor.fetchone()
+       exists = get_userdao().fetch_user_by_email(email)
     else:
         return render_template(
             "auth/validation.html",

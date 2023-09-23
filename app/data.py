@@ -8,7 +8,7 @@ from flask import (
     send_file,
     g
 )
-from app.db import get_datadao
+from app.db import get_datadao, get_projectdao
 from app.auth import login_required
 from datetime import datetime
 
@@ -32,10 +32,7 @@ def check_data_exists():
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create_data():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM project")
-    project_list = cursor.fetchall()
+    project_list = get_projectdao().fetch_projects()
 
     if request.method == "POST":
         data_info = dict()
@@ -54,19 +51,9 @@ def create_data():
 
         try:
             if project2 != "-1" and project1 != project2:
-                cursor.execute(
-                    "SELECT code FROM project WHERE project_id=%s OR project_id=%s ",
-                    (project1, project2),
-                )
-                [[project1_code], [project2_code]] = cursor.fetchall()
+                project1_code, project2_code = get_projectdao().get_project_from_id(project1, project2)
             else:
-                cursor.execute(
-                    "SELECT code FROM project WHERE project_id=%s",
-                    (project1),
-                )
-                [project1_code] = cursor.fetchone()
-                project2_code = "XX"
-                project2 = -1
+                project1_code = get_projectdao().get_project_from_id(project1 = project1)
 
             # get id from last entry
             data_id = get_datadao().fetch_data_id()
