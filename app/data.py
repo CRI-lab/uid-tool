@@ -17,7 +17,7 @@ bp = Blueprint("data", __name__, url_prefix="/data")
 
 @bp.route("/")
 def display_page():
-    data_entries = get_datadao.fetch_data_table(filters={})
+    data_entries = get_datadao().fetch_data_table(filters={})
     return render_template("data/index.html", data_entries=data_entries)
 
 

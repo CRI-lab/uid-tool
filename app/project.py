@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
 from app.db import get_db
 from datetime import datetime
+from app.db import get_projectdao
 
 bp = Blueprint("project", __name__, url_prefix="/project")
 
@@ -13,19 +14,13 @@ def display_page():
     Returns:
         string: html of the page that dispalys the projects
     """
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM project")
-    projects = cursor.fetchall()
+    projects = get_projectdao().fetch_projects()
     return render_template("project/index.html", projects=projects)
 
 
 @bp.route("/update")
 def update_page():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM project")
-    projects = cursor.fetchall()
+    projects = get_projectdao().fetch_projects()
     return render_template("project/update.html", projects=projects)
 
 
@@ -34,80 +29,59 @@ def project_name():
     db = get_db()
     cursor = db.cursor()
     project_name = request.form["project-name"]
-    cursor.execute("SELECT * FROM project WHERE data_name=%s", (project_name,))
-    exists = cursor.fetchone()
+    project = get_projectdao().fetch_project_by_name(project_name)
+    exists = False if project is None else True
 
     return render_template("project/validation.html", exists=exists)
 
 
 @bp.route("/create", methods=["GET", "POST"])
 def create_project():
-    db = get_db()
-    cursor = db.cursor()
-    created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     if request.method == "POST":
-        project_name = request.method["project-name"]
-        project_code = request.method["project-code"]
-        finished = False if request.form.get("finished") is None else True
+        project_info = dict()
+        project_info["project_name"] = request.method["project-name"]
+        project_info["project_code"] = request.method["project-code"]
+        project_info["finished"] = False if request.form.get("finished") is None else True
+        project_info["created_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # Will return the empty row inputs
-        cursor.execute(
-            "INSERT INTO project VALUES (%s, %s, %s, %s)",
-            (created_date, project_name, project_code, finished),
-        )
-        db.commit()
-        cursor.execute("SELECT * from project WHERE project_name=%s", (project_name,))
-        project = cursor.fetchone()
+        get_projectdao().create_project(project_info)
+        project = get_projectdao().fetch_project_by_name(project_info["project_name"])
         return render_template("project/row.html", project=project)
 
-    return render_template("project/create.html", created_date=created_date)
+    return render_template("project/create.html", created_date=project_info["created_date"])
 
 
 @bp.get("/<int:project_id>/edit")
 def project_input_fields(project_id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM project WHERE project_id=%s", (project_id,))
-    project = cursor.fetchone()
+    project = get_projectdao().fetch_project_by_id(project_id) 
     return render_template("project/edit.html", project=project, project_id=project_id)
 
 
 @bp.get("/<int:project_id>")
 def fetch_project(project_id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM project WHERE project_id=%s", (project_id,))
-    project = cursor.fetchone()[0]
+    project = get_projectdao().fetch_project_by_id(project_id)
     return project
 
 
 @bp.put("/<int:project_id>")
 def update_project(project_id):
-    db = get_db()
-    cursor = db.cursor()
-    project_name = request.form["project_name"]
-    finished = False if request.form.get("finished") is None else True
+    project_info = dict()
+    project_info["project_name"] = request.form["project_name"]
+    project_info["finished"] = False if request.form.get("finished") is None else True
     try:
-        cursor.execute(
-            "UPDATE project SET project_name=%s, finished=%s WHERE project_id=%s",
-            (project_name, finished, project_id),
-        )
-        db.commit()
+        get_projectdao().update_project(project_info, project_id)
     except Exception as e:
         print("There was an error updated data: " + e)
     else:
-        cursor.execute("SELECT * FROM project WHERE project_id=%s", (project_id,))
-        data = cursor.fetchone()
+        data = get_projectdao().fetch_project_by_id(project_id)
         return render_template("project/row.html", data=data)
 
 
 @bp.delete("/<int:project_id>")
 def delete_project(project_id):
-    db = get_db()
-    cursor = db.cursor()
     try:
-        cursor.execute("DELETE FROM project WHERE project_id=%d", (project_id,))
-        db.commit()
+        get_projectdao().delete_project(project_id)
     except Exception as e:
         print("There was an error deleting data: " + e)
     else:
@@ -116,21 +90,10 @@ def delete_project(project_id):
 
 @bp.route("/<int:project_id>/row")
 def render_datarow(project_id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM project WHERE project_id=%s", (project_id,))
-    project = cursor.fetchone()
+    project = get_projectdao().fetch_project_by_id(project_id)
     return render_template("project/row.html", project=project)
 
 
 @bp.route("/clear")
 def clear_content():
     return ""
-
-
-# @bp.route("/create")
-# def create():
-
-
-# @bp.route("/update/<int:project_id>")
-# def update(project_id):

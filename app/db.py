@@ -4,6 +4,8 @@ import psycopg2.extras
 import click
 from flask import current_app, g, Flask
 from app.dao.DataDao import Data 
+from app.dao.ProjectDao import Project
+from app.dao.UserDao import User
 
 def get_db():
     if "db" not in g:
@@ -11,17 +13,23 @@ def get_db():
             os.getenv("DATABASE_URL"), cursor_factory=psycopg2.extras.DictCursor
         )
         return g.db
+    return g.db
 
 
 def load_dao():
-    db = get_db()
-    g.data_dao = Data(db)
+    g.data_dao = Data(get_db())
 
 def get_datadao():
-    db = get_db()
-    g.data_dao = Data(db)
+    g.data_dao = Data(get_db())
     return g.data_dao
+
+def get_projectdao():
+    g.project_dao = Project(get_db())
+    return g.project_dao
     
+def get_userdao():
+    g.user_dao = User(get_db())
+    return g.user_dao
 
 def close_db(e=None):
     db = g.pop("db", None)
