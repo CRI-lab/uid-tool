@@ -1,5 +1,6 @@
 from psycopg2.extensions import connection
 
+
 class Data:
     __db = None
     __cursor = None
@@ -43,7 +44,7 @@ class Data:
         if where_clauses:
             base_query += " WHERE " + " AND ".join(where_clauses)
         
-        base_query += "ORDER BY d.created DESC"
+        base_query += " ORDER BY d.created DESC"
 
         return base_query, params
         
@@ -70,22 +71,23 @@ class Data:
         
     def create_data(self, data_info: dict):
         user_id = data_info["user_id"]
-        data_name = data_info["data-name"]
-        project1 = data_info["project1"]
-        project2 = data_info["project2"]
-        data_description = data_info["data-description"]
+        data_name = data_info["data_name"]
+        project1_id = data_info["project1_id"]
+        project2_id = data_info["project2_id"]
+        data_description = data_info["data_description"]
         invenio = False if data_info.get("invenio") is None else True
-        data_location_type= data_info["data-location-type"]
-        data_location= data_info["data-location"]
+        data_location_type= data_info["data_location_type"]
+        data_location= data_info["data_location"]
         db_created = data_info["db_created"]
         uid = data_info["uid"]
+
 
         self.__cursor.execute(
             "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, data_description, data_location_type, data_location, invenio, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
             (
                 user_id,
-                project1,
-                project2,
+                project1_id,
+                project2_id,
                 db_created,
                 data_name,
                 data_description,

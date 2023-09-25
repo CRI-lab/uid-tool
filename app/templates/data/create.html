@@ -30,7 +30,7 @@
           <img src="../../static/img/circle-question-regular.svg"/>
         </div>
       </label>
-      <select class="select select-bordered" name="project1" required>
+      <select class="select select-bordered" name="project1-id" required>
         <option disabled selected value="">Pick one</option>
         {% for project in projects[1:] %}
         <option value="{{ project.project_id }}">
@@ -46,7 +46,7 @@
           <img src="../../static/img/circle-question-regular.svg"/>
         </div>
       </label>
-      <select class="select select-bordered" name="project2">
+      <select class="select select-bordered" name="project2-id">
         <option value="-1" selected>Pick one (if needed)</option>
         {% for project in projects[1:] %}
         <option value="{{ project.project_id }}">

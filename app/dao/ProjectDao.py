@@ -14,11 +14,11 @@ class Project:
         return self.__cursor.fetchall()
     
     def fetch_project_by_name(self, project_name):
-        self.__cursor.execute("SLECT * FROM project WHERE project_name=%s", (project_name,)) 
+        self.__cursor.execute("SELECT * FROM project WHERE project_name=%s", (project_name,)) 
         return self.__cursor.fetchone()
 
     def fetch_project_by_id(self, project_id):
-        self.__cursor.execute("SLECT * FROM project WHERE project_id=%s", (project_id)) 
+        self.__cursor.execute("SELECT * FROM project WHERE project_id=%s", (project_id)) 
         return self.__cursor.fetchone()
     
     def create_project(self, project_info):
@@ -47,17 +47,17 @@ class Project:
         )
         self.__db.commit()
 
-    def get_project_from_id(self, project1, project2=None):
-        if project2 is not None:
+    def get_projects_from_id(self, project1_id, project2_id=None):
+        if project2_id is not None:
             self.__cursor.execute(
                 "SELECT code FROM project WHERE project_id=%s OR project_id=%s ",
-                (project1, project2),
+                (project1_id, project2_id),
             )
             [[project1_code], [project2_code]] = self.__cursor.fetchall()
         else:
             self.__cursor.execute(
                 "SELECT code FROM project WHERE project_id=%s",
-                (project1),
+                (project1_id),
             )
             [project1_code] = self.__cursor.fetchone()
             project2_code = "XX"

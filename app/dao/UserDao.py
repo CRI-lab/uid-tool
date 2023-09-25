@@ -14,7 +14,7 @@ class User:
         self.__cursor.execute(
             'SELECT * FROM users WHERE user_id = %s', (user_id,)
         )
-        user = self.cursor.fetchone()
+        user = self.__cursor.fetchone()
         return user
 
     def create_user(self, user_info):
