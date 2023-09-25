@@ -58,7 +58,7 @@ def create_data():
             print(project1_code, project2_code)
 
             # get id from last entry
-            data_id = get_datadao().fetch_data_id()
+            data_id = get_datadao().fetch_last_data_id()
             if data_id is None:
                 data_id = str(1).zfill(3)
             else:
@@ -103,6 +103,7 @@ def update_page():
     user_id = session["user_id"]
     #TODO Need to include project association
     data_entries = get_datadao().fetch_data_table({"user_id": user_id})
+    print(data_entries[0])
     return render_template(
         "data/update.html", data_entries=data_entries)
 
@@ -126,6 +127,7 @@ def update_data(data_id):
         print("There was an error updated data: " + e)
     else:
         data = get_datadao().fetch_data_by_id(data_id=data_id)
+        print(data)
         return render_template("data/row.html", data=data)
 
 
@@ -143,14 +145,15 @@ def remove_data(data_id):
 @bp.route("/<int:data_id>/row")
 @login_required
 def render_datarow(data_id):
-    data = get_datadao().remove_data(data_id)
+    data = get_datadao().fetch_data_by_id(data_id)
     return render_template("data/row.html", data=data)
 
 
 @bp.get("/<int:data_id>/edit")
 @login_required
 def edit_data(data_id):
-    data = get_datadao().remove_data(data_id)
+    data = get_datadao().fetch_data_by_id(data_id)
+    print(data)
     data_id = data["data_id"]
     return render_template("data/edit.html", data=data, data_id=data_id)
 

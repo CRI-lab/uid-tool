@@ -12,12 +12,24 @@
     {{ data['email'] + ' ' + data['firstname'] + ' ' + data['lastname'] }}
   </td>
   <td>
-    <input
-      type="text"
-      name="data_location"
-      class="input w-full max-w-xs"
-      value="{{ data['file_location'] }}"
-    />
+    <div class="form-control w-full max-w-xs">
+      <select
+        class="select select-bordered"
+        name="data-location-type"
+        id="data-location-type"
+        hx-post="/data/location-type"
+        hx-target="#location-field"
+        hx-trigger="change"
+        required
+      >
+        <option value="local">Locally Stored</option>
+        <option value="coastal6">Coastal6</option>
+        <option value="other">Other</option>
+      </select>
+      <div class="label">
+        <span class="label-text-alt"></span>
+      </div>
+    </div>
   </td>
   <td>
     <input

@@ -10,7 +10,7 @@ class Data:
 
     def build_query(self, filters: dict):
         base_query = """
-        SELECT data_name, u.firstname, u.lastname, d.created, d.data_location_type, 
+        SELECT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, 
                d.data_location, invenio, u.email, p1.project_name as project1_name, 
                p2.project_name as project2_name, uid
         FROM public.data d 
@@ -55,16 +55,18 @@ class Data:
         return data
     
     def fetch_data_by_name(self, name):
-        self.__cursor.execute("SELECT * FROM data where data_name=%s", (name,))
+        query, params = self.build_query({"data_name = %s", (name,)})
+        self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data
 
     def fetch_data_by_id(self, id):
-        self.__cursor.execute("SELECT * FROM data where data_id=%s", (id,))
+        query, params = self.build_query({"data_id = %s", (id,)})
+        self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data
 
-    def fetch_data_id(self):
+    def fetch_last_data_id(self):
         self.__cursor.execute("SELECT data_id FROM data ORDER by data_id DESC LIMIT 1")
         data_id = self.__cursor.fetchone()
         return data_id
