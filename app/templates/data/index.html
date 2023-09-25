@@ -3,110 +3,93 @@
 {% endblock %} {% block content %}
 
 <div class="flex items-center justify-center">
-  <div id="dropdown" class="flex-none w-1/6">
-    <div class="collapse">
-      <input type="checkbox" />
-      <div class="collapse-title text-xl font-medium">Filter</div>
-      <div class="collapse-content">
-        <div id="form">
-          <form action="/filter_datasets" method="post">
-            <!-- Dataset Name Input -->
-            <div class="form-control w-full max-w-xs">
-              <label class="label">
-                <span class="label-text">Dataset Name:</span>
-              </label>
-              <input
-                type="text"
-                name="data-name"
-                placeholder="Type here"
-                class="input input-xs input-bordered w-full max-w-xs"
-              />
-            </div>
-
-            <!-- Created Date Range -->
-            <div class="form-control w-full max-w-xs">
-              <label class="label">
-                <span class="label-text">From Date:</span>
-              </label>
-              <input
-                type="date"
-                name="from-date"
-                placeholder="Type here"
-                class="input input-xs input-bordered w-full max-w-xs"
-              />
-
-              <label class="label">
-                <span class="label-text">To Date:</span>
-              </label>
-              <input
-                type="date"
-                name="to-date"
-                placeholder="Type here"
-                class="input input-xs input-bordered w-full max-w-xs"
-              />
-            </div>
-
-            <!-- Creator Dropdown -->
-            <div class="form-control w-full max-w-xs">
-              <label class="label">
-                <span class="label-text">Creator</span>
-              </label>
-              <select
-                class="select select-bordered select-xs"
-                name="project1-id"
-              >
-                <option disabled selected value="">Who created dataset?</option>
-              </select>
-            </div>
-
-            <!-- Invenio Toggle -->
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text">Invenio</span>
-                <input
-                  name="invneio"
-                  type="checkbox"
-                  class="toggle toggle-xs"
-                />
-              </label>
-            </div>
-
-            <!-- Project Dropdown -->
-            <div class="form-control w-full max-w-xs">
-              <label class="label">
-                <span class="label-text">Projects:</span>
-              </label>
-              <select class="select select-bordered select-xs" name="project">
-                <option value="-1" selected>Pick a Project</option>
-              </select>
-            </div>
-
-            <!-- UID Input -->
-            <div class="form-control w-full max-w-xs">
-              <label class="label">
-                <span class="label-text">UID :</span>
-                <div class="tooltip tooltip-top" data-tip="hello">
-                  <img src="../../static/img/circle-question-regular.svg" />
-                </div>
-              </label>
-              <input
-                type="text"
-                placeholder="Type here"
-                class="input input-bordered input-xs w-full max-w-xs"
-                maxlength="200"
-                id="data-name"
-                name="data-name"
-                hx-target="#error"
-                hx-swap="innerHTML"
-                hx-post="/data/data_name"
-              />
-            </div>
-
-            <input class="btn" type="submit" value="Filter" />
-          </form>
-        </div>
+  <div id="form" class="flex-none w-1/6">
+    <form action="/filter_datasets" method="post">
+      <!-- Dataset Name Input -->
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Dataset Name:</span>
+        </label>
+        <input
+          type="text"
+          name="data-name"
+          placeholder="Type here"
+          class="input input-xs input-bordered w-full max-w-xs"
+        />
       </div>
-    </div>
+
+      <!-- Created Date Range -->
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">From Date:</span>
+        </label>
+        <input
+          type="date"
+          name="from-date"
+          placeholder="Type here"
+          class="input input-xs input-bordered w-full max-w-xs"
+        />
+
+        <label class="label">
+          <span class="label-text">To Date:</span>
+        </label>
+        <input
+          type="date"
+          name="to-date"
+          placeholder="Type here"
+          class="input input-xs input-bordered w-full max-w-xs"
+        />
+      </div>
+
+      <!-- Creator Dropdown -->
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Creator</span>
+        </label>
+        <select class="select select-bordered select-xs" name="project1-id">
+          <option disabled selected value="">Who created dataset?</option>
+        </select>
+      </div>
+
+      <!-- Invenio Toggle -->
+      <div class="form-control">
+        <label class="label cursor-pointer">
+          <span class="label-text">Invenio</span>
+          <input name="invneio" type="checkbox" class="toggle toggle-xs" />
+        </label>
+      </div>
+
+      <!-- Project Dropdown -->
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Projects:</span>
+        </label>
+        <select class="select select-bordered select-xs" name="project">
+          <option value="-1" selected>Pick a Project</option>
+        </select>
+      </div>
+
+      <!-- UID Input -->
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">UID :</span>
+          <div class="tooltip tooltip-top" data-tip="hello">
+            <img src="../../static/img/circle-question-regular.svg" />
+          </div>
+        </label>
+        <input
+          type="text"
+          placeholder="Type here"
+          class="input input-bordered input-xs w-full max-w-xs"
+          maxlength="200"
+          id="data-name"
+          name="data-name"
+          hx-target="#error"
+          hx-swap="innerHTML"
+          hx-post="/data/data_name"
+        />
+      </div>
+    </form>
   </div>
 
   <div id="table" class="w-full">
