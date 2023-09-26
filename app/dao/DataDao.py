@@ -21,25 +21,41 @@ class Data:
         where_clauses = []
         params = {}
         
-        if "email" in filters:
+        if "email" in filters and filters["email"] != "":
             where_clauses.append("u.email = %(email)s")
             params["email"] = filters["email"]
+        
+        if "data_name" in filters and filters["data_name"] != "":
+            where_clauses.append("data_name ILIKE %(data_name)s")
+            params["data_name"] = '%' + filters["data_name"] + '%'
 
-        if "data_location_type" in filters:
+        if "data_location_type" in filters and filters["data_location_type"] != "":
             where_clauses.append("d.data_location_type = %(data_location_type)s")
             params["data_location_type"] = filters["data_location_type"]
 
-        if "invenio" in filters:
+        if "from_date" in filters and filters["from_date"] != "":
+            where_clauses.append("d.created >= %(from_date)s")
+            params["from_date"] = filters["from_date"]
+
+        if "to_date" in filters and filters["to_date"] != "":
+            where_clauses.append("d.created <= %(from_date)s")
+            params["to_date"] = filters["to_date"]
+
+        if "invenio" in filters and filters["invenio"] != "":
             where_clauses.append("invenio = %(invenio)s")
             params["invenio"] = filters["invenio"]
 
-        if "project" in filters:
-            where_clauses.append("project1 = %(project)s OR project2 = %(project)s")
+        if "project" in filters and filters["project"] != "":
+            where_clauses.append("(p1.project_id = %(project)s OR p2.project_id = %(project)s)")
             params["project"] = filters["project"]
 
-        if "user_id" in filters:
+        if "user_id" in filters and filters["user_id"] != "":
             where_clauses.append("user_id = %(user_id)s")
             params["user_id"] = filters["user_id"]
+
+        if "uid" in filters and filters["uid"] != "":
+            where_clauses.append("uid ILIKE %(uid)s" )
+            params["uid"] = "%" + filters["uid"] + "%"
         
         if where_clauses:
             base_query += " WHERE " + " AND ".join(where_clauses)

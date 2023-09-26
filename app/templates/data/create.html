@@ -7,7 +7,7 @@
       <label class="label">
         <span class="label-text">Dataset Name:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg"/>
+          <img src="../../static/img/circle-question-regular.svg" />
         </div>
       </label>
       <input
@@ -27,7 +27,7 @@
       <label class="label">
         <span class="label-text">Project 1:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg"/>
+          <img src="../../static/img/circle-question-regular.svg" />
         </div>
       </label>
       <select class="select select-bordered" name="project1-id" required>
@@ -43,7 +43,7 @@
       <label class="label">
         <span class="label-text">Project 2:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg"/>
+          <img src="../../static/img/circle-question-regular.svg" />
         </div>
       </label>
       <select class="select select-bordered" name="project2-id">
@@ -59,7 +59,7 @@
       <label class="label">
         <span class="label-text">Dataset Location:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg"/>
+          <img src="../../static/img/circle-question-regular.svg" />
         </div>
       </label>
       <select
@@ -71,7 +71,9 @@
         hx-trigger="change"
         required
       >
-        <option value="" disabled selected>Where do you plan on storing data?</option>
+        <option value="" disabled selected>
+          Where do you plan on storing data?
+        </option>
         <option value="local">Locally Stored</option>
         <option value="coastal6">Coastal6</option>
         <option value="other">Other</option>
@@ -80,19 +82,25 @@
         <span class="label-text-alt"></span>
       </div>
     </div>
-    <div id="location-field">
-    </div>
+    <div id="location-field"></div>
     <div class="form-control">
       <label class="label">
         <span class="label-text">Description: </span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg"/>
+          <img src="../../static/img/circle-question-regular.svg" />
         </div>
       </label>
       <!-- TODO: Add additional examples for placeholder-->
-      <textarea class="textarea textarea-bordered h-24" placeholder="Example Descriptions:" name="data-description" required></textarea>
+      <textarea
+        class="textarea textarea-bordered h-24"
+        placeholder="Example Descriptions:"
+        name="data-description"
+        required
+      ></textarea>
       <label class="label">
-        <span class="label-text-alt">Enter any additional information about data.</span>
+        <span class="label-text-alt"
+          >Enter any additional information about data.</span
+        >
       </label>
     </div>
     <div class="form-control max-w-xs w-full">
@@ -103,12 +111,10 @@
       </label>
     </div>
     <div class="grid grid-rows-2 mt-5" id="error">
-      <button class="btn btn-primary row-end-auto" type="submit">Submit</button/div>
+      <button class="btn btn-primary row-end-auto" type="submit">Submit</button>
     </div>
   </form>
   <div id="download-popup"></div>
 </div>
-
-
 
 {% endblock content %}

@@ -4,7 +4,12 @@
 
 <div class="flex items-center justify-center">
   <div id="form" class="flex-none w-1/6">
-    <form action="/filter_datasets" method="post">
+    <form
+      hx-post="/data/filter"
+      hx-trigger="load, change"
+      hx-target="#table-body"
+      hx-swap="innerHTML"
+    >
       <!-- Dataset Name Input -->
       <div class="form-control w-full max-w-xs">
         <label class="label">
@@ -22,6 +27,9 @@
       <div class="form-control w-full max-w-xs">
         <label class="label">
           <span class="label-text">From Date:</span>
+          <div class="tooltip tooltip-top" data-tip="hello">
+            <img src="../../static/img/circle-question-regular.svg" />
+          </div>
         </label>
         <input
           type="date"
@@ -32,6 +40,9 @@
 
         <label class="label">
           <span class="label-text">To Date:</span>
+          <div class="tooltip tooltip-top" data-tip="hello">
+            <img src="../../static/img/circle-question-regular.svg" />
+          </div>
         </label>
         <input
           type="date"
@@ -46,26 +57,63 @@
         <label class="label">
           <span class="label-text">Creator</span>
         </label>
-        <select class="select select-bordered select-xs" name="project1-id">
-          <option disabled selected value="">Who created dataset?</option>
+        <select class="select select-bordered select-xs" name="email">
+          <option selected value="">Who created dataset?</option>
+          {% for email in emails %}
+          <option value="{{ email }}">{{ email }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Data Location Type -->
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Data Location Type</span>
+          <div class="tooltip tooltip-top" data-tip="hello">
+            <img src="../../static/img/circle-question-regular.svg" />
+          </div>
+        </label>
+        <select
+          class="select select-bordered select-xs"
+          name="data-location-type"
+        >
+          <option selected value="">Where is data stored?</option>
+          <option value="local">Locally Stored</option>
+          <option value="coastal6">Coastal6</option>
+          <option value="other">Other</option>
         </select>
       </div>
 
       <!-- Invenio Toggle -->
-      <div class="form-control">
-        <label class="label cursor-pointer">
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
           <span class="label-text">Invenio</span>
-          <input name="invneio" type="checkbox" class="toggle toggle-xs" />
+          <div class="tooltip tooltip-top" data-tip="hello">
+            <img src="../../static/img/circle-question-regular.svg" />
+          </div>
         </label>
+        <select class="select select-bordered select-xs" name="invenio">
+          <option selected value="">Is it stored in Invenio?</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
       </div>
 
       <!-- Project Dropdown -->
       <div class="form-control w-full max-w-xs">
         <label class="label">
           <span class="label-text">Projects:</span>
+          <div class="tooltip tooltip-top" data-tip="hello">
+            <img src="../../static/img/circle-question-regular.svg" />
+          </div>
         </label>
         <select class="select select-bordered select-xs" name="project">
-          <option value="-1" selected>Pick a Project</option>
+          <option value="" selected>Pick a Project</option>
+          {% for project in projects[1:] %}
+          <option value="{{ project['project_id'] }}">
+            {{ project['project_name'] }}
+          </option>
+          {% endfor %}
         </select>
       </div>
 
@@ -81,14 +129,15 @@
           type="text"
           placeholder="Type here"
           class="input input-bordered input-xs w-full max-w-xs"
-          maxlength="200"
-          id="data-name"
-          name="data-name"
-          hx-target="#error"
-          hx-swap="innerHTML"
-          hx-post="/data/data_name"
+          id="uid"
+          name="uid"
         />
       </div>
+
+      <!-- Clear Button-->
+      <button class="btn btn-primary row-end-auto btn-xs" type="submit">
+        Clear
+      </button>
     </form>
   </div>
 
@@ -110,7 +159,7 @@
         </thead>
 
         <!-- body -->
-        <tbody>
+        <tbody id="table-body">
           {% for data in data_entries %}
           <tr>
             <td>{{data['data_name']}}</td>

@@ -25,9 +25,9 @@
   <!-- Creator Dropdown -->
   <div class="form-control w-full max-w-xs">
     <label class="label">
-      <span class="label-text">Creator</span>
+      <span class="label-text">Email</span>
     </label>
-    <select class="select select-bordered" name="project1-id">
+    <select class="select select-bordered" name="email">
       <option disabled selected value="">Who created dataset?</option>
       {% for project in projects[1:] %}
       <!-- add list of projects -->
@@ -42,7 +42,6 @@
   <div class="form-control">
     <label class="label cursor-pointer">
       <span class="label-text">Invenio</span>
-      <input name="invneio" type="checkbox" class="toggle" />
     </label>
   </div>
 

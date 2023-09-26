@@ -8,7 +8,7 @@ from flask import (
     send_file,
     g
 )
-from app.db import get_datadao, get_projectdao
+from app.db import get_datadao, get_projectdao, get_userdao
 from app.auth import login_required
 from datetime import datetime
 
@@ -18,7 +18,10 @@ bp = Blueprint("data", __name__, url_prefix="/data")
 @bp.route("/")
 def display_page():
     data_entries = get_datadao().fetch_data_table(filters={})
-    return render_template("data/index.html", data_entries=data_entries)
+    projects = get_projectdao().fetch_projects()
+    emails = get_userdao().fetch_user_emails()
+    emails = [email[0] for email in emails]
+    return render_template("data/index.html", data_entries=data_entries, projects=projects, emails=emails)
 
 
 @bp.post("/data_name")
@@ -127,7 +130,6 @@ def update_data(data_id):
         print("There was an error updated data: " + e)
     else:
         data = get_datadao().fetch_data_by_id(data_id=data_id)
-        print(data)
         return render_template("data/row.html", data=data)
 
 
@@ -163,3 +165,21 @@ def edit_data(data_id):
 def data_location_field():
     location = request.form["data-location-type"]
     return render_template("data/location.html", location=location)
+
+@bp.post("filter")
+def filter_data_table():
+    filters = dict()
+    filters["data_name"] = request.form["data-name"]
+    filters["from_date"] = request.form["from-date"]
+    filters["to_date"] =request.form["to-date"]
+    filters["email"] = request.form["email"]
+    filters["data_location_type"] = request.form["data-location-type"]
+    filters["invenio"] = request.form["invenio"]  
+    filters["project"] = request.form["project"]
+    filters["uid"] = request.form["uid"]
+    
+    data_entries = get_datadao().fetch_data_table(filters)
+    print(filters)
+
+    return render_template("data/table-body.html", data_entries=data_entries)
+    

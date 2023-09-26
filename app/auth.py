@@ -58,7 +58,7 @@ def register():
 
         if error is None:
             try:
-                get_userdao().create_user()
+                get_userdao().create_user(user_info)
             except Exception as e:
                 print("There was an error in registering user:", e)
                 error = "Error registering user."

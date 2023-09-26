@@ -29,3 +29,10 @@ class User:
             "SELECT * FROM users WHERE email = %s", (user_email,))
         user = self.__cursor.fetchone()
         return user
+
+    def fetch_user_emails(self):
+        self.__cursor.execute(
+            'SELECT email FROM users'
+        )
+        email = self.__cursor.fetchall()
+        return email
