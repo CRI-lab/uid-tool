@@ -6,7 +6,7 @@
   <div id="form" class="flex-none w-1/6">
     <form
       hx-post="/data/filter"
-      hx-trigger="load, change"
+      hx-trigger="change"
       hx-target="#table-body"
       hx-swap="innerHTML"
     >
@@ -140,8 +140,7 @@
       </button>
     </form>
   </div>
-
-  <div id="table" class="w-full">
+  <div id="table" class="w-full" x-data="{ openRow: [] }">
     <div class="overflow-x-auto flex-grow">
       <table class="table">
         <!-- head -->
@@ -161,7 +160,10 @@
         <!-- body -->
         <tbody id="table-body">
           {% for data in data_entries %}
-          <tr>
+          <tr
+            class="hover border-b-0 border-t"
+            @click.inside="openRow.includes({{ data['data_id'] }}) ? openRow.splice(openRow.indexOf({{ data['data_id'] }}), 1) : openRow.push({{ data['data_id'] }})"
+          >
             <td>{{data['data_name']}}</td>
             <td>{{data['created']}}</td>
             <td>
@@ -173,6 +175,21 @@
             <td>{{ data['project1_name'] }}</td>
             <td>{{ data['project2_name'] }}</td>
             <td>{{ data['uid'] }}</td>
+          </tr>
+          <tr
+            class="border-t-0"
+            x-show="openRow.includes({{ data['data_id'] }})"
+          >
+            <td colspan="3" class="max-w-64 maxh-64">
+              Description: {{ data['data_description'] }}
+            </td>
+            <td colspan="4">Location: {{ data['data_location'] }}</td>
+            <td>
+              <a
+                href="{{ url_for('data.download_readme', data_id=data['data_id']) }}"
+                ><button class="btn btn-sm">Download UID</button></a
+              >
+            </td>
           </tr>
           {% endfor %}
         </tbody>

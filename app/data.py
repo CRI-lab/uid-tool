@@ -21,13 +21,16 @@ def display_page():
     projects = get_projectdao().fetch_projects()
     emails = get_userdao().fetch_user_emails()
     emails = [email[0] for email in emails]
+    for key in data_entries[0].keys():
+        print(key)
     return render_template("data/index.html", data_entries=data_entries, projects=projects, emails=emails)
 
 
 @bp.post("/data_name")
 def check_data_exists():
     data_name = request.form["data-name"]
-    exists = g.data_dao.fetch_data_by_name(data_name)
+    exists = get_datadao().fetch_data_by_name(data_name)
+    print(exists)
 
     return render_template("data/validation.html", exists=exists)
 
@@ -106,7 +109,6 @@ def update_page():
     user_id = session["user_id"]
     #TODO Need to include project association
     data_entries = get_datadao().fetch_data_table({"user_id": user_id})
-    print(data_entries[0])
     return render_template(
         "data/update.html", data_entries=data_entries)
 
@@ -160,16 +162,16 @@ def edit_data(data_id):
     return render_template("data/edit.html", data=data, data_id=data_id)
 
 
-@bp.post("location-type")
+@bp.post("/location-type")
 @login_required
 def data_location_field():
     location = request.form["data-location-type"]
     return render_template("data/location.html", location=location)
 
-@bp.post("filter")
+@bp.post("/filter")
 def filter_data_table():
     filters = dict()
-    filters["data_name"] = request.form["data-name"]
+    filters["data_name_match"] = request.form["data-name"]
     filters["from_date"] = request.form["from-date"]
     filters["to_date"] =request.form["to-date"]
     filters["email"] = request.form["email"]
@@ -179,7 +181,6 @@ def filter_data_table():
     filters["uid"] = request.form["uid"]
     
     data_entries = get_datadao().fetch_data_table(filters)
-    print(filters)
 
     return render_template("data/table-body.html", data_entries=data_entries)
     

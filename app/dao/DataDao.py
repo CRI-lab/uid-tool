@@ -10,7 +10,7 @@ class Data:
 
     def build_query(self, filters: dict):
         base_query = """
-        SELECT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, 
+        SELECT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_description,
                d.data_location, invenio, u.email, p1.project_name as project1_name, 
                p2.project_name as project2_name, uid
         FROM public.data d 
@@ -20,14 +20,20 @@ class Data:
         """
         where_clauses = []
         params = {}
+
+        # This one is used for the data curation form
+        if "data_name_exclusive" in filters:
+            where_clauses.append("data_name = %(data_name_exclusive)s")
+            params["data_name_exclusive"] = filters["data_name_exclusive"]
         
         if "email" in filters and filters["email"] != "":
             where_clauses.append("u.email = %(email)s")
             params["email"] = filters["email"]
         
-        if "data_name" in filters and filters["data_name"] != "":
-            where_clauses.append("data_name ILIKE %(data_name)s")
-            params["data_name"] = '%' + filters["data_name"] + '%'
+        # Needed to rename this one because this is used for filters
+        if "data_name_match" in filters and filters["data_name_match"] != "":
+            where_clauses.append("data_name ILIKE %(data_name_match)s")
+            params["data_name_match"] = '%' + filters["data_name_match"] + '%'
 
         if "data_location_type" in filters and filters["data_location_type"] != "":
             where_clauses.append("d.data_location_type = %(data_location_type)s")
@@ -71,7 +77,8 @@ class Data:
         return data
     
     def fetch_data_by_name(self, name):
-        query, params = self.build_query({"data_name = %s", (name,)})
+        name_check = {"data_name_exclusive": name}
+        query, params = self.build_query(name_check)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data
