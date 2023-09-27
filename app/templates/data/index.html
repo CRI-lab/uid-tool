@@ -140,7 +140,7 @@
       </button>
     </form>
   </div>
-  <div id="table" class="w-full" x-data="{ openRow: [] }">
+  <div id="table" class="w-full">
     <div class="overflow-x-auto flex-grow">
       <table class="table">
         <!-- head -->
@@ -160,10 +160,7 @@
         <!-- body -->
         <tbody id="table-body">
           {% for data in data_entries %}
-          <tr
-            class="hover border-b-0 border-t"
-            @click.inside="openRow.includes({{ data['data_id'] }}) ? openRow.splice(openRow.indexOf({{ data['data_id'] }}), 1) : openRow.push({{ data['data_id'] }})"
-          >
+          <tr id="{{ data['data_id'] }}"" class="hover border-b-0 border-t main-detail">
             <td>{{data['data_name']}}</td>
             <td>{{data['created']}}</td>
             <td>
@@ -177,8 +174,7 @@
             <td>{{ data['uid'] }}</td>
           </tr>
           <tr
-            class="border-t-0"
-            x-show="openRow.includes({{ data['data_id'] }})"
+            class="border-t-0 expanded-detail"
           >
             <td colspan="3" class="max-w-64 maxh-64">
               Description: {{ data['data_description'] }}
@@ -197,5 +193,31 @@
     </div>
   </div>
 </div>
+
+<script>
+  var expandedRow = [];
+  var expandedDetailRows = document.querySelectorAll(".expanded-detail");
+  expandedDetailRows.forEach(function hideDetails(row) {
+    row.style.display = "none";
+  });
+
+  var mainDetailRows = document.querySelectorAll(".main-detail");
+  mainDetailRows.forEach(function addShowEventListener(row) {
+    row.addEventListener("click", function showDetails() {
+      var nextRow = this.nextElementSibling
+      toggleRow(this.id, nextRow)
+    });
+  });
+
+  function toggleRow(id, nextRow) {
+    if(expandedRow.includes(id)) {
+      expandedRow.splice(expandedRow.indexOf(id), 1)
+      nextRow.style.display = "none"
+    } else {
+      expandedRow.push(id)
+      nextRow.style.display = ""
+    }
+  }
+</script>
 
 {% endblock content %}
