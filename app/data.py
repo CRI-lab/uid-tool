@@ -21,8 +21,6 @@ def display_page():
     projects = get_projectdao().fetch_projects()
     emails = get_userdao().fetch_user_emails()
     emails = [email[0] for email in emails]
-    for key in data_entries[0].keys():
-        print(key)
     return render_template("data/index.html", data_entries=data_entries, projects=projects, emails=emails)
 
 
@@ -122,16 +120,17 @@ def fetch_data(data_id):
 @login_required
 def update_data(data_id):
     data_info = dict()
-    data_info['data_name'] = request.form["data_name"]
-    data_info['data_location_type'] = request.form["data_location_type"]
-    data_info['data_location'] = request.form["data_location"]
+    data_info['data_name'] = request.form['data-name']
+    data_info['data_description'] = request.form['data-description']
+    data_info['data_location_type'] = request.form['data-location-type']
+    data_info['data_location'] = request.form['data-location']
     data_info['invenio'] = False if request.form.get("invenio") is None else True
     try:
         get_datadao().update_data(data_info=data_info, data_id=data_id)
     except Exception as e:
         print("There was an error updated data: " + e)
     else:
-        data = get_datadao().fetch_data_by_id(data_id=data_id)
+        data = get_datadao().fetch_data_by_id(id=data_id)
         return render_template("data/row.html", data=data)
 
 

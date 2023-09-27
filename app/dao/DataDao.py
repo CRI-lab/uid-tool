@@ -126,15 +126,16 @@ class Data:
 
     def update_data(self, data_info: dict, data_id: int):
         data_name = data_info['data_name']
+        data_description = data_info['data_description']
         data_location_type = data_info['data_location_type']
         data_location = data_info['data_location']
         invenio = data_info["invenio"]
 
         self.__cursor.execute(
             "UPDATE data"
-            " SET data_name=%s, data_location=%s, data_location_type = %s, invenio=%s"
+            " SET data_name=%s, data_description=%s, data_location=%s, data_location_type = %s, invenio=%s"
             " WHERE data_id=%s",
-            (data_name, data_location, data_location_type, invenio, data_id),
+            (data_name, data_description, data_location, data_location_type, invenio, data_id),
         )
         self.__db.commit()
 

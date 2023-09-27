@@ -1,44 +1,67 @@
-<tr class="editting">
-  <td>
+<tr class="editting-{{ data_id }} border-b-0">
+  <td rowspan="2">
     <input
       type="text"
-      name="data_name"
+      name="data-name"
       class="input w-full max-w-xs"
       value="{{ data['data_name'] }}"
     />
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Description</span>
+      </label>
+      <textarea
+        class="textarea textarea-bordered w-72"
+        name="data-description"
+        placeholder=""
+      >
+{{ data['data_description'] }}</textarea
+      >
+    </div>
   </td>
   <td>{{data['created']}}</td>
   <td>
     {{ data['email'] + ' ' + data['firstname'] + ' ' + data['lastname'] }}
   </td>
-  <td>
+  <td rowspan="2">
     <div class="form-control w-full max-w-xs">
       <select
-        class="select select-bordered"
+        class="select select-bordered select-sm"
         name="data-location-type"
         id="data-location-type"
-        hx-post="/data/location-type"
-        hx-target="#location-field"
-        hx-trigger="change"
         required
       >
-        <option value="local">Locally Stored</option>
-        <option value="coastal6">Coastal6</option>
-        <option value="other">Other</option>
+        <option value="local" {% if data.data_location_type == "local" %} selected {% endif %}>Locally Stored</option>
+        <option value="coastal6" {% if data.data_location_type == "coastal6" %} selected {% endif %}>Coastal6</option>
+        <option value="other" {% if data.data_location_type == "other" %} selected {% endif %}>Other</option>
       </select>
       <div class="label">
         <span class="label-text-alt"></span>
       </div>
     </div>
+    <div class="form-control w-full max-w-xs">
+      <label class="label">
+        <span class="label-text">Data Location:</span>
+      </label>
+      <input
+        type="text"
+        placeholder="Type here"
+        name="data-location"
+        id="data-location"
+        value="{{ data['data_location'] }}"
+        class="input input-bordered w-full max-w-xs input-sm"
+      />
+      <label class="label"> </label>
+    </div>
   </td>
   <td>
     <input
       type="checkbox"
-      class="checkbox"
-      name="coastal6"
+      class="checkbox checkbox-sm"
+      name="invenio"
       {%
       if
-      data.coastal6
+      data.invenio
       %}checked{%
       endif
       %}
