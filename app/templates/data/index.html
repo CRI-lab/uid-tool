@@ -4,6 +4,7 @@
 
 <div class="flex items-center justify-center">
   <div id="form" class="flex-none w-1/6">
+    <a href="{{ url_for('data.download_table_csv') }}"><button>Export to CSV</button></a>
     <form
       hx-post="/data/filter"
       hx-trigger="change"

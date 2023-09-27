@@ -1,4 +1,6 @@
 from psycopg2.extensions import connection
+import csv
+import io
 
 
 class Data:
@@ -107,6 +109,7 @@ class Data:
         uid = data_info["uid"]
 
 
+
         self.__cursor.execute(
             "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, data_description, data_location_type, data_location, invenio, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
             (
@@ -145,4 +148,11 @@ class Data:
         )
         self.__db.commit()
 
-    
+    def write_to_csv(self, rows):
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        writer.writerows(rows)
+
+        output.seek(0)
+        return output.getvalue()

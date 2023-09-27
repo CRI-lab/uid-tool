@@ -1,4 +1,6 @@
 import io
+import csv
+
 from flask import (
     Blueprint,
     render_template,
@@ -6,6 +8,7 @@ from flask import (
     session,
     url_for,
     send_file,
+    Response,
     g
 )
 from app.db import get_datadao, get_projectdao, get_userdao
@@ -14,13 +17,14 @@ from datetime import datetime
 
 bp = Blueprint("data", __name__, url_prefix="/data")
 
-
 @bp.route("/")
 def display_page():
     data_entries = get_datadao().fetch_data_table(filters={})
+    session["data"] = data_entries
     projects = get_projectdao().fetch_projects()
     emails = get_userdao().fetch_user_emails()
     emails = [email[0] for email in emails]
+
     return render_template("data/index.html", data_entries=data_entries, projects=projects, emails=emails)
 
 
@@ -28,7 +32,6 @@ def display_page():
 def check_data_exists():
     data_name = request.form["data-name"]
     exists = get_datadao().fetch_data_by_name(data_name)
-    print(exists)
 
     return render_template("data/validation.html", exists=exists)
 
@@ -179,7 +182,18 @@ def filter_data_table():
     filters["project"] = request.form["project"]
     filters["uid"] = request.form["uid"]
     
-    data_entries = get_datadao().fetch_data_table(filters)
+    session["data"] = data_entries = get_datadao().fetch_data_table(filters)
+    
 
     return render_template("data/table-body.html", data_entries=data_entries)
     
+@bp.get("/download-table-csv")
+def download_table_csv():
+    data = session.get('data', {})
+    output = get_datadao().write_to_csv(data)
+
+    return Response(
+        output,
+        mimetype='text/csv',
+        headers={'Content-Disposition': 'attachment;filename=output.csv'}
+    )
