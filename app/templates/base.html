@@ -46,7 +46,9 @@
         </ul>
       </div>
     </nav>
-    <header>{% block header %}{% endblock %}</header>
+    <header class="flex">
+      <h1 class="text-3xl pl-[21rem]">{% block header %}{% endblock %}</h1>
+    </header>
     {% block content %} {% endblock content %}
   </body>
 </html>

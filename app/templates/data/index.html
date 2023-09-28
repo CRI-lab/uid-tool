@@ -1,15 +1,19 @@
 {% extends "base.html" %} {% block header %}
-<h1 class="text-3xl pl-64">{% block title %}Data{% endblock %}</h1>
+{% block title %}Data{% endblock %}
 {% endblock %} {% block content %}
 
 <div class="flex items-center justify-center">
-  <div id="form" class="flex-none w-1/6">
-    <a href="{{ url_for('data.download_table_csv') }}"><button>Export to CSV</button></a>
+  <div id="form" class="flex-none w-1/6 pl-5 pr-5 sticky">
+    <div class="flex justify-between items-center">
+      <a href="{{ url_for('data.download_table_csv') }}"><button class="btn btn-info btn-xs">Export to CSV</button></a>
+      <a><button class="btn btn-primary btn-xs">Search</button></a>
+    </div>
     <form
       hx-post="/data/filter"
       hx-trigger="change"
       hx-target="#table-body"
       hx-swap="innerHTML"
+      class="pb-5"
     >
       <!-- Dataset Name Input -->
       <div class="form-control w-full max-w-xs">
@@ -136,9 +140,12 @@
       </div>
 
       <!-- Clear Button-->
-      <button class="btn btn-primary row-end-auto btn-xs" type="submit">
-        Clear
-      </button>
+      <div class="flex justify-between pt-5">
+        <button class="btn btn-primary row-end-auto btn-xs" type="submit">
+          Clear
+        </button>
+          <button class="btn btn-primary btn-xs" onclick="event.preventDefault()">Search</button>
+      </div>
     </form>
   </div>
   <div id="table" class="w-full">
@@ -219,6 +226,14 @@
       nextRow.style.display = ""
     }
   }
+
+  document.querySelector('form').addEventListener('keypress', function(e) {
+    if (e.keyCode === 13 || e.which === 13) {
+        e.preventDefault();
+        return false;
+    }
+  });
+
 </script>
 
 {% endblock content %}
