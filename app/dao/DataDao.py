@@ -1,6 +1,7 @@
 from psycopg2.extensions import connection
 import csv
 import io
+from datetime import datetime
 
 
 class Data:
@@ -43,11 +44,11 @@ class Data:
 
         if "from_date" in filters and filters["from_date"] != "":
             where_clauses.append("d.created >= %(from_date)s")
-            params["from_date"] = filters["from_date"]
-
+            params["from_date"] =  datetime.strptime(filters["from_date"], '%Y-%m-%d').replace(hour=23, minute=59)
+        
         if "to_date" in filters and filters["to_date"] != "":
-            where_clauses.append("d.created <= %(from_date)s")
-            params["to_date"] = filters["to_date"]
+            where_clauses.append("d.created <= %(to_date)s")
+            params["to_date"] = datetime.strptime(filters["to_date"], '%Y-%m-%d').replace(hour=23, minute=59)
 
         if "invenio" in filters and filters["invenio"] != "":
             where_clauses.append("invenio = %(invenio)s")

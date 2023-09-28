@@ -183,7 +183,6 @@ def filter_data_table():
     filters["uid"] = request.form["uid"]
     
     session["data"] = data_entries = get_datadao().fetch_data_table(filters)
-    
 
     return render_template("data/table-body.html", data_entries=data_entries)
     
