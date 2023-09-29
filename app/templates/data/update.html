@@ -13,11 +13,16 @@
           <th>Invenio</th>
           <th>Project 1</th>
           <th>Project 2</th>
-          <th>UID</th>
+          <th id="uid">UID</th>
         </tr>
       </thead>
 
-      <tbody hx-target="closest tr" hx-swap="outerHTML">
+      <tbody
+        class="data-table-body"
+        id="update-table-body"
+        hx-target="closest tr"
+        hx-swap="outerHTML"
+      >
         {% for data in data_entries %}
         <tr id="{{ data['data_id'] }}" class="hover main-detail">
           <td>{{data['data_name']}}</td>
@@ -57,31 +62,5 @@
     </table>
   </div>
 </div>
-
-<script>
-  var expandedRow = [];
-  var expandedDetailRows = document.querySelectorAll(".expanded-detail");
-  expandedDetailRows.forEach(function hideDetails(row) {
-    row.style.display = "none";
-  });
-
-  var mainDetailRows = document.querySelectorAll(".main-detail");
-  mainDetailRows.forEach(function addShowEventListener(row) {
-    row.addEventListener("click", function showDetails() {
-      var nextRow = this.nextElementSibling;
-      toggleRow(this.id, nextRow);
-    });
-  });
-
-  function toggleRow(id, nextRow) {
-    if (expandedRow.includes(id)) {
-      expandedRow.splice(expandedRow.indexOf(id), 1);
-      nextRow.style.display = "none";
-    } else {
-      expandedRow.push(id);
-      nextRow.style.display = "";
-    }
-  }
-</script>
 
 {% endblock content %}

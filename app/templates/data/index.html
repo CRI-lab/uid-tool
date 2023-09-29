@@ -11,7 +11,7 @@
     <form
       hx-post="/data/filter"
       hx-trigger="change"
-      hx-target="#table-body"
+      hx-target="tbody"
       hx-swap="innerHTML"
       class="pb-5"
     >
@@ -166,7 +166,7 @@
         </thead>
 
         <!-- body -->
-        <tbody id="table-body">
+        <tbody class="data-table-body" id="index-table-body">
           {% for data in data_entries %}
           <tr id="{{ data['data_id'] }}"" class="hover border-b-0 border-t main-detail">
             <td>{{data['data_name']}}</td>
@@ -179,10 +179,15 @@
             <td>{{ data['invenio'] }}</td>
             <td>{{ data['project1_name'] }}</td>
             <td>{{ data['project2_name'] }}</td>
-            <td>{{ data['uid'] }}</td>
+            <td>
+              <div id="uid" class="tooltip" data-tip="Copy To Clipboard">
+                {{ data['uid'] }}
+              </div>
+            </td>
           </tr>
           <tr
-            class="border-t-0 expanded-detail"
+            class="border-t-0 bg-base-200 expanded-detail "
+            style="display:none;"
           >
             <td colspan="3" class="max-w-64 maxh-64">
               Description: {{ data['data_description'] }}
@@ -191,7 +196,7 @@
             <td>
               <a
                 href="{{ url_for('data.download_readme', data_id=data['data_id']) }}"
-                ><button class="btn btn-sm">Download UID</button></a
+                ><button class="btn btn-sm">Download Data README</button></a
               >
             </td>
           </tr>
@@ -201,39 +206,5 @@
     </div>
   </div>
 </div>
-
-<script>
-  var expandedRow = [];
-  var expandedDetailRows = document.querySelectorAll(".expanded-detail");
-  expandedDetailRows.forEach(function hideDetails(row) {
-    row.style.display = "none";
-  });
-
-  var mainDetailRows = document.querySelectorAll(".main-detail");
-  mainDetailRows.forEach(function addShowEventListener(row) {
-    row.addEventListener("click", function showDetails() {
-      var nextRow = this.nextElementSibling
-      toggleRow(this.id, nextRow)
-    });
-  });
-
-  function toggleRow(id, nextRow) {
-    if(expandedRow.includes(id)) {
-      expandedRow.splice(expandedRow.indexOf(id), 1)
-      nextRow.style.display = "none"
-    } else {
-      expandedRow.push(id)
-      nextRow.style.display = ""
-    }
-  }
-
-  document.querySelector('form').addEventListener('keypress', function(e) {
-    if (e.keyCode === 13 || e.which === 13) {
-        e.preventDefault();
-        return false;
-    }
-  });
-
-</script>
 
 {% endblock content %}
