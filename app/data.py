@@ -9,7 +9,6 @@ from flask import (
     url_for,
     send_file,
     Response,
-    g
 )
 from app.db import get_datadao, get_projectdao, get_userdao
 from app.auth import login_required
@@ -92,14 +91,17 @@ def create_data():
 @login_required
 def download_readme(data_id):
     data = get_datadao().fetch_data_by_id(data_id)
+    data_info = ""
+    for key, value in data.items():
+       data_info += f"{key}: {value}\n" 
     buffer = io.BytesIO()
-    buffer.write(data['uid'].encode("utf-8"))
+    buffer.write(data_info.encode("utf-8"))
     buffer.seek(0)
 
     return send_file(
         buffer,
         as_attachment=True,
-        download_name="UID_README.txt",
+        download_name="README.txt",
         mimetype="text/plain",
     )
 
