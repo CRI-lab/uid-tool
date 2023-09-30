@@ -1,6 +1,5 @@
-{% extends "base.html" %} {% block header %}
-<h1 class="text-3xl pl-64">{% block title %}Update Data{% endblock %}</h1>
-{% endblock %} {% block content %}
+{% extends "base.html" %} {% block header %} {% block title %}Update Data{%
+endblock %} {% endblock %} {% block content %}
 <div class="flex justify-center items-start">
   <div class="overflow-x-auto w-3/4">
     <table class="table">
@@ -13,18 +12,21 @@
           <th>Invenio</th>
           <th>Project 1</th>
           <th>Project 2</th>
-          <th id="uid">UID</th>
+          <th>UID</th>
         </tr>
       </thead>
 
       <tbody
         class="data-table-body"
         id="update-table-body"
-        hx-target="closest tr"
-        hx-swap="outerHTML"
+        hx-target="#edit_modal"
+        hx-swap="innerHTML"
       >
         {% for data in data_entries %}
-        <tr id="{{ data['data_id'] }}" class="hover main-detail">
+        <tr
+          id="{{ data['data_id'] }}"
+          class="hover main-detail border-b-0 border-t main-detail update-row-{{ data['data_id'] }}"
+        >
           <td>{{data['data_name']}}</td>
           <td>{{data['created']}}</td>
           <td>
@@ -37,23 +39,39 @@
           <td>{{ data['project2_name'] }}</td>
           <td>{{ data['uid'] }}</td>
           <td>
-            <button type="button" hx-get="/data/{{ data['data_id']}}/edit">
-              edit
-            </button>
-            <button type="button" hx-delete="/data/{{ data['data_id']}}">
-              remove
-            </button>
+            <div class="flex">
+              <button
+                type="button"
+                hx-get="/data/{{ data['data_id']}}/edit"
+                class="btn btn-primary btn-xs"
+              >
+                edit
+              </button>
+              <button
+                id="remove-button"
+                type="button"
+                hx-get="/data/delete-confirmation/{{ data['data_id'] }}"
+                hx-target="closest td"
+                hx-swap="outerHTML"
+                class="btn btn-error btn-xs"
+              >
+                remove
+              </button>
+            </div>
           </td>
         </tr>
-        <tr class="border-t-0 expanded-detail">
-          <td colspan="3" class="max-w-64 maxh-64">
+        <tr
+          class="border-t-0 expanded-detail bg-base-200 update-row-{{ data['data_id'] }} "
+          style="display: none"
+        >
+          <td colspan="4" class="max-w-64 maxh-64">
             Description: {{ data['data_description'] }}
           </td>
           <td colspan="4">Location: {{ data['data_location'] }}</td>
           <td>
             <a
               href="{{ url_for('data.download_readme', data_id=data['data_id']) }}"
-              ><button class="btn btn-sm">Download UID</button></a
+              ><button class="btn btn-sm btn-primary">Download UID</button></a
             >
           </td>
         </tr>
@@ -62,5 +80,6 @@
     </table>
   </div>
 </div>
+<div id="edit_modal"></div>
 
 {% endblock content %}

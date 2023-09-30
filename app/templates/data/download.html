@@ -19,9 +19,10 @@
       fetch("{{download_url}}")
         .then((response) => response.blob())
         .then((blob) => {
+          console.log("blob created");
           const link = document.createElement("a");
           link.href = URL.createObjectURL(blob);
-          link.download = "UID_README.txt";
+          link.download = "README.txt";
           link.click();
         });
 

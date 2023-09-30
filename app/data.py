@@ -147,7 +147,7 @@ def remove_data(data_id):
     except Exception as e:
         print("There was an error deleting data: " + e)
     else:
-        return "<td>Delete Successful</td>"
+        return "Delete Successful"
 
 
 @bp.route("/<int:data_id>/row")
@@ -161,9 +161,7 @@ def render_datarow(data_id):
 @login_required
 def edit_data(data_id):
     data = get_datadao().fetch_data_by_id(data_id)
-    print(data)
-    data_id = data["data_id"]
-    return render_template("data/edit.html", data=data, data_id=data_id)
+    return render_template("data/edit2.html", data=data)
 
 
 @bp.post("/location-type")
@@ -198,3 +196,7 @@ def download_table_csv():
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment;filename=output.csv'}
     )
+
+@bp.get("/delete-confirmation/<int:data_id>")
+def delete_confirmation(data_id):
+    return render_template("data/delete-confirmation.html", data_id=data_id)

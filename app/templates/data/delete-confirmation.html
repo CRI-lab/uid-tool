@@ -1,0 +1,14 @@
+<td colspan="8">
+  <p class="font-bold">Are you sure you want to delete?</p>
+  <button class="py-4 btn btn-success btn-xs" hx-delete="/data/{{ data_id }}">
+    Yes
+  </button>
+  <button
+    class="py-4 btn btn-warning btn-xs"
+    hx-get="/data/{{ data_id }}/row"
+    hx-target="closest tr"
+    hx-swap="outerHTML"
+  >
+    No
+  </button>
+</td>

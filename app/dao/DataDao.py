@@ -24,6 +24,10 @@ class Data:
         where_clauses = []
         params = {}
 
+        if "data_id" in filters:
+            where_clauses.append("data_id = %(data_id)s")
+            params["data_id"] = filters["data_id"]
+
         # This one is used for the data curation form
         if "data_name_exclusive" in filters:
             where_clauses.append("data_name = %(data_name_exclusive)s")
@@ -87,7 +91,8 @@ class Data:
         return data
 
     def fetch_data_by_id(self, id):
-        query, params = self.build_query({"data_id = %s", (id,)})
+        id_check = {"data_id": id}
+        query, params = self.build_query(id_check)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data

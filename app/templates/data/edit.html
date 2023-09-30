@@ -1,29 +1,17 @@
 <tr class="editting-{{ data_id }} border-b-0">
-  <td rowspan="2">
+  <td>
     <input
       type="text"
       name="data-name"
       class="input w-full max-w-xs"
       value="{{ data['data_name'] }}"
     />
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text">Description</span>
-      </label>
-      <textarea
-        class="textarea textarea-bordered w-72"
-        name="data-description"
-        placeholder=""
-      >
-{{ data['data_description'] }}</textarea
-      >
-    </div>
   </td>
   <td>{{data['created']}}</td>
   <td>
     {{ data['email'] + ' ' + data['firstname'] + ' ' + data['lastname'] }}
   </td>
-  <td rowspan="2">
+  <td>
     <div class="form-control w-full max-w-xs">
       <select
         class="select select-bordered select-sm"
@@ -35,23 +23,6 @@
         <option value="coastal6" {% if data.data_location_type == "coastal6" %} selected {% endif %}>Coastal6</option>
         <option value="other" {% if data.data_location_type == "other" %} selected {% endif %}>Other</option>
       </select>
-      <div class="label">
-        <span class="label-text-alt"></span>
-      </div>
-    </div>
-    <div class="form-control w-full max-w-xs">
-      <label class="label">
-        <span class="label-text">Data Location:</span>
-      </label>
-      <input
-        type="text"
-        placeholder="Type here"
-        name="data-location"
-        id="data-location"
-        value="{{ data['data_location'] }}"
-        class="input input-bordered w-full max-w-xs input-sm"
-      />
-      <label class="label"> </label>
     </div>
   </td>
   <td>
@@ -75,5 +46,36 @@
     <button type="button" hx-put="/data/{{ data_id }}" hx-include="closest tr">
       Save
     </button>
+  </td>
+</tr>
+<tr>
+  <td colspan="4">
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Description</span>
+      </label>
+      <textarea
+        class="textarea textarea-bordered w-96"
+        name="data-description"
+        placeholder=""
+      >
+{{ data['data_description'] }}</textarea
+      >
+    </div>
+  </td>
+  <td colspan="4">
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text">Data Location:</span>
+      </label>
+      <input
+        type="text"
+        placeholder="Type here"
+        name="data-location"
+        id="data-location"
+        value="{{ data['data_location'] }}"
+        class="input input-bordered w-full input-sm"
+      />
+    </div>
   </td>
 </tr>
