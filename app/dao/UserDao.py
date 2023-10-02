@@ -19,8 +19,8 @@ class User:
 
     def create_user(self, user_info):
         self.__cursor.execute(
-            "INSERT INTO users (email, firstname, lastname, password) VALUES (%s, %s, %s, %s)",
-            (user_info["email"], user_info["firstname"], user_info["lastname"], generate_password_hash(user_info["password"])),
+            "INSERT INTO users (email, firstname, lastname, role, password) VALUES (%s, %s, %s, %s, %s)",
+            (user_info["email"], user_info["firstname"], user_info["lastname"], user_info["role"], generate_password_hash(user_info["password"])),
         )
         self.__db.commit()
 
@@ -36,3 +36,9 @@ class User:
         )
         email = self.__cursor.fetchall()
         return email
+
+    def assign_project(self, user_id, project_id):
+        self.__cursor.execute(
+            "INSERT INTO userprojects (user_id, project_id) VALUES (%s, %s)", (user_id, project_id,)
+        )
+        self.__db.commit()

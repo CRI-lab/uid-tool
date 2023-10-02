@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 import click
 from flask import current_app, g, Flask
+from werkzeug.security import generate_password_hash
 from app.dao.DataDao import Data 
 from app.dao.ProjectDao import Project
 from app.dao.UserDao import User
@@ -41,11 +42,30 @@ def close_db(e=None):
 def init_db():
     db = get_db()
     cur = db.cursor()
+    userdao = get_userdao()
     with current_app.open_resource("schema.sql") as f:
         sql = f.read()
     cur.execute(sql)
     db.commit()
+    userdao.create_user({
+        "email": "test123@gmail.com",
+        "firstname": "test",        
+        "lastname": "asdf",
+        "role": "admin",
+        "password": generate_password_hash("asdf"),
+    })
+    userdao.create_user({
+        "email": "asdf@gmail.com",
+        "firstname": "test",        
+        "lastname": "asdf",
+        "role": "creator",
+        "password": generate_password_hash("asdf"),
+    })
 
+
+    userdao.assign_project(1, 1)
+    userdao.assign_project(1, 2)
+    userdao.assign_project(1, -1)
 
 def init_app(app: Flask):
     app.teardown_appcontext(close_db)
