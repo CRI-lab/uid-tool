@@ -25,8 +25,8 @@ CREATE TABLE Project (
 CREATE TABLE UserProjects (
   user_id INT,
   project_id INT,
-  FOREIGN KEY (user_id) REFERENCES Users(user_id),
-  FOREIGN KEY (project_id) REFERENCES Project(project_id),
+  FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (project_id) REFERENCES Project(project_id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, project_id)
 );
 

@@ -38,11 +38,12 @@ def check_data_exists():
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create_data():
-    project_list = get_projectdao().fetch_projects()
+    user_id = session["user_id"]
+    project_list = get_projectdao().fetch_project_by_user(user_id)
 
     if request.method == "POST":
         data_info = dict()
-        data_info["user_id"] = session["user_id"]
+        data_info["user_id"] = user_id
         data_info["data_name"] = request.form["data-name"]
         project1_id = data_info["project1_id"] = request.form["project1-id"]
         project2_id = data_info["project2_id"] = request.form["project2-id"]
@@ -111,7 +112,7 @@ def download_readme(data_id):
 def update_page():
     user_id = session["user_id"]
     #TODO Need to include project association
-    data_entries = get_datadao().fetch_data_table({"user_id": user_id})
+    data_entries = get_datadao().fetch_project_data(user_id)
     return render_template(
         "data/update.html", data_entries=data_entries)
 

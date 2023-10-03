@@ -37,7 +37,7 @@ def login_required(view):
 def admin_permissions(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user_role is not None or g.user is None:
+        if g.user_role != "admin" or g.user is None:
             return render_template("auth/permission-denied.html")
         
         return view(**kwargs)

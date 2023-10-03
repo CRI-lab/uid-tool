@@ -18,8 +18,23 @@ class Project:
         return self.__cursor.fetchone()
 
     def fetch_project_by_id(self, project_id):
-        self.__cursor.execute("SELECT * FROM project WHERE project_id=%s", (project_id)) 
+        self.__cursor.execute("SELECT * FROM project WHERE project_id=%s", (str(project_id))) 
         return self.__cursor.fetchone()
+
+    def fetch_project_by_user(self, user_id):
+        base_query = """
+                SELECT *
+                FROM project p 
+                JOIN userprojects up ON p.project_id=up.project_id
+                WHERE EXISTS (
+                    SELECT *
+                    FROM userprojects up2
+                    WHERE up2.user_id = %s
+                        AND (up2.project_id = p.project_id)
+                )
+                """
+        self.__cursor.execute(base_query, (str(user_id))) 
+        return self.__cursor.fetchall()
     
     def create_project(self, project_info):
         project_name = project_info["project_name"]

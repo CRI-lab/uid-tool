@@ -132,7 +132,29 @@ class Data:
             ),
         )
         self.__db.commit()
-
+        
+    def fetch_project_data(self, user_id):
+        base_query = """
+        SELECT DISTINCT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_description,
+               d.data_location, invenio, u.email, p1.project_name as project1_name, 
+               p2.project_name as project2_name, uid
+        FROM data d 
+        JOIN users u ON d.creator_id=u.user_id
+        JOIN project p1 ON d.project_id_1=p1.project_id 
+        JOIN project p2 ON d.project_id_2=p2.project_id
+        JOIN userprojects up ON d.creator_id=up.user_id
+        WHERE EXISTS (
+            SELECT *
+            FROM userprojects up2
+            WHERE up2.user_id = %s
+                AND (up2.project_id = d.project_id_1
+                    OR up2.project_id = d.project_id_2)
+        )
+        """
+        self.__cursor.execute(base_query, str(user_id))
+        data = self.__cursor.fetchall()
+        return data
+    
     def update_data(self, data_info: dict, data_id: int):
         data_name = data_info['data_name']
         data_description = data_info['data_description']
