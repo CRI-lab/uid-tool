@@ -19,10 +19,12 @@ class User:
 
     def create_user(self, user_info):
         self.__cursor.execute(
-            "INSERT INTO users (email, firstname, lastname, role, password) VALUES (%s, %s, %s, %s, %s)",
+            "INSERT INTO users (email, firstname, lastname, role, password) VALUES (%s, %s, %s, %s, %s) RETURNING user_id",
             (user_info["email"], user_info["firstname"], user_info["lastname"], user_info["role"], generate_password_hash(user_info["password"])),
         )
         self.__db.commit()
+        uid = self.__cursor.fetchone()
+        return uid
 
     def fetch_user_by_email(self, user_email):
         self.__cursor.execute(

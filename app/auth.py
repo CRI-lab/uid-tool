@@ -34,16 +34,37 @@ def login_required(view):
 
     return wrapped_view
 
+def admin_permissions(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user_role is not None or g.user is None:
+            return render_template("auth/permission-denied.html")
+        
+        return view(**kwargs)
+    
+    return wrapped_view
+
+
+def get_current_user():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return None
+    
+    user = get_userdao().fetch_user_by_id(user_id)
+    return user
+
+
 @bp.before_app_request
 def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
+    g.user = get_current_user()
+    if g.user:
+        g.user_role = g.user["role"]
     else:
-        g.user = get_userdao().fetch_user_by_id(user_id)
+        g.user_role = None
+
 
 @bp.route("/register", methods=("GET", "POST"))
+@admin_permissions
 def register():
     if request.method == "POST":
         user_info = dict()
@@ -51,6 +72,7 @@ def register():
         user_info["firstname"] = request.form["firstname"]
         user_info["lastname"] = request.form["lastname"]
         user_info["password"] = request.form["password"]
+        user_info["role"] = "creator"
         error = None
 
         if not is_valid_email(user_info["email"]):
@@ -70,6 +92,8 @@ def register():
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
+    if g.user is not None:
+        return redirect(url_for("data.display_page"))
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]

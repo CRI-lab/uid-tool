@@ -3,7 +3,7 @@ import psycopg2
 import psycopg2.extras
 import click
 from flask import current_app, g, Flask
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from app.dao.DataDao import Data 
 from app.dao.ProjectDao import Project
 from app.dao.UserDao import User
@@ -47,20 +47,25 @@ def init_db():
         sql = f.read()
     cur.execute(sql)
     db.commit()
-    userdao.create_user({
+
+    user1 = {
         "email": "test123@gmail.com",
         "firstname": "test",        
         "lastname": "asdf",
         "role": "admin",
-        "password": generate_password_hash("asdf"),
-    })
-    userdao.create_user({
+        "password": "asdf",
+    }
+    user2 = {
         "email": "asdf@gmail.com",
         "firstname": "test",        
         "lastname": "asdf",
         "role": "creator",
-        "password": generate_password_hash("asdf"),
-    })
+        "password": "asdf",
+    }
+
+    
+    userdao.create_user(user1)
+    userdao.create_user(user2)
 
 
     userdao.assign_project(1, 1)
