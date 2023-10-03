@@ -50,7 +50,7 @@ def get_current_user():
     if user_id is None:
         return None
     
-    user = get_userdao().fetch_user_by_id(user_id)
+    user = get_userdao().fetch_user(user_id)[0]
     return user
 
 
@@ -123,7 +123,7 @@ def logout():
 
 @bp.post("/email")
 def validate_email():
-    email = request.form["email"]
+    email = request.form["user-email"]
     if email and is_valid_email(email):
        exists = get_userdao().fetch_user_by_email(email)
     else:

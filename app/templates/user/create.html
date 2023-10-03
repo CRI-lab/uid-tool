@@ -1,0 +1,55 @@
+<tr>
+  <td>{{ user_id }}</td>
+  <td rowspan="2">
+    <input
+      type="text"
+      name="user-email"
+      placeholder="Email"
+      class="input input-bordered w-full max-w-xs input-xs"
+      hx-trigger="click delay:500, keyup delay:200ms"
+      hx-target="#error"
+      hx-swap="innerHTML"
+      hx-post="/auth/email"
+      maxlength="100"
+      required
+    />
+    <input
+      type="password"
+      name="user-password"
+      placeholder="password"
+      class="input input-bordered w-full max-w-xs input-xs"
+      required
+    />
+  </td>
+  <td>
+    <input
+      type="text"
+      name="user-firstname"
+      placeholder="First Name"
+      class="input input-bordered w-full max-w-xs input-xs"
+      required
+    />
+  </td>
+  <td>
+    <input
+      type="text"
+      name="user-lastname"
+      placeholder="Last Name"
+      class="input input-bordered w-full max-w-xs input-xs"
+      required
+    />
+  </td>
+  <td>
+    <select class="select select-bordered select-xs" name="user-role" required>
+      <option value="admin">admin</option>
+      <option value="creator">creator</option>
+    </select>
+  </td>
+  <td>
+    <button type="button" hx-get="/user/clear">Cancel</button>
+    <button type="button" hx-post="/user/create" hx-include="closest tr">
+      Create
+    </button>
+  </td>
+  <td id="error"></td>
+</tr>

@@ -148,7 +148,7 @@ def remove_data(data_id):
     except Exception as e:
         print("There was an error deleting data: " + e)
     else:
-        return "Delete Successful"
+        return "<tr>Delete Successful</tr>"
 
 
 @bp.route("/<int:data_id>/row")

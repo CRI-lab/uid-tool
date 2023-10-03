@@ -1,0 +1,11 @@
+<tr>
+  <td>{{ user_id }}</td>
+  <td>{{user['email']}}</td>
+  <td>{{user['firstname']}}</td>
+  <td>{{user['lastname']}}</td>
+  <td>{{user['role']}}</td>
+  <td>
+    <button type="button" hx-get="/user/{{ user_id }}/edit">edit</button>
+    <button type="button" hx-delete="/user/{{ user_id }}">remove</button>
+  </td>
+</tr>

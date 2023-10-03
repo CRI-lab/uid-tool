@@ -1,0 +1,45 @@
+<tr class="editting">
+  <td>{{ user_id }}</td>
+  <td>
+    <input
+      type="text"
+      name="user-email"
+      class="input w-full max-w-xs input-xs"
+      value="{{ user['email'] }}"
+      hx-trigger="click delay:500, keyup delay:200ms"
+      hx-target="#error"
+      hx-swap="innerHTML"
+      hx-post="/auth/email"
+      maxlength="100"
+    />
+  </td>
+  <td>
+    <input
+      type="text"
+      name="user-firstname"
+      class="input w-full max-w-xs input-xs"
+      value="{{ user['firstname'] }}"
+    />
+  </td>
+  <td>
+    <input
+      type="text"
+      name="user-lastname"
+      class="input w-full max-w-xs input-xs"
+      value="{{ user['lastname'] }}"
+    />
+  </td>
+  <td>
+    <select class="select select-bordered select-xs" name="user-role">
+      <option value="admin">admin</option>
+      <option value="creator">creator</option>
+    </select>
+  </td>
+  <td>
+    <button type="button" hx-get="/user/{{ user_id }}/row">Cancel</button>
+    <button type="button" hx-put="/user/{{ user_id }}" hx-include="closest tr">
+      Save
+    </button>
+  </td>
+  <td id="error"></td>
+</tr>

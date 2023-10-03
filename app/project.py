@@ -37,7 +37,6 @@ def project_name():
 
 @bp.route("/create", methods=["GET", "POST"])
 def create_project():
-
     if request.method == "POST":
         project_info = dict()
         project_info["project_name"] = request.method["project-name"]
@@ -46,8 +45,7 @@ def create_project():
         project_info["created_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # Will return the empty row inputs
         get_projectdao().create_project(project_info)
-        project = get_projectdao().fetch_project_by_name(project_info["project_name"])
-        return render_template("project/row.html", project=project)
+        return render_template("project/row.html", project=project_info)
 
     return render_template("project/create.html", created_date=project_info["created_date"])
 

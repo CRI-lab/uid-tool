@@ -23,6 +23,9 @@ def create_app(test_config=None):
     from . import project
     app.register_blueprint(project.bp)
 
+    from . import user
+    app.register_blueprint(user.bp)
+
     from . import db
     db.init_app(app)
 

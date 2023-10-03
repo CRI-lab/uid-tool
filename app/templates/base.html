@@ -35,7 +35,7 @@
           </li>
           <li><a href="{{ url_for('project.display_page')}}">Projects</a></li>
           {% if g.user_role == "admin": %}
-          <li><a href=" url_for('user.display_page')">User</a></li>
+          <li><a href="{{url_for('user.display_page')}}">User</a></li>
           {% endif %} {% if g.user: %}
           <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
           {% else %}
