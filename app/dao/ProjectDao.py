@@ -23,7 +23,7 @@ class Project:
 
     def fetch_project_by_user(self, user_id):
         base_query = """
-                SELECT *
+                SELECT DISTINCT *
                 FROM project p 
                 JOIN userprojects up ON p.project_id=up.project_id
                 WHERE EXISTS (
@@ -31,6 +31,7 @@ class Project:
                     FROM userprojects up2
                     WHERE up2.user_id = %s
                         AND (up2.project_id = p.project_id)
+                        AND (NOT up2.project_id = -1)
                 )
                 """
         self.__cursor.execute(base_query, (str(user_id))) 
