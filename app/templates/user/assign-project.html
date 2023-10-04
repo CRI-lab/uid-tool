@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block header %} {% block title %}Assign Project{%
+endblock %} {% endblock %} {% block content %}
+<div class="flex justify-center items-center pt-4">
+  <form
+    hx-boost="true"
+    method="post"
+    action="/user/assign-project"
+    class="w-80"
+  >
+    <div
+      id="form-actions"
+      hx-post="/user/project-action/"
+      hx-target="#projects-action"
+      hx-swap="innerHTML"
+      hx-trigger="change"
+    >
+      <select
+        class="select select-bordered w-full max-w-xs"
+        name="user-id"
+        id="user-id"
+        required
+      >
+        <option disabled selected>Select User</option>
+        {% for user in users %}
+        <option value="{{ user.user_id }}">{{ user.email }}</option>
+        {% endfor %}
+      </select>
+      <select name="action" id="action">
+        <option disabled selected>Select Action</option>
+        <option value="assign">assign</option>
+        <option value="unassign">unassign</option>
+      </select>
+    </div>
+    <div id="projects-action"></div>
+  </form>
+</div>
+
+{% endblock content %}

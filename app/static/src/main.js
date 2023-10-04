@@ -28,6 +28,18 @@ document.addEventListener("DOMContentLoaded", function loadJavascript() {
     });
   }
 
+  // var multiselectElement = document.getElementById("projects");
+  // multiselectElement.addEventListener("click", function toggle(event) {
+  //   var option = event.target;
+  //   if (option.tagName == "OPTION") {
+  //     if (option.hasAttribute("selected")) {
+  //       option.removeAttribute("selected");
+  //     } else {
+  //       option.setAttribute("selected", "true");
+  //     }
+  //   }
+  // });
+
   function toggleRow(id, nextRow) {
     if (expandedRow.includes(id)) {
       expandedRow.splice(expandedRow.indexOf(id), 1);

@@ -35,7 +35,19 @@
           </li>
           {% if g.user_role == "admin": %}
           <li><a href="{{ url_for('project.update_page')}}">Projects</a></li>
-          <li><a href="{{url_for('user.display_page')}}">User</a></li>
+          <li>
+            <details>
+              <summary>Users</summary>
+              <ul class="p-2 bg-base-100 z-20">
+                <li><a href="{{ url_for('user.display_page') }}">List</a></li>
+                <li>
+                  <a href="{{ url_for('user.assign_project') }}"
+                    >Assign Projects</a
+                  >
+                </li>
+              </ul>
+            </details>
+          </li>
           {% else %}
           <li><a href="{{ url_for('project.display_page')}}">Projects</a></li>
           {% endif %} {% if g.user: %}

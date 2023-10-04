@@ -43,8 +43,8 @@ class User:
         self.__cursor.execute(
             'SELECT email FROM users'
         )
-        email = self.__cursor.fetchall()
-        return email
+        emails = self.__cursor.fetchall()
+        return emails
 
     def assign_project(self, user_id, project_id):
         self.__cursor.execute(
@@ -70,3 +70,14 @@ class User:
             (email, firstname, lastname, role, user_id)
         ) 
         self.__db.commit()
+    
+    def fetch_user_projects(self, user_id: int):
+        self.__cursor.execute(
+            "SELECT up.project_id, p.project_name"
+            " FROM userprojects up JOIN project p ON up.project_id=p.project_id"
+            " WHERE user_id=%s",
+            (str(user_id))
+        )
+        projects = self.__cursor.fetchall()
+        print(projects)
+        return projects

@@ -1,0 +1,17 @@
+{% if action == "assign" %}
+<label for="projects">Select Projects:</label>
+<select name="projects" id="projects" multiple>
+  {% for project in filtered_projects[1:] %}
+  <option value="{{ project.project_id }}">{{ project.project_name }}</option>
+  {% endfor %}
+</select>
+<button class="btn btn-primary row-end-auto" type="submit">Submit</button>
+{% else %}
+<label for="projects">Select User Projects:</label>
+<select name="projects" id="projects" multiple>
+  {% for project in user_projects %}
+  <option value="{{ project.project_id }}">{{ project.project_name }}</option>
+  {% endfor %}
+</select>
+<button class="btn btn-primary row-end-auto" type="submit">Submit</button>
+{% endif %}
