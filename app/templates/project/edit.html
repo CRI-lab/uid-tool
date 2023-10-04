@@ -1,15 +1,15 @@
 <tr class="editting">
-  <td class="border border-slate-600 px-4 py-2">
+  <td>
     <input
       type="text"
       name="project_name"
-      class="border-0 w-full"
+      class="input input-bordered w-full max-w-xs input-xs"
       value="{{ project['project_name'] }}"
     />
   </td>
-  <td class="border border-slate-600 px-4 py-2">{{project['created']}}</td>
-  <td class="border border-slate-600 px-4 py-2">{{project['code']}}</td>
-  <td class="border border-slate-600 px-4 py-2">
+  <td>{{project['created']}}</td>
+  <td>{{project['code']}}</td>
+  <td>
     <input
       type="checkbox"
       name="finished"
@@ -22,13 +22,20 @@
     />
   </td>
   <td>
-    <button type="button" hx-get="/project/{{ project_id }}/row">Cancel</button>
     <button
       type="button"
       hx-put="/project/{{ project_id }}"
       hx-include="closest tr"
+      class="btn btn-primary btn-xs"
     >
       Save
+    </button>
+    <button
+      type="button"
+      hx-get="/project/{{ project_id }}/row"
+      class="btn btn-error btn-xs"
+    >
+      Cancel
     </button>
   </td>
 </tr>

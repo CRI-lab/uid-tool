@@ -38,12 +38,12 @@ class Project:
         return self.__cursor.fetchall()
     
     def create_project(self, project_info):
+        create_date = project_info["created_date"]
         project_name = project_info["project_name"]
         project_code = project_info["project_code"]
         finished = project_info["finished"]
-        create_date = project_info["created_date"]
         self.__cursor.execute(
-            "INSERT INTO project VALUES(%s, %s, %s, %s)",
+            "INSERT INTO project(created, project_name, code, finished) VALUES(%s, %s, %s, %s)",
             (create_date, project_name, project_code, finished,)
         )
         self.__db.commit()
@@ -57,9 +57,9 @@ class Project:
         )
         self.__db.commit()
 
-    def delete_project(self, project_id):
+    def remove_project(self, project_id):
         self.__cursor.execute(
-            "DELETE FROM project WHERE project_id=%d", (project_id,)
+            "DELETE FROM project WHERE project_id=%s", (project_id,)
         )
         self.__db.commit()
 

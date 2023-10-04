@@ -20,9 +20,14 @@ class User:
         return user
 
     def create_user(self, user_info):
+        email = user_info["email"]
+        firstname = user_info["firstname"]
+        lastname = user_info["lastname"]
+        role = user_info["role"]
+        password = user_info["password"]
         self.__cursor.execute(
             "INSERT INTO users (email, firstname, lastname, role, password) VALUES (%s, %s, %s, %s, %s) RETURNING user_id",
-            (user_info["email"], user_info["firstname"], user_info["lastname"], user_info["role"], generate_password_hash(user_info["password"])),
+            (email, firstname, lastname, role, password),
         )
         self.__db.commit()
         uid = self.__cursor.fetchone()

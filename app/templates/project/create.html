@@ -1,18 +1,26 @@
 <tr class="" id="add-project">
-  <td class="border border-slate-600 px-4 py-2">
+  <td>
     <input
       type="text"
-      name="project_name"
+      name="project-name"
+      placeholder="Project Name"
+      class="input input-bordered w-full max-w-xs input-xs"
       hx-target="#error"
       hx-swap="innerHTML"
       hx-post="/project/project_name"
     />
   </td>
-  <td class="border border-slate-600 px-4 py-2">{{created_date}}</td>
-  <td class="border border-slate-600 px-4 py-2">
-    <input type="text" name="project_code" maxlength="2" />
+  <td>{{created_date}}</td>
+  <td>
+    <input
+      type="text"
+      name="project-code"
+      placeholder="Project Code"
+      class="input input-bordered w-full max-w-xs input-xs"
+      maxlength="2"
+    />
   </td>
-  <td class="border border-slate-600 px-4 py-2">
+  <td>
     <input type="checkbox" name="finished" />
   </td>
   <td>
@@ -22,6 +30,7 @@
       hx-include="closest tr"
       hx-target="#add-project"
       hx-swap="outerHTML"
+      class="btn btn-primary btn-xs"
     >
       Create
     </button>
@@ -30,6 +39,7 @@
       hx-target="#add-project"
       hx-swap="outerHTML"
       hx-get="/project/clear"
+      class="btn btn-error btn-xs"
     >
       Cancel
     </button>

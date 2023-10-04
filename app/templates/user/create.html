@@ -1,6 +1,6 @@
 <tr>
   <td>{{ user_id }}</td>
-  <td rowspan="2">
+  <td>
     <input
       type="text"
       name="user-email"
@@ -16,7 +16,7 @@
     <input
       type="password"
       name="user-password"
-      placeholder="password"
+      placeholder="Password"
       class="input input-bordered w-full max-w-xs input-xs"
       required
     />
@@ -46,9 +46,16 @@
     </select>
   </td>
   <td>
-    <button type="button" hx-get="/user/clear">Cancel</button>
-    <button type="button" hx-post="/user/create" hx-include="closest tr">
+    <button
+      type="button"
+      class="btn btn-primary btn-xs"
+      hx-post="/user/create"
+      hx-include="closest tr"
+    >
       Create
+    </button>
+    <button type="button" class="btn btn-error btn-xs" hx-get="/user/clear">
+      Cancel
     </button>
   </td>
   <td id="error"></td>

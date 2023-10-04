@@ -24,30 +24,34 @@ def update_page():
     return render_template("project/update.html", projects=projects)
 
 
-@bp.route("/project_name")
+@bp.post("/project_name")
 def project_name():
-    db = get_db()
-    cursor = db.cursor()
     project_name = request.form["project-name"]
-    project = get_projectdao().fetch_project_by_name(project_name)
-    exists = False if project is None else True
+    try:
+        project = get_projectdao().fetch_project_by_name(project_name)
+    except:
+        print("There was a erorr getting project name")
+    else:
+        exists = False if project is None else True
 
     return render_template("project/validation.html", exists=exists)
 
 
 @bp.route("/create", methods=["GET", "POST"])
 def create_project():
+    created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if request.method == "POST":
         project_info = dict()
-        project_info["project_name"] = request.method["project-name"]
-        project_info["project_code"] = request.method["project-code"]
+        project_info["project_name"] = request.form["project-name"]
+        project_info["code"] = request.form["project-code"].upper()
         project_info["finished"] = False if request.form.get("finished") is None else True
-        project_info["created_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        project_info["created"] = created_date
+        print(project_info)
         # Will return the empty row inputs
         get_projectdao().create_project(project_info)
         return render_template("project/row.html", project=project_info)
 
-    return render_template("project/create.html", created_date=project_info["created_date"])
+    return render_template("project/create.html", created_date=created_date)
 
 
 @bp.get("/<int:project_id>/edit")
@@ -72,16 +76,16 @@ def update_project(project_id):
     except Exception as e:
         print("There was an error updated data: " + e)
     else:
-        data = get_projectdao().fetch_project_by_id(project_id)
-        return render_template("project/row.html", data=data)
+        project = get_projectdao().fetch_project_by_id(project_id)
+        return render_template("project/row.html", project=project)
 
 
 @bp.delete("/<int:project_id>")
 def delete_project(project_id):
     try:
-        get_projectdao().delete_project(project_id)
+        get_projectdao().remove_project(project_id)
     except Exception as e:
-        print("There was an error deleting data: " + e)
+        print("There was an error deleting data: " + str(e))
     else:
         return "<tr>Project deleted</tr>"
 

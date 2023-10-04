@@ -1,13 +1,21 @@
 <tr>
-  <td class="border border-slate-600 px-4 py-2">{{project['project_name']}}</td>
-  <td class="border border-slate-600 px-4 py-2">{{project['created']}}</td>
-  <td class="border border-slate-600 px-4 py-2">{{project['code']}}</td>
-  <td class="border border-slate-600 px-4 py-2">{{project['finished']}}</td>
-  <td class="border border-slate-600 px-4 py-2">
-    <button type="button" hx-get="/project/{{ project['project_id']}}/edit">
+  <td>{{project['project_name']}}</td>
+  <td>{{project['created']}}</td>
+  <td>{{project['code']}}</td>
+  <td>{{project['finished']}}</td>
+  <td>
+    <button
+      type="button"
+      hx-get="/project/{{ project['project_id']}}/edit"
+      class="btn btn-primary btn-xs"
+    >
       edit
     </button>
-    <button type="button" hx-delete="/project/{{ project['project_id']}}">
+    <button
+      type="button"
+      hx-delete="/project/{{ project['project_id']}}"
+      class="btn btn-error btn-xs"
+    >
       remove
     </button>
   </td>

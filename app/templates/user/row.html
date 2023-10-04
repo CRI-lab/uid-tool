@@ -5,7 +5,19 @@
   <td>{{user['lastname']}}</td>
   <td>{{user['role']}}</td>
   <td>
-    <button type="button" hx-get="/user/{{ user_id }}/edit">edit</button>
-    <button type="button" hx-delete="/user/{{ user_id }}">remove</button>
+    <button
+      type="button"
+      hx-get="/user/{{ user_id }}/edit"
+      class="btn btn-primary btn-xs"
+    >
+      edit
+    </button>
+    <button
+      type="button"
+      hx-delete="/user/{{ user_id }}"
+      class="btn btn-error btn-xs"
+    >
+      remove
+    </button>
   </td>
 </tr>

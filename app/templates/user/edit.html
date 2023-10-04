@@ -17,7 +17,7 @@
     <input
       type="text"
       name="user-firstname"
-      class="input w-full max-w-xs input-xs"
+      class="input input-bordered w-full max-w-xs input-xs"
       value="{{ user['firstname'] }}"
     />
   </td>
@@ -25,7 +25,7 @@
     <input
       type="text"
       name="user-lastname"
-      class="input w-full max-w-xs input-xs"
+      class="input input-bordered w-full max-w-xs input-xs"
       value="{{ user['lastname'] }}"
     />
   </td>
@@ -36,9 +36,20 @@
     </select>
   </td>
   <td>
-    <button type="button" hx-get="/user/{{ user_id }}/row">Cancel</button>
-    <button type="button" hx-put="/user/{{ user_id }}" hx-include="closest tr">
+    <button
+      type="button"
+      class="btn btn-primary btn-xs"
+      hx-put="/user/{{ user_id }}"
+      hx-include="closest tr"
+    >
       Save
+    </button>
+    <button
+      type="button"
+      class="btn btn-error btn-xs"
+      hx-get="/user/{{ user_id }}/row"
+    >
+      Cancel
     </button>
   </td>
   <td id="error"></td>
