@@ -11,15 +11,18 @@
   var counter = 4;
   var modal = document.getElementById("download-modal");
   modal.showModal();
-  var countdown = setInterval(function downloadTimer() {
-    document.getElementById("counter").innerHTML = counter;
+
+  setInterval(downloadTimer, 1000);
+
+  function downloadTimer() {
+    const counterEl = document.getElementById("counter");
+    counterEl.textContent = counter;
     counter--;
 
     if (counter == 0) {
-      fetch("{{download_url}}")
+      fetch("{{ download_url }}")
         .then((response) => response.blob())
         .then((blob) => {
-          console.log("blob created");
           const link = document.createElement("a");
           link.href = URL.createObjectURL(blob);
           link.download = "README.txt";
@@ -28,5 +31,5 @@
 
       window.location.replace("{{ data_page_url }}");
     }
-  }, 1000);
+  }
 </script>

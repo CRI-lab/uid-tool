@@ -41,6 +41,7 @@ endblock %} {% endblock %} {% block content %}
           <td>
             <div class="flex">
               <button
+                id="edit-button"
                 type="button"
                 hx-get="/data/{{ data['data_id']}}/edit"
                 class="btn btn-primary btn-xs"
@@ -64,7 +65,8 @@ endblock %} {% endblock %} {% block content %}
           class="border-t-0 expanded-detail bg-base-200 update-row-{{ data['data_id'] }} "
           style="display: none"
         >
-          <td colspan="4" class="max-w-64 maxh-64">
+          <td></td>
+          <td colspan="3" class="max-w-64 maxh-64">
             Description: {{ data['data_description'] }}
           </td>
           <td colspan="4">Location: {{ data['data_location'] }}</td>

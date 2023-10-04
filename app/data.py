@@ -61,8 +61,7 @@ def create_data():
                 project1_code, project2_code = get_projectdao().get_projects_from_id(project1_id, project2_id)
             else:
                 project1_code, project2_code = get_projectdao().get_projects_from_id(project1_id = project1_id)
-
-            print(project1_code, project2_code)
+                data_info["project2_id"] = "-1"
 
             # get id from last entry
             data_id = get_datadao().fetch_last_data_id()
@@ -73,6 +72,7 @@ def create_data():
             uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
             data_info["uid"] = uid
             
+            print(data_info)
             get_datadao().create_data(data_info=data_info)
 
         except Exception as error:

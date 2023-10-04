@@ -99,16 +99,19 @@
       </form>
   </div>
   <form method="dialog" class="modal-backdrop">
-    <button>close</button>
+    <button onclick="closeModal()">close</button>
   </form>
 </dialog>
 
 <script type="text/javascript">
   var modal = document.getElementById("edit-form-modal");
-  var row = document.get
+  var editting_row = document.querySelector("tr[id='{{ data['data_id'] }}']")
+  console.log(editting_row)
   modal.showModal();
 
   function closeModal() {
+    editting_row.removeAttribute("data-being-removed")
+    console.log(editting_row)
     modal.close();
   }
 </script>

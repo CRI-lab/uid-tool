@@ -4,7 +4,10 @@ document.addEventListener("DOMContentLoaded", function loadJavascript() {
 
   if (tableBody != null) {
     tableBody.addEventListener("click", function rowClick(event) {
-      if (event.target.id == "remove-button") {
+      if (
+        event.target.id == "remove-button" ||
+        event.target.id == "edit-button"
+      ) {
         var row = event.target.parentNode.parentNode.parentNode;
         var nextRow = row.nextElementSibling;
         closeRow(row.id, nextRow);
@@ -27,18 +30,6 @@ document.addEventListener("DOMContentLoaded", function loadJavascript() {
       }
     });
   }
-
-  // var multiselectElement = document.getElementById("projects");
-  // multiselectElement.addEventListener("click", function toggle(event) {
-  //   var option = event.target;
-  //   if (option.tagName == "OPTION") {
-  //     if (option.hasAttribute("selected")) {
-  //       option.removeAttribute("selected");
-  //     } else {
-  //       option.setAttribute("selected", "true");
-  //     }
-  //   }
-  // });
 
   function toggleRow(id, nextRow) {
     if (expandedRow.includes(id)) {

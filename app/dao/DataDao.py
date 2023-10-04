@@ -93,6 +93,7 @@ class Data:
     def fetch_data_by_id(self, id):
         id_check = {"data_id": id}
         query, params = self.build_query(id_check)
+        print(query, params)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data
