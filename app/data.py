@@ -72,7 +72,6 @@ def create_data():
             uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
             data_info["uid"] = uid
             
-            print(data_info)
             get_datadao().create_data(data_info=data_info)
 
         except Exception as error:

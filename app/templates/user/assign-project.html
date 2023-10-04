@@ -3,7 +3,7 @@ endblock %} {% endblock %} {% block content %}
 <div class="flex justify-center items-center pt-4">
   <form
     hx-boost="true"
-    method="post"
+    method="PUT"
     action="/user/assign-project"
     class="w-80"
   >
@@ -14,22 +14,37 @@ endblock %} {% endblock %} {% block content %}
       hx-swap="innerHTML"
       hx-trigger="change"
     >
-      <select
-        class="select select-bordered w-full max-w-xs"
-        name="user-id"
-        id="user-id"
-        required
-      >
-        <option disabled selected>Select User</option>
-        {% for user in users %}
-        <option value="{{ user.user_id }}">{{ user.email }}</option>
-        {% endfor %}
-      </select>
-      <select name="action" id="action">
-        <option disabled selected>Select Action</option>
-        <option value="assign">assign</option>
-        <option value="unassign">unassign</option>
-      </select>
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">User:</span>
+          </label>
+          <select
+            class="select select-bordered w-full max-w-xs"
+            name="user-id"
+            id="user-id"
+            required
+          >
+            <option disabled selected>Select User</option>
+            {% for user in users %}
+            <option value="{{ user.user_id }}">{{ user.email }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <div class="form-control w-full max-w-xs">
+        <label class="label">
+          <span class="label-text">Action:</span>
+        </label>
+        <select
+          class="select select-bordered w-full max-w-xs"
+          name="action"
+          id="action"
+        >
+          <option disabled selected>Select Action</option>
+          <option value="assign">assign</option>
+          <option value="unassign">unassign</option>
+        </select>
+      </div>
     </div>
     <div id="projects-action"></div>
   </form>

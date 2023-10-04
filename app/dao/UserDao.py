@@ -51,6 +51,11 @@ class User:
             "INSERT INTO userprojects (user_id, project_id) VALUES (%s, %s)", (user_id, project_id,)
         )
         self.__db.commit()
+    def unassign_project(self, user_id, project_id):
+        self.__cursor.execute(
+            "DELETE FROM userprojects WHERE user_id=%s AND project_id=%s", (user_id, project_id)
+        )
+        self.__db.commit()
     
     def remove_user(self, user_id):
         self.__cursor.execute(
@@ -73,11 +78,10 @@ class User:
     
     def fetch_user_projects(self, user_id: int):
         self.__cursor.execute(
-            "SELECT up.project_id, p.project_name"
+            "SELECT up.project_id, p.project_name, p.code"
             " FROM userprojects up JOIN project p ON up.project_id=p.project_id"
             " WHERE user_id=%s",
             (str(user_id))
         )
         projects = self.__cursor.fetchall()
-        print(projects)
         return projects

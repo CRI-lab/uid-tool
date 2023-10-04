@@ -26,21 +26,16 @@ class Project:
                 SELECT DISTINCT *
                 FROM project p 
                 JOIN userprojects up ON p.project_id=up.project_id
-                WHERE EXISTS (
-                    SELECT *
-                    FROM userprojects up2
-                    WHERE up2.user_id = %s
-                        AND (up2.project_id = p.project_id)
-                        AND (NOT up2.project_id = -1)
-                )
+                WHERE up.user_id = %s
                 """
         self.__cursor.execute(base_query, (str(user_id))) 
-        return self.__cursor.fetchall()
+        project = self.__cursor.fetchall()
+        return project
     
     def create_project(self, project_info):
-        create_date = project_info["created_date"]
+        create_date = project_info["created"]
         project_name = project_info["project_name"]
-        project_code = project_info["project_code"]
+        project_code = project_info["code"]
         finished = project_info["finished"]
         self.__cursor.execute(
             "INSERT INTO project(created, project_name, code, finished) VALUES(%s, %s, %s, %s)",

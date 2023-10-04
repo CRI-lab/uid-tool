@@ -72,20 +72,21 @@ def render_datarow(user_id):
 def clear_content():
     return ""
 
-@bp.route("/assign-project", methods=["GET", "POST", "DELETE"])
+@bp.route("/assign-project", methods=["GET", "PUT"])
 def assign_project():
     users = get_userdao().fetch_user()
-    if request.method == "POST":
+    if request.method == "PUT":
         action = request.form["action"]
         if action == "assign":
             user_id = request.form["user-id"]
             project_list = request.form.getlist('projects')
             for project_id in project_list:
                 get_userdao().assign_project(user_id, project_id)
-    
-    if request.method == "DELETE":
-        #TODO Implement in Dao
-        get_userdao().unassign_project(project_id)
+        elif action == "unassign":
+            user_id = request.form["user-id"]
+            project_list = request.form.getlist('projects')
+            for project_id in project_list:
+                get_userdao().unassign_project(user_id, project_id)
 
     return render_template("user/assign-project.html", users=users)
 
