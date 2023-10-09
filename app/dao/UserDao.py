@@ -27,7 +27,7 @@ class User:
         password = user_info["password"]
         self.__cursor.execute(
             "INSERT INTO users (email, firstname, lastname, role, password) VALUES (%s, %s, %s, %s, %s) RETURNING user_id",
-            (email, firstname, lastname, role, password),
+            (email, firstname, lastname, role, generate_password_hash(password)),
         )
         self.__db.commit()
         uid = self.__cursor.fetchone()
