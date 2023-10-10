@@ -205,6 +205,16 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "uwsgi"
+version = "2.0.22"
+description = "The uWSGI server"
+optional = false
+python-versions = "*"
+files = [
+    {file = "uwsgi-2.0.22.tar.gz", hash = "sha256:4cc4727258671ac5fa17ab422155e9aaef8a2008ebb86e4404b66deaae965db2"},
+]
+
+[[package]]
 name = "webassets"
 version = "2.0"
 description = "Media asset management for Python, with glue code for various web frameworks"
@@ -235,4 +245,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "cee546ccdbe8a8d40397cc11e19534b9dd9e0142eea9ce52b70eaf04d0884f2b"
+content-hash = "f7b79b1e69c0ae26844e0833a08d52f9cb57a20f31b0d6578406aacc737b15ba"

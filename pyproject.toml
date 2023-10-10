@@ -11,6 +11,7 @@ psycopg2 = "^2.9.7"
 flask = "^2.3.3"
 flask-assets = "^2.0"
 python-dotenv = "^1.0.0"
+uwsgi = "^2.0.22"
 
 
 [build-system]

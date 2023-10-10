@@ -4,19 +4,19 @@
   "description": "## Requirements   - Python 3.8 or higher   - Flask   - psycopg2   - [pytailwindcss](https://pypi.org/project/pytailwindcss/)",
   "main": "index.js",
   "scripts": {
-    "tailwind-build" : "npx tailwind -i ./app/static/src/main.css -o ./app/static/dist/main.css",
-    "tailwind-watch" : "npx tailwind -i ./app/static/src/main.css -o ./app/static/dist/main.css --watch"
+    "tailwind-build": "npx tailwind -i ./app/static/src/main.css -o ./app/static/dist/main.css",
+    "tailwind-watch": "npx tailwind -i ./app/static/src/main.css -o ./app/static/dist/main.css --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CRI-lab/uoi-tool.git"
+    "url": "git+https://github.com/CRI-lab/uid-tool.git"
   },
   "author": "Skyler Kimura",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CRI-lab/uoi-tool/issues"
+    "url": "https://github.com/CRI-lab/uid-tool/issues"
   },
-  "homepage": "https://github.com/CRI-lab/uoi-tool#readme",
+  "homepage": "https://github.com/CRI-lab/uid-tool#readme",
   "devDependencies": {
     "daisyui": "^3.6.5"
   }
