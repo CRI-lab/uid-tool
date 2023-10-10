@@ -1,18 +1,12 @@
 import os
-import subprocess
 
-from flask import Flask, redirect, session, url_for
+from flask import Flask, redirect, url_for
 from flask_assets import Bundle, Environment
+from config import ProdConfig, DevConfig
 
-
-def create_app(test_config=None):
+def create_app():
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY="dev",
-    )
-    app.config["SESSION_COOKIE_SECURE"] = True
-    app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
     from . import auth
     app.register_blueprint(auth.bp)
@@ -29,18 +23,11 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+    if os.environ.get("FLASK_ENV") == "production":
+        app.config.from_object(ProdConfig)
+    else:
+        app.config.from_object(DevConfig)
 
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css")
@@ -51,7 +38,7 @@ def create_app(test_config=None):
     js.build()
 
     @app.route("/")
-    def homepage():
+    def root():
         return redirect(url_for("auth.login"))
 
     return app

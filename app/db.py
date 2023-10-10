@@ -10,9 +10,7 @@ from app.dao.UserDao import User
 
 def get_db():
     if "db" not in g:
-        g.db = psycopg2.connect(
-            os.getenv("DATABASE_URL"), cursor_factory=psycopg2.extras.DictCursor
-        )
+        g.db = psycopg2.connect(os.getenv("DEV_DATABASE_URI"), cursor_factory=psycopg2.extras.DictCursor) if os.environ.get("FLASK_ENV") == "development" else psycopg2.connect(os.getenv("PROD_DATABASE_URI"), cursor_factory=psycopg2.extras.DictCursor)
         return g.db
     return g.db
 

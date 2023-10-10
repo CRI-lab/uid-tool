@@ -58,7 +58,7 @@ INSERT INTO public.project(
 	VALUES (-1, '2023-08-08 11:02:29', '', 'XX');
 
 INSERT INTO public.project(
-	project_id, created, project_name, code)
+	project_id, created, project_name, code, finished)
 	VALUES (1, '2023-08-08 11:02:29', 'General Data', 'GD', False);
 
 INSERT INTO public.project(
