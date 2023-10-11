@@ -6,7 +6,7 @@ endblock %} {% endblock %} {% block content %}
       <label class="label">
         <span class="label-text">Dataset Name:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg" />
+          <img src="{{ url_for('static', filename='img/circle-question-regular.svg')}}" alt="circle-question-regular"/>
         </div>
       </label>
       <input
@@ -26,7 +26,7 @@ endblock %} {% endblock %} {% block content %}
       <label class="label">
         <span class="label-text">Project 1:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg" />
+          <img src="{{ url_for('static', filename='img/circle-question-regular.svg')}}" alt="circle-question-regular"/>
         </div>
       </label>
       <select class="select select-bordered" name="project1-id" required>
@@ -42,7 +42,7 @@ endblock %} {% endblock %} {% block content %}
       <label class="label">
         <span class="label-text">Project 2:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg" />
+          <img src="{{ url_for('static', filename='img/circle-question-regular.svg')}}" alt="circle-question-regular"/>
         </div>
       </label>
       <select class="select select-bordered" name="project2-id">
@@ -58,7 +58,7 @@ endblock %} {% endblock %} {% block content %}
       <label class="label">
         <span class="label-text">Dataset Location:</span>
         <div class="tooltip tooltip-top" data-tip="hello">
-          <img src="../../static/img/circle-question-regular.svg" />
+          <img src="{{ url_for('static', filename='img/circle-question-regular.svg')}}" alt="circle-question-regular"/>
         </div>
       </label>
       <select
@@ -89,7 +89,7 @@ endblock %} {% endblock %} {% block content %}
           class="tooltip tooltip-top"
           data-tip="Format for Description: {Type of file} {Location that represents data} {Date that represents data}"
         >
-          <img src="../../static/img/circle-question-regular.svg" />
+          <img src="{{ url_for('static', filename='img/circle-question-regular.svg')}}" alt="circle-question-regular"/>
         </div>
       </label>
       <!-- TODO: Add additional examples for placeholder-->
