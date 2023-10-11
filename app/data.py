@@ -64,7 +64,7 @@ def create_data():
                 data_info["project2_id"] = "-1"
 
             # get id from last entry
-            data_id = get_datadao().fetch_last_data_id()
+            data_id = get_datadao().fetch_last_data_id() % 999
             if data_id is None:
                 data_id = str(1).zfill(3)
             else:
