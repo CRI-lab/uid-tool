@@ -42,11 +42,6 @@ def create_app():
     css.build()
     js.build()
 
-    @app.before_request
-    def before_request():
-        if request.path != '/' and not request.path.startswith('/uid-tool/'):
-            return redirect('/uid-tool' + request.path)
-
     @app.route("/")
     def root():
         return redirect(url_for("auth.login"))
