@@ -49,12 +49,13 @@ def user_input_fields(user_id):
     return render_template("user/edit.html", user=user, user_id=user_id)
 
 @bp.put("/<int:user_id>")
-def update_project(user_id):
+def update_user(user_id):
     user_info = dict()
     user_info["email"] = request.form["user-email"]
     user_info["firstname"] = request.form["user-firstname"]
     user_info["lastname"] = request.form["user-lastname"]
     user_info["role"] = request.form["user-role"]
+    user_info["password"] = request.form["user-password"]
     try:
         get_userdao().update_user(user_info, user_id)
     except Exception as e:

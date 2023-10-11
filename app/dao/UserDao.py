@@ -68,12 +68,18 @@ class User:
         firstname = user_info["firstname"]
         lastname = user_info["lastname"]
         role = user_info["role"]
-        self.__cursor.execute(
-            "UPDATE users"
-            " SET email=%s, firstname=%s, lastname=%s, role=%s"
-            " WHERE user_id=%s",
-            (email, firstname, lastname, role, user_id)
-        ) 
+        password = generate_password_hash(user_info["password"])
+
+        params = {"email": email, "firstname": firstname, "lastname": lastname, "role": role, "password": password, "user_id":user_id }
+        query = "UPDATE users SET email=%(email)s, firstname=%(firstname)s, lastname=%(lastname)s, role=%(role)s"
+
+        if password != "":
+            query += ", password=%(password)s"
+            print("password updated")
+
+        query += " WHERE user_id=%(user_id)s"
+
+        self.__cursor.execute(query, params) 
         self.__db.commit()
     
     def fetch_user_projects(self, user_id: int):
