@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, request
 from flask_assets import Bundle, Environment
 from config import ProdConfig, DevConfig
 
@@ -41,6 +41,11 @@ def create_app():
     assets.register("js", js)
     css.build()
     js.build()
+
+    @app.before_request
+    def before_request():
+        if request.path != '/' and not request.path.startswith('/uid-tool/'):
+            return redirect('/uid-tool' + request.path)
 
     @app.route("/")
     def root():
