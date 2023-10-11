@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
-from app.db import get_db
 from datetime import datetime
 from app.db import get_projectdao
 
@@ -48,7 +47,6 @@ def create_project():
             False if request.form.get("finished") is None else True
         )
         project_info["created"] = created_date
-        print(project_info)
         # Will return the empty row inputs
         get_projectdao().create_project(project_info)
         return render_template("project/row.html", project=project_info)

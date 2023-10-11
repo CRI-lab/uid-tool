@@ -7,7 +7,7 @@
       class="input input-bordered w-full max-w-xs input-xs"
       hx-target="#error"
       hx-swap="innerHTML"
-      hx-post="/project/project_name"
+      hx-post="{{ url_for('project.project_name')}}"
     />
   </td>
   <td>{{created_date}}</td>
@@ -26,7 +26,7 @@
   <td>
     <button
       type="button"
-      hx-post="/project/create"
+      hx-post="{{ url_for('project.create_project') }}"
       hx-include="closest tr"
       hx-target="#add-project"
       hx-swap="outerHTML"
@@ -38,7 +38,7 @@
       type="button"
       hx-target="#add-project"
       hx-swap="outerHTML"
-      hx-get="/project/clear"
+      hx-get="{{ url_for('project.clear_content')}}"
       class="btn btn-error btn-xs"
     >
       Cancel

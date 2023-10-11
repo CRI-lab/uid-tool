@@ -23,14 +23,14 @@ endblock %} {% endblock %} {% block content %}
             <button
               type="button"
               class="btn btn-primary btn-xs"
-              hx-get="/project/{{ project['project_id']}}/edit"
+              hx-get="{{ url_for('project.project_input_fields', project_id=project['project_id']) }}"
             >
               edit
             </button>
             <button
               type="button"
               class="btn btn-error btn-xs"
-              hx-delete="/project/{{ project['project_id']}}"
+              hx-delete="{{ url_for('project.delete_project', project_id=project['project_id']) }}"
             >
               remove
             </button>
