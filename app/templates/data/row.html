@@ -17,7 +17,7 @@
       <button
         id="edit-button"
         type="button"
-        hx-get="/data/{{ data['data_id']}}/edit"
+        hx-get="{{ url_for('data.edit_data', data_id=data['data_id']) }}"
         class="btn btn-primary btn-xs"
       >
         edit
@@ -25,7 +25,7 @@
       <button
         id="remove-button"
         type="button"
-        hx-get="/data/delete-confirmation/{{ data['data_id'] }}"
+        hx-get="{{ url_for('data.delete_confirmation', data_id=data['data_id'])}}"
         hx-target="closest td"
         hx-swap="outerHTML"
         class="btn btn-error btn-xs"

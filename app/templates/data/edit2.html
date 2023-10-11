@@ -1,6 +1,6 @@
 <dialog id="edit-form-modal" class="modal">
   <div class="modal-box flex items-center justify-center max-w-2xl">
-    <form hx-put="/data/{{ data['data_id'] }}" hx-target=".update-row-{{ data['data_id'] }}" hx-swap="outerHTML" class="w-80" onsubmit="closeModal()">
+    <form hx-put="{{ url_for('data.fetch_data', data_id=data['data_id']) }}" hx-target=".update-row-{{ data['data_id'] }}" hx-swap="outerHTML" class="w-80" onsubmit="closeModal()">
         <h1 class="text-xl">Update Data Form</h1>
         <div class="form-control w-full max-w-xs">
           <label class="label">
@@ -9,6 +9,7 @@
               <img src="../../static/img/circle-question-regular.svg" />
             </div>
           </label>
+          <!-- Make this into a reusable component -->
           <input
             type="text"
             placeholder="Type here"
@@ -18,7 +19,7 @@
             name="data-name"
             hx-target="#error"
             hx-swap="innerHTML"
-            hx-post="/data/data_name"
+            hx-post="{{ url_for('data.check_data_exists') }}"
             value="{{data['data_name']}}"
             required
           />
@@ -64,7 +65,7 @@
               class="tooltip tooltip-top"
               data-tip="Format for Description: {Type of file} {Location that represents data} {Date that represents data}"
             >
-              <img src="../../static/img/circle-question-regular.svg" />
+              <img src="{{ url_for('static', filename='img/circle-question-regular.svg')}}" alt="circle-question-regular"/>
             </div>
           </label>
           <textarea

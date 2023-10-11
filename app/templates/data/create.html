@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block header %} {% block title %}Curate Dataset{%
 endblock %} {% endblock %} {% block content %}
 <div class="flex justify-center items-center pt-4">
-  <form hx-post="/data/create" hx-target="#download-popup" class="w-80">
+  <form hx-post="{{ url_for('data.create_data') }}" hx-target="#download-popup" class="w-80">
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Dataset Name:</span>
@@ -18,7 +18,7 @@ endblock %} {% endblock %} {% block content %}
         name="data-name"
         hx-target="#error"
         hx-swap="innerHTML"
-        hx-post="/data/data_name"
+        hx-post="{{ url_for('data.check_data_exists') }}"
         required
       />
     </div>
@@ -65,7 +65,7 @@ endblock %} {% endblock %} {% block content %}
         class="select select-bordered"
         name="data-location-type"
         id="data-location-type"
-        hx-post="/data/location-type"
+        hx-post="{{ url_for('data.data_location_field')}}"
         hx-target="#location-field"
         hx-trigger="change"
         required

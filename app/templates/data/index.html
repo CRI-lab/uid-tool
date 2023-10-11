@@ -9,7 +9,7 @@
       <a><button class="btn btn-primary btn-xs">Search</button></a>
     </div>
     <form
-      hx-post="/data/filter"
+      hx-post="{{ url_for('data.filter_data_table')}}"
       hx-trigger="change"
       hx-target="tbody"
       hx-swap="innerHTML"
