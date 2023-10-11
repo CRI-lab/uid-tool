@@ -44,7 +44,9 @@ def create_project():
         project_info = dict()
         project_info["project_name"] = request.form["project-name"]
         project_info["code"] = request.form["project-code"].upper()
-        project_info["finished"] = False if request.form.get("finished") is None else True
+        project_info["finished"] = (
+            False if request.form.get("finished") is None else True
+        )
         project_info["created"] = created_date
         print(project_info)
         # Will return the empty row inputs
@@ -56,7 +58,7 @@ def create_project():
 
 @bp.get("/<int:project_id>/edit")
 def project_input_fields(project_id):
-    project = get_projectdao().fetch_project_by_id(project_id) 
+    project = get_projectdao().fetch_project_by_id(project_id)
     return render_template("project/edit.html", project=project, project_id=project_id)
 
 

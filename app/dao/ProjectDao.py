@@ -1,24 +1,28 @@
 from psycopg2.extensions import connection
 
+
 class Project:
     __db = None
     __cursor = None
 
-
     def __init__(self, db: connection):
         self.__db = db
         self.__cursor = self.__db.cursor()
-    
+
     def fetch_projects(self):
         self.__cursor.execute("SELECT * FROM project")
         return self.__cursor.fetchall()
-    
+
     def fetch_project_by_name(self, project_name):
-        self.__cursor.execute("SELECT * FROM project WHERE project_name=%s", (project_name,)) 
+        self.__cursor.execute(
+            "SELECT * FROM project WHERE project_name=%s", (project_name,)
+        )
         return self.__cursor.fetchone()
 
     def fetch_project_by_id(self, project_id):
-        self.__cursor.execute("SELECT * FROM project WHERE project_id=%s", (str(project_id))) 
+        self.__cursor.execute(
+            "SELECT * FROM project WHERE project_id=%s", (str(project_id))
+        )
         return self.__cursor.fetchone()
 
     def fetch_project_by_user(self, user_id):
@@ -28,10 +32,10 @@ class Project:
                 JOIN userprojects up ON p.project_id=up.project_id
                 WHERE up.user_id = %s
                 """
-        self.__cursor.execute(base_query, (str(user_id))) 
+        self.__cursor.execute(base_query, (str(user_id)))
         project = self.__cursor.fetchall()
         return project
-    
+
     def create_project(self, project_info):
         create_date = project_info["created"]
         project_name = project_info["project_name"]
@@ -39,7 +43,12 @@ class Project:
         finished = project_info["finished"]
         self.__cursor.execute(
             "INSERT INTO project(created, project_name, code, finished) VALUES(%s, %s, %s, %s)",
-            (create_date, project_name, project_code, finished,)
+            (
+                create_date,
+                project_name,
+                project_code,
+                finished,
+            ),
         )
         self.__db.commit()
 
@@ -53,9 +62,7 @@ class Project:
         self.__db.commit()
 
     def remove_project(self, project_id):
-        self.__cursor.execute(
-            "DELETE FROM project WHERE project_id=%s", (project_id,)
-        )
+        self.__cursor.execute("DELETE FROM project WHERE project_id=%s", (project_id,))
         self.__db.commit()
 
     def get_projects_from_id(self, project1_id, project2_id=None):

@@ -3,18 +3,21 @@ from flask import (
     render_template,
     request,
 )
-from app.db import  get_projectdao, get_userdao
+from app.db import get_projectdao, get_userdao
 
 bp = Blueprint("user", __name__, url_prefix="/user")
+
 
 @bp.route("/")
 def display_page():
     users = get_userdao().fetch_user()
-    return render_template('user/index.html', users=users)
+    return render_template("user/index.html", users=users)
+
 
 @bp.route("/delete-confirmation/<int:user_id>")
-def  delete_confirmation_user(user_id):
+def delete_confirmation_user(user_id):
     return render_template("user/delete-confirmation.html", user_id=user_id)
+
 
 @bp.delete("/<int:user_id>")
 def remove_user(user_id):
@@ -24,6 +27,7 @@ def remove_user(user_id):
         print("There was an error deleting user" + str(e))
     else:
         return "<tr>User Deleted</tr>"
+
 
 @bp.route("/create", methods=["GET", "POST"])
 def create_user():
@@ -43,10 +47,12 @@ def create_user():
 
     return render_template("user/create.html")
 
+
 @bp.get("/<int:user_id>/edit")
 def user_input_fields(user_id):
-    user = get_userdao().fetch_user(user_id)[0] 
+    user = get_userdao().fetch_user(user_id)[0]
     return render_template("user/edit.html", user=user, user_id=user_id)
+
 
 @bp.put("/<int:user_id>")
 def update_user(user_id):
@@ -63,6 +69,7 @@ def update_user(user_id):
     else:
         return render_template("user/row.html", user=user_info, user_id=user_id)
 
+
 @bp.route("/<int:user_id>/row")
 def render_datarow(user_id):
     user = get_userdao().fetch_user(user_id)[0]
@@ -73,6 +80,7 @@ def render_datarow(user_id):
 def clear_content():
     return ""
 
+
 @bp.route("/assign-project", methods=["GET", "PUT"])
 def assign_project():
     users = get_userdao().fetch_user()
@@ -80,16 +88,17 @@ def assign_project():
         action = request.form["action"]
         if action == "assign":
             user_id = request.form["user-id"]
-            project_list = request.form.getlist('projects')
+            project_list = request.form.getlist("projects")
             for project_id in project_list:
                 get_userdao().assign_project(user_id, project_id)
         elif action == "unassign":
             user_id = request.form["user-id"]
-            project_list = request.form.getlist('projects')
+            project_list = request.form.getlist("projects")
             for project_id in project_list:
                 get_userdao().unassign_project(user_id, project_id)
 
     return render_template("user/assign-project.html", users=users)
+
 
 @bp.post("/project-action/")
 def project_action():
@@ -98,7 +107,15 @@ def project_action():
     user_projects = get_userdao().fetch_user_projects(user_id)
     projects = get_projectdao().fetch_projects()
     projects_to_remove = [item[0] for item in user_projects]
-    filtered_projects = [project for project in projects if project[0] not in projects_to_remove]
+    filtered_projects = [
+        project for project in projects if project[0] not in projects_to_remove
+    ]
     print(filtered_projects)
 
-    return render_template("user/project-action.html", projects=projects, user_projects=user_projects, action=action, filtered_projects=filtered_projects)
+    return render_template(
+        "user/project-action.html",
+        projects=projects,
+        user_projects=user_projects,
+        action=action,
+        filtered_projects=filtered_projects,
+    )

@@ -4,25 +4,30 @@ from flask import Flask, redirect, url_for
 from flask_assets import Bundle, Environment
 from config import ProdConfig, DevConfig
 
+
 def create_app():
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
     from . import auth
+
     app.register_blueprint(auth.bp)
 
     from . import data
+
     app.register_blueprint(data.bp)
 
     from . import project
+
     app.register_blueprint(project.bp)
 
     from . import user
+
     app.register_blueprint(user.bp)
 
     from . import db
-    db.init_app(app)
 
+    db.init_app(app)
 
     if os.environ.get("FLASK_ENV") == "production":
         app.config.from_object(ProdConfig)

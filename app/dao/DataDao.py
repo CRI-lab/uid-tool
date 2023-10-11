@@ -7,6 +7,7 @@ from datetime import datetime
 class Data:
     __db = None
     __cursor = None
+
     def __init__(self, db: connection):
         self.__db = db
         self.__cursor = self.__db.cursor()
@@ -32,15 +33,15 @@ class Data:
         if "data_name_exclusive" in filters:
             where_clauses.append("data_name = %(data_name_exclusive)s")
             params["data_name_exclusive"] = filters["data_name_exclusive"]
-        
+
         if "email" in filters and filters["email"] != "":
             where_clauses.append("u.email = %(email)s")
             params["email"] = filters["email"]
-        
+
         # Needed to rename this one because this is used for filters
         if "data_name_match" in filters and filters["data_name_match"] != "":
             where_clauses.append("data_name ILIKE %(data_name_match)s")
-            params["data_name_match"] = '%' + filters["data_name_match"] + '%'
+            params["data_name_match"] = "%" + filters["data_name_match"] + "%"
 
         if "data_location_type" in filters and filters["data_location_type"] != "":
             where_clauses.append("d.data_location_type = %(data_location_type)s")
@@ -48,18 +49,24 @@ class Data:
 
         if "from_date" in filters and filters["from_date"] != "":
             where_clauses.append("d.created >= %(from_date)s")
-            params["from_date"] =  datetime.strptime(filters["from_date"], '%Y-%m-%d').replace(hour=23, minute=59)
-        
+            params["from_date"] = datetime.strptime(
+                filters["from_date"], "%Y-%m-%d"
+            ).replace(hour=23, minute=59)
+
         if "to_date" in filters and filters["to_date"] != "":
             where_clauses.append("d.created <= %(to_date)s")
-            params["to_date"] = datetime.strptime(filters["to_date"], '%Y-%m-%d').replace(hour=23, minute=59)
+            params["to_date"] = datetime.strptime(
+                filters["to_date"], "%Y-%m-%d"
+            ).replace(hour=23, minute=59)
 
         if "invenio" in filters and filters["invenio"] != "":
             where_clauses.append("invenio = %(invenio)s")
             params["invenio"] = filters["invenio"]
 
         if "project" in filters and filters["project"] != "":
-            where_clauses.append("(p1.project_id = %(project)s OR p2.project_id = %(project)s)")
+            where_clauses.append(
+                "(p1.project_id = %(project)s OR p2.project_id = %(project)s)"
+            )
             params["project"] = filters["project"]
 
         if "user_id" in filters and filters["user_id"] != "":
@@ -67,22 +74,22 @@ class Data:
             params["user_id"] = filters["user_id"]
 
         if "uid" in filters and filters["uid"] != "":
-            where_clauses.append("uid ILIKE %(uid)s" )
+            where_clauses.append("uid ILIKE %(uid)s")
             params["uid"] = "%" + filters["uid"] + "%"
-        
+
         if where_clauses:
             base_query += " WHERE " + " AND ".join(where_clauses)
-        
+
         base_query += " ORDER BY d.created DESC"
 
         return base_query, params
-        
+
     def fetch_data_table(self, filters: dict):
         query, params = self.build_query(filters)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchall()
         return data
-    
+
     def fetch_data_by_name(self, name):
         name_check = {"data_name_exclusive": name}
         query, params = self.build_query(name_check)
@@ -102,7 +109,7 @@ class Data:
         self.__cursor.execute("SELECT data_id FROM data ORDER by data_id DESC LIMIT 1")
         data_id = self.__cursor.fetchone()
         return data_id
-        
+
     def create_data(self, data_info: dict):
         user_id = data_info["user_id"]
         data_name = data_info["data_name"]
@@ -110,12 +117,10 @@ class Data:
         project2_id = data_info["project2_id"]
         data_description = data_info["data_description"]
         invenio = False if data_info.get("invenio") is None else True
-        data_location_type= data_info["data_location_type"]
-        data_location= data_info["data_location"]
+        data_location_type = data_info["data_location_type"]
+        data_location = data_info["data_location"]
         db_created = data_info["db_created"]
         uid = data_info["uid"]
-
-
 
         self.__cursor.execute(
             "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, data_description, data_location_type, data_location, invenio, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
@@ -133,7 +138,7 @@ class Data:
             ),
         )
         self.__db.commit()
-        
+
     def fetch_project_data(self, user_id):
         base_query = """
         SELECT DISTINCT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_description,
@@ -155,32 +160,37 @@ class Data:
         self.__cursor.execute(base_query, str(user_id))
         data = self.__cursor.fetchall()
         return data
-    
+
     def update_data(self, data_info: dict, data_id: int):
-        data_name = data_info['data_name']
-        data_description = data_info['data_description']
-        data_location_type = data_info['data_location_type']
-        data_location = data_info['data_location']
+        data_name = data_info["data_name"]
+        data_description = data_info["data_description"]
+        data_location_type = data_info["data_location_type"]
+        data_location = data_info["data_location"]
         invenio = data_info["invenio"]
 
         self.__cursor.execute(
             "UPDATE data"
             " SET data_name=%s, data_description=%s, data_location=%s, data_location_type = %s, invenio=%s"
             " WHERE data_id=%s",
-            (data_name, data_description, data_location, data_location_type, invenio, data_id),
+            (
+                data_name,
+                data_description,
+                data_location,
+                data_location_type,
+                invenio,
+                data_id,
+            ),
         )
         self.__db.commit()
 
     def remove_data(self, data_id: int):
-        self.__cursor.execute(
-            "DELETE FROM data WHERE data_id=%s", (data_id,)
-        )
+        self.__cursor.execute("DELETE FROM data WHERE data_id=%s", (data_id,))
         self.__db.commit()
 
     def write_to_csv(self, rows):
         output = io.StringIO()
         writer = csv.writer(output)
-        
+
         writer.writerows(rows)
 
         output.seek(0)
