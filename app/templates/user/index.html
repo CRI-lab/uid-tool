@@ -25,7 +25,7 @@
           <td>
             <button
               type="button"
-              hx-get="/user/{{ user['user_id']}}/edit"
+              hx-get="{{ url_for('user.user_input_fields', user_id=user['user_id']) }}"
               class="btn btn-primary btn-xs"
             >
               edit
@@ -33,7 +33,7 @@
             <button
               id="remove-button"
               type="button"
-              hx-get="/user/delete-confirmation/{{ user['user_id'] }}"
+              hx-get="{{ url_for('user.delete_confirmation_user', user_id=user['user_id']) }}"
               hx-target="closest td"
               hx-swap="outerHTML"
               class="btn btn-error btn-xs"
@@ -44,7 +44,7 @@
         </tr>
         {% endfor %}
         <tr
-          hx-get="/user/create"
+          hx-get="{{ url_for('user.create_user')}}"
           hx-trigger="click"
           hx-target="this"
           hx-swap="beforebegin"

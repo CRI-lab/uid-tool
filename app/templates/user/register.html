@@ -11,7 +11,7 @@
       hx-trigger="click delay:500, keyup delay:200ms"
       hx-target="#error"
       hx-swap="innerHTML"
-      hx-post="/auth/email"
+      hx-post="{{ url_for('auth.validate_email') }}"
       maxlength="100"
     />
     <label for="firstname">First Name:</label>

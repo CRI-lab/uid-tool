@@ -7,14 +7,14 @@
   <td>
     <button
       type="button"
-      hx-get="/user/{{ user_id }}/edit"
+      hx-get="{{ url_for('user.user_input_fields', user_id=user_id) }}"
       class="btn btn-primary btn-xs"
     >
       edit
     </button>
     <button
       type="button"
-      hx-delete="/user/{{ user_id }}"
+      hx-delete="{{ url_for('user.remove_user', user_id=user_id) }}"
       class="btn btn-error btn-xs"
     >
       remove

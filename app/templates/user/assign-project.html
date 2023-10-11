@@ -4,12 +4,11 @@ endblock %} {% endblock %} {% block content %}
   <form
     hx-boost="true"
     method="PUT"
-    action="/user/assign-project"
     class="w-80"
   >
     <div
       id="form-actions"
-      hx-post="/user/project-action/"
+      hx-post="{{ url_for('user.project_action') }}"
       hx-target="#projects-action"
       hx-swap="innerHTML"
       hx-trigger="change"

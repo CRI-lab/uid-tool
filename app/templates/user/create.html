@@ -9,7 +9,7 @@
       hx-trigger="click delay:500, keyup delay:200ms"
       hx-target="#error"
       hx-swap="innerHTML"
-      hx-post="/auth/email"
+      hx-post="{{ url_for('auth.validate_email') }}"
       maxlength="100"
       required
     />
@@ -49,12 +49,12 @@
     <button
       type="button"
       class="btn btn-primary btn-xs"
-      hx-post="/user/create"
+      hx-post="{{ url_for('user.create_user') }}"
       hx-include="closest tr"
     >
       Create
     </button>
-    <button type="button" class="btn btn-error btn-xs" hx-get="/user/clear">
+    <button type="button" class="btn btn-error btn-xs" hx-get="{{ url_for('user.clear_content') }}">
       Cancel
     </button>
   </td>

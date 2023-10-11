@@ -69,20 +69,20 @@ class User:
         firstname = user_info["firstname"]
         lastname = user_info["lastname"]
         role = user_info["role"]
-        password = generate_password_hash(user_info["password"])
+        password = user_info["password"]
 
         params = {
             "email": email,
             "firstname": firstname,
             "lastname": lastname,
             "role": role,
-            "password": password,
             "user_id": user_id,
         }
         query = "UPDATE users SET email=%(email)s, firstname=%(firstname)s, lastname=%(lastname)s, role=%(role)s"
 
         if password != "":
             query += ", password=%(password)s"
+            params["password"] = generate_password_hash(password)
             print("password updated")
 
         query += " WHERE user_id=%(user_id)s"

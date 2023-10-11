@@ -1,11 +1,11 @@
 <td colspan="8">
   <p class="font-bold">Are you sure you want to delete?</p>
-  <button class="py-4 btn btn-success btn-xs" hx-delete="/user/{{ user_id }}">
+  <button class="py-4 btn btn-success btn-xs" hx-delete="{{ url_for('user.remove_user', user_id=user_id) }}">
     Yes
   </button>
   <button
     class="py-4 btn btn-warning btn-xs"
-    hx-get="/user/{{ user_id }}/row"
+    hx-get="{{ url_for('user.render_datarow', user_id=user_id) }}"
     hx-target="closest tr"
     hx-swap="outerHTML"
   >
