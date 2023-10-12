@@ -4,7 +4,7 @@ from flask import (
     request,
 )
 from app.db import get_projectdao, get_userdao
-from auth import admin_permissions
+from app.auth import admin_permissions
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
