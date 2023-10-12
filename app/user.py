@@ -4,22 +4,26 @@ from flask import (
     request,
 )
 from app.db import get_projectdao, get_userdao
+from auth import admin_permissions
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
 @bp.route("/")
+@admin_permissions
 def display_page():
     users = get_userdao().fetch_user()
     return render_template("user/index.html", users=users)
 
 
 @bp.route("/delete-confirmation/<int:user_id>")
+@admin_permissions
 def delete_confirmation_user(user_id):
     return render_template("user/delete-confirmation.html", user_id=user_id)
 
 
 @bp.delete("/<int:user_id>")
+@admin_permissions
 def remove_user(user_id):
     try:
         get_userdao().remove_user(user_id)
@@ -30,6 +34,7 @@ def remove_user(user_id):
 
 
 @bp.route("/create", methods=["GET", "POST"])
+@admin_permissions
 def create_user():
     if request.method == "POST":
         user_info = dict()
@@ -49,12 +54,14 @@ def create_user():
 
 
 @bp.get("/<int:user_id>/edit")
+@admin_permissions
 def user_input_fields(user_id):
     user = get_userdao().fetch_user(user_id)[0]
     return render_template("user/edit.html", user=user, user_id=user_id)
 
 
 @bp.put("/<int:user_id>")
+@admin_permissions
 def update_user(user_id):
     user_info = dict()
     user_info["email"] = request.form["user-email"]
@@ -71,17 +78,20 @@ def update_user(user_id):
 
 
 @bp.route("/<int:user_id>/row")
+@admin_permissions
 def render_datarow(user_id):
     user = get_userdao().fetch_user(user_id)[0]
     return render_template("user/row.html", user=user, user_id=user_id)
 
 
 @bp.route("/clear")
+@admin_permissions
 def clear_content():
     return ""
 
 
 @bp.route("/assign-project", methods=["GET", "PUT"])
+@admin_permissions
 def assign_project():
     users = get_userdao().fetch_user()
     if request.method == "PUT":
@@ -101,6 +111,7 @@ def assign_project():
 
 
 @bp.post("/project-action/")
+@admin_permissions
 def project_action():
     user_id = request.form["user-id"]
     action = request.form["action"]
