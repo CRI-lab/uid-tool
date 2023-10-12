@@ -3,7 +3,7 @@ version: '3.8'
 services:
     web:
         build: .
-        port:
+        ports:
             - "8000:8000" 
         environment:
           FLASK_ENV: production
