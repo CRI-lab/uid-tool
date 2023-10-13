@@ -13,18 +13,13 @@ from app.dao.UserDao import User
 
 def get_db():
     """Returns a database connection object."""
-    if "db" not in g:
-        g.db = (
-            psycopg2.connect(
-                os.getenv("DEV_DATABASE_URI"), cursor_factory=psycopg2.extras.DictCursor
-            )
-            if os.environ.get("FLASK_ENV") == "development"
-            else psycopg2.connect(
-                os.getenv("PROD_DATABASE_URI"),
-                cursor_factory=psycopg2.extras.DictCursor,
-            )
-        )
+    try:
+        if "db" not in g:
+            db_uri = os.getenv("DEV_DATABASE_URI") if os.environ.get("FLASK_ENV") == "development" else os.getenv("PROD_DATABASE_URI")
+            g.db = psycopg2.connect(db_uri, cursor_factory=psycopg2.extras.DictCursor)
         return g.db
+    except psycopg2.OperationalError as e:
+        print("Error connecting to database: ", e)
     return g.db
 
 
@@ -51,7 +46,7 @@ def get_userdao():
     return g.user_dao
 
 
-def close_db(e=None):
+def close_db(_=None):
     """Close Db connection."""
     db = g.pop("db", None)
 
@@ -65,35 +60,40 @@ def init_db():
     cursor = db.cursor()
     user_dao = get_userdao()
 
-    with current_app.open_resource("schema.sql") as file:
-        sql = file.read()
+    try: 
+        with current_app.open_resource("schema.sql") as file:
+            sql = file.read()
 
-    cursor.execute(sql)
-    db.commit()
+        cursor.execute(sql)
+        db.commit()
 
-    users = [
-        {
-            "email": "test123@gmail.com",
-            "firstname": "test",
-            "lastname": "asdf",
-            "role": "admin",
-            "password": "asdf",
-        },
-        {
-            "email": "asdf@gmail.com",
-            "firstname": "test",
-            "lastname": "asdf",
-            "role": "creator",
-            "password": "asdf",
-        },
-    ]
+        users = [
+            {
+                "email": "test123@gmail.com",
+                "firstname": "test",
+                "lastname": "asdf",
+                "role": "admin",
+                "password": "asdf",
+            },
+            {
+                "email": "asdf@gmail.com",
+                "firstname": "test",
+                "lastname": "asdf",
+                "role": "creator",
+                "password": "asdf",
+            },
+        ]
 
-    for user in users:
-        user_dao.create_user(user)
+        for user in users:
+            user_dao.create_user(user)
 
-    project_ids = [1, 2, -1]
-    for project_id in project_ids:
-        user_dao.assign_project(1, project_id)
+        project_ids = [1, 2, -1]
+        for project_id in project_ids:
+            user_dao.assign_project(1, project_id)
+    except psycopg2.Error as e:
+        print("Error adding data to database: ", e)
+    except (FileNotFoundError, IOError) as e:
+        print("Error reading schema.sql file: ", e)
 
 
 def init_app(app: Flask):

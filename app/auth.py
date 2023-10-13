@@ -107,20 +107,15 @@ def register():
             error = "Please enter a valid email!"
 
         if error is None:
-            try:
-                get_userdao().create_user(
-                    {
-                        "email": email,
-                        "firstname": firstname,
-                        "lastname": lastname,
-                        "password": password,
-                        "role": role,
-                    }
-                )
-            except Exception as e:
-                print("There was an error in registering user:", e)
-                error = "Error registering user."
-                return render_template("auth/error.html")
+            get_userdao().create_user(
+                {
+                    "email": email,
+                    "firstname": firstname,
+                    "lastname": lastname,
+                    "password": password,
+                    "role": role,
+                }
+            )
             return redirect(url_for("auth.login"))
     return render_template("auth/register.html")
 

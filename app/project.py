@@ -26,12 +26,7 @@ def update_page():
 def project_name():
     """Validate if a project name exists."""
     name = request.form["project-name"]
-    try:
-        project = get_projectdao().fetch_project_by_name(name)
-    except Exception as e:
-        print("There was an error getting the project name:", str(e))
-    else:
-        exists = not project
+    exists = get_projectdao().fetch_project_by_name(name)
 
     return render_template("project/validation.html", exists=exists)
 
@@ -39,15 +34,16 @@ def project_name():
 @bp.route("/create", methods=["GET", "POST"])
 @admin_permissions
 def create_project():
+    """Create a new project."""
     created_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if request.method == "POST":
         project_info = {
             "project_name": request.form["project-name"],
             "code": request.form["project-code"].upper(),
-            "finished": not request.form.get("finished"),
+            "finished": bool(request.form.get("finished")),
             "created": created_date,
         }
-        get_projectdao().create_project(project_info)
+        project_info["project_id"] = get_projectdao().create_project(project_info)
         return render_template("project/row.html", project=project_info)
 
     return render_template("project/create.html", created_date=created_date)
@@ -74,28 +70,18 @@ def update_project(project_id):
     """Update an existing project."""
     project_info = {}
     project_info["project_name"] = request.form["project_name"]
-    project_info["finished"] = not request.form.get("finished")
-    try:
-        get_projectdao().update_project(project_info, project_id)
-    except Exception as e:
-        print("There was an error getting the project name:", str(e))
-    else:
-        project = get_projectdao().fetch_project_by_id(project_id)
-        return render_template("project/row.html", project=project)
-    return None
+    project_info["finished"] = bool(request.form.get("finished"))
+    get_projectdao().update_project(project_info, project_id)
+    project = get_projectdao().fetch_project_by_id(project_id)
+    return render_template("project/row.html", project=project)
 
 
 @bp.delete("/<int:project_id>")
 @admin_permissions
 def delete_project(project_id):
     """Delete a project."""
-    try:
-        get_projectdao().remove_project(project_id)
-    except Exception as e:
-        print("There was an error getting the project name:", str(e))
-    else:
-        return "<tr>Project deleted</tr>"
-    return None
+    get_projectdao().remove_project(project_id)
+    return "<tr>Project deleted</tr>"
 
 
 @bp.route("/<int:project_id>/row")

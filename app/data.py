@@ -90,35 +90,34 @@ def create_data():
         project1_id = data_info["project1_id"]
         project2_id = data_info["project2_id"]
 
-        try:
-            if project1_id != project2_id and project2_id != "-1":
-                project1_code, project2_code = get_projectdao().get_projects_from_id(
-                    project1_id, project2_id
-                )
-            else:
-                project1_code, project2_code = get_projectdao().get_projects_from_id(
-                    project1_id=project1_id
-                )
-                data_info["project2_id"] = "-1"
-
-            data_id = get_datadao().fetch_last_data_id() or str(1).zfill(3)
-            data_id = str((data_id[0] + 1) % 999).zfill(3)
-            id_date = datetime.now().strftime("%Y%m%d")
-            uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
-            data_info["uid"] = uid
-
-            get_datadao().create_data(data_info=data_info)
-
-        except Exception as error:
-            print("There was an error in inserting data to db:", error)
-        else:
-            download_url = url_for("data.download_readme", data_id=data_id)
-            data_page_url = url_for("data.display_page")
-            return render_template(
-                "data/download.html",
-                download_url=download_url,
-                data_page_url=data_page_url,
+        if project1_id != project2_id and project2_id != "-1":
+            project1_code, project2_code = get_projectdao().get_projects_from_id(
+                project1_id, project2_id
             )
+        else:
+            project1_code = get_projectdao().get_projects_from_id(
+                project1_id
+            )[0]
+            project2_id = ""
+            data_info["project2_id"] = "-1"
+            project2_code = "XX"
+
+        data_id = get_datadao().fetch_last_data_id() or str(1).zfill(3)
+        data_id = str((data_id[0] + 1) % 999).zfill(3)
+        id_date = datetime.now().strftime("%Y%m%d")
+        uid = f"CRC{id_date}{data_id}{project1_code[0]}{project2_code[0]}"
+        data_info["uid"] = uid
+        print(uid)
+
+        get_datadao().create_data(data_info=data_info)
+
+        download_url = url_for("data.download_readme", data_id=data_id)
+        data_page_url = url_for("data.display_page")
+        return render_template(
+            "data/download.html",
+            download_url=download_url,
+            data_page_url=data_page_url,
+        )
     return render_template("data/create.html", projects=project_list)
 
 
@@ -169,26 +168,17 @@ def update_data(data_id):
         "data_location": request.form["data-location"],
         "invenio": bool(request.form.get("invenio")),
     }
-    try:
-        get_datadao().update_data(data_info=data_info, data_id=data_id)
-    except Exception as e:
-        print("There was an error updating data: " + str(e))
-    else:
-        data = get_datadao().fetch_data_by_id(id=data_id)
-        return render_template("data/row.html", data=data)
-    return None
+    get_datadao().update_data(data_info=data_info, data_id=data_id)
+    data = get_datadao().fetch_data_by_id(data_id)
+    return render_template("data/row.html", data=data)
 
 
 @bp.delete("/<int:data_id>")
 @login_required
 def remove_data(data_id):
     """Delete a data entry from the database."""
-    try:
-        get_datadao().remove_data(data_id)
-    except Exception as e:
-        print("There was an error deleting data: " + e)
-    else:
-        return "<tr>Delete Successful</tr>"
+    get_datadao().remove_data(data_id)
+    return "<tr>Delete Successful</tr>"
 
 
 @bp.route("/<int:data_id>/row")

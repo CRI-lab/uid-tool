@@ -4,6 +4,7 @@ This module provides a Data DAO class for interacting with a database table call
 import csv
 import io
 from datetime import datetime
+import psycopg2
 from psycopg2.extensions import connection
 
 
@@ -93,31 +94,43 @@ class Data:
     def fetch_data_table(self, filters: dict):
         """Fetches data from the database."""
         query, params = self.build_query(filters)
-        self.__cursor.execute(query, params)
-        data = self.__cursor.fetchall()
-        return data
+        try:
+            self.__cursor.execute(query, params)
+            return self.__cursor.fetchall()
+        except psycopg2.Error as e:
+            print("Error fetching data", str(e))
+            return None
 
     def fetch_data_by_name(self, name):
         """Fetches data by name."""
         name_check = {"data_name_exclusive": name}
         query, params = self.build_query(name_check)
-        self.__cursor.execute(query, params)
-        data = self.__cursor.fetchone()
-        return data
+        try:
+            self.__cursor.execute(query, params)
+            return self.__cursor.fetchone()
+        except psycopg2.Error as e:
+            print("Error fetching data", str(e))
+            return None
 
     def fetch_data_by_id(self, data_id):
         """Fetches data by id."""
         id_check = {"data_id": data_id}
         query, params = self.build_query(id_check)
-        self.__cursor.execute(query, params)
-        data = self.__cursor.fetchone()
-        return data
+        try:
+            self.__cursor.execute(query, params)
+            return self.__cursor.fetchone()
+        except psycopg2.Error as e:
+            print("Error fetching data", str(e))
+            return None
 
     def fetch_last_data_id(self):
         """Fetches the last data id."""
-        self.__cursor.execute("SELECT data_id FROM data ORDER by data_id DESC LIMIT 1")
-        data_id = self.__cursor.fetchone()
-        return data_id
+        try:
+            self.__cursor.execute("SELECT data_id FROM data ORDER by data_id DESC LIMIT 1")
+            return self.__cursor.fetchone()
+        except psycopg2.Error as e:
+            print("Error fetching data", str(e))
+            return None
 
     def create_data(self, data_info: dict):
         """Creates a new data."""
@@ -150,9 +163,11 @@ class Data:
             invenio,
             uid,
         )
-
-        self.__cursor.execute(query, values)
-        self.__db.commit()
+        try:
+            self.__cursor.execute(query, values)
+            self.__db.commit()
+        except psycopg2.Error as e:
+            print("Error creating data", str(e))
 
     def fetch_project_data(self, user_id):
         """Fetches project data."""
@@ -173,9 +188,12 @@ class Data:
                     OR up2.project_id = d.project_id_2)
         )
         """
-        self.__cursor.execute(base_query, str(user_id))
-        data = self.__cursor.fetchall()
-        return data
+        try:
+            self.__cursor.execute(base_query, str(user_id))
+            return self.__cursor.fetchall()
+        except psycopg2.Error as e:
+            print("Error fetching data", str(e))
+            return None
 
     def update_data(self, data_info: dict, data_id: int):
         """Updates a data."""
@@ -185,32 +203,45 @@ class Data:
         data_location = data_info["data_location"]
         invenio = data_info["invenio"]
 
-        self.__cursor.execute(
-            "UPDATE data"
-            " SET data_name=%s, data_description=%s, data_location=%s, data_location_type = %s, invenio=%s"
-            " WHERE data_id=%s",
-            (
-                data_name,
-                data_description,
-                data_location,
-                data_location_type,
-                invenio,
-                data_id,
-            ),
-        )
-        self.__db.commit()
+        try:
+            self.__cursor.execute(
+                "UPDATE data"
+                " SET data_name=%s, data_description=%s, data_location=%s, data_location_type = %s, invenio=%s"
+                " WHERE data_id=%s",
+                (
+                    data_name,
+                    data_description,
+                    data_location,
+                    data_location_type,
+                    invenio,
+                    data_id,
+                ),
+            )
+            self.__db.commit()
+        except psycopg2.Error as e:
+            print("Error updating data", str(e))
 
     def remove_data(self, data_id: int):
         """Removes a data."""
-        self.__cursor.execute("DELETE FROM data WHERE data_id=%s", (data_id,))
-        self.__db.commit()
+        try:
+            self.__cursor.execute("DELETE FROM data WHERE data_id=%s", (data_id,))
+            self.__db.commit()
+        except psycopg2.Error as e:
+            print("Error removing data", str(e))
 
     def write_to_csv(self, rows):
         """Writes rows to a CSV file."""
-        output = io.StringIO()
-        writer = csv.writer(output)
+        try:
+            output = io.StringIO()
+            writer = csv.writer(output)
 
-        writer.writerows(rows)
+            writer.writerows(rows)
 
-        output.seek(0)
-        return output.getvalue()
+            output.seek(0)
+            return output.getvalue()
+        except IOError as e:
+            print("I/O Error writing to CSV", str(e))
+            return None
+        except csv.Error as e:
+            print("CSV Error writing to CSV", str(e))
+            return None

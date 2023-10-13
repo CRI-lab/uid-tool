@@ -37,8 +37,8 @@
   </td>
   <td>
     <select class="select select-bordered select-xs" name="user-role">
-      <option value="admin">admin</option>
-      <option value="creator">creator</option>
+      <option value="admin" {% if user['role'] == "admin" %}selected{% endif %}>admin</option>
+      <option value="creator" {% if user['role'] == "creator" %}selected{% endif %}>creator</option>
     </select>
   </td>
   <td>

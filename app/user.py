@@ -54,14 +54,8 @@ def delete_confirmation_user(user_id):
 @admin_permissions
 def remove_user(user_id):
     """Delete a user."""
-    try:
-        get_userdao().remove_user(user_id)
-    except Exception as e:
-        print("There was an error deleting user" + str(e))
-    else:
-        return "<tr>User Deleted</tr>"
-
-    return None
+    get_userdao().remove_user(user_id)
+    return "<tr>User Deleted</tr>"
 
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -76,12 +70,8 @@ def create_user():
             "role": request.form["user-role"],
             "password": request.form["user-password"],
         }
-        try:
-            user_id = get_userdao().create_user(user_info)[0]
-        except Exception as e:
-            print("There was an error creating user" + str(e))
-        else:
-            return render_template("user/row.html", user=user_info, user_id=user_id)
+        user_id = get_userdao().create_user(user_info)[0]
+        return render_template("user/row.html", user=user_info, user_id=user_id)
 
     return render_template("user/create.html")
 
@@ -91,6 +81,7 @@ def create_user():
 def user_input_fields(user_id):
     """Render input fields to edit a user."""
     user = get_userdao().fetch_user(user_id)[0]
+    print(user)
     return render_template("user/edit.html", user=user, user_id=user_id)
 
 
@@ -106,14 +97,8 @@ def update_user(user_id):
         "password": request.form["user-password"],
     }
 
-    try:
-        get_userdao().update_user(user_info, user_id)
-    except Exception as e:
-        print("There was an error updating user: " + str(e))
-    else:
-        return render_template("user/row.html", user=user_info, user_id=user_id)
-
-    return None
+    get_userdao().update_user(user_info, user_id)
+    return render_template("user/row.html", user=user_info, user_id=user_id)
 
 
 @bp.route("/<int:user_id>/row")
