@@ -1,10 +1,15 @@
-from psycopg2.extensions import connection
+"""
+This module provides a Data DAO class for interacting with a database table called 'data'.
+"""
 import csv
 import io
 from datetime import datetime
+from psycopg2.extensions import connection
 
 
 class Data:
+    """Data DAO."""
+
     __db = None
     __cursor = None
 
@@ -13,6 +18,7 @@ class Data:
         self.__cursor = self.__db.cursor()
 
     def build_query(self, filters: dict):
+        """Builds a SQL query based on the provided filters."""
         base_query = """
         SELECT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_description,
                d.data_location, invenio, u.email, p1.project_name as project1_name, 
@@ -85,61 +91,71 @@ class Data:
         return base_query, params
 
     def fetch_data_table(self, filters: dict):
+        """Fetches data from the database."""
         query, params = self.build_query(filters)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchall()
         return data
 
     def fetch_data_by_name(self, name):
+        """Fetches data by name."""
         name_check = {"data_name_exclusive": name}
         query, params = self.build_query(name_check)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data
 
-    def fetch_data_by_id(self, id):
-        id_check = {"data_id": id}
+    def fetch_data_by_id(self, data_id):
+        """Fetches data by id."""
+        id_check = {"data_id": data_id}
         query, params = self.build_query(id_check)
-        print(query, params)
         self.__cursor.execute(query, params)
         data = self.__cursor.fetchone()
         return data
 
     def fetch_last_data_id(self):
+        """Fetches the last data id."""
         self.__cursor.execute("SELECT data_id FROM data ORDER by data_id DESC LIMIT 1")
         data_id = self.__cursor.fetchone()
         return data_id
 
     def create_data(self, data_info: dict):
+        """Creates a new data."""
+        uid = data_info["uid"]
         user_id = data_info["user_id"]
         data_name = data_info["data_name"]
         project1_id = data_info["project1_id"]
         project2_id = data_info["project2_id"]
         data_description = data_info["data_description"]
-        invenio = False if data_info.get("invenio") is None else True
+        invenio = "invenio" in data_info
         data_location_type = data_info["data_location_type"]
         data_location = data_info["data_location"]
         db_created = data_info["db_created"]
-        uid = data_info["uid"]
 
-        self.__cursor.execute(
-            "INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, data_description, data_location_type, data_location, invenio, uid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING data_id;",
-            (
-                user_id,
-                project1_id,
-                project2_id,
-                db_created,
-                data_name,
-                data_description,
-                data_location_type,
-                data_location,
-                invenio,
-                uid,
-            ),
+        query = """
+                INSERT INTO data (creator_id, project_id_1, project_id_2, created, data_name, data_description,
+                data_location_type, data_location, invenio, uid)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING data_id;
+                """
+        values = (
+            user_id,
+            project1_id,
+            project2_id,
+            db_created,
+            data_name,
+            data_description,
+            data_location_type,
+            data_location,
+            invenio,
+            uid,
         )
+
+        self.__cursor.execute(query, values)
         self.__db.commit()
 
     def fetch_project_data(self, user_id):
+        """Fetches project data."""
         base_query = """
         SELECT DISTINCT data_id, data_name, u.firstname, u.lastname, d.created, d.data_location_type, d.data_description,
                d.data_location, invenio, u.email, p1.project_name as project1_name, 
@@ -162,6 +178,7 @@ class Data:
         return data
 
     def update_data(self, data_info: dict, data_id: int):
+        """Updates a data."""
         data_name = data_info["data_name"]
         data_description = data_info["data_description"]
         data_location_type = data_info["data_location_type"]
@@ -184,10 +201,12 @@ class Data:
         self.__db.commit()
 
     def remove_data(self, data_id: int):
+        """Removes a data."""
         self.__cursor.execute("DELETE FROM data WHERE data_id=%s", (data_id,))
         self.__db.commit()
 
     def write_to_csv(self, rows):
+        """Writes rows to a CSV file."""
         output = io.StringIO()
         writer = csv.writer(output)
 

@@ -12,6 +12,8 @@ flask = "^2.3.3"
 flask-assets = "^2.0"
 python-dotenv = "^1.0.0"
 uwsgi = "^2.0.22"
+pycln = "^2.2.2"
+pydocstyle = "^6.3.0"
 
 
 [build-system]

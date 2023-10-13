@@ -1,5 +1,32 @@
+"""
+This module defines a Flask blueprint for managing data-related functionality.
+
+The blueprint, named 'data', provides routes for displaying data in a table,
+creating new data entries, updating existing data entries, and deleting data entries.
+
+Blueprint Details:
+- Blueprint Name: data
+- URL Prefix: /data
+- Decorators: login_required (applied to all routes)
+
+Routes:
+- GET /data/ : Display data entries in a table
+- POST /data/data_name : Check if data with a given name already exists
+- GET/POST /data/create : Create a new data entry
+- GET /data/download/<int:data_id> : Download the README file for a data entry
+- GET/POST /data/update : Update a data entry
+- DELETE /data/<int:data_id> : Remove a data entry
+- GET /data/<int:data_id> : Fetch a data entry
+- GET /data/<int:data_id>/row : Render a single data row
+- GET /data/<int:data_id>/edit : Render input fields to edit a data entry
+- POST /data/location-type : Fetch data by location type
+- POST /data/filter : Filter the data table
+- GET /data/download-table-csv : Download the data table as a CSV
+- GET /data/delete-confirmation/<int:data_id> : Display delete confirmation for a data entry
+
+"""
 import io
-import csv
+from datetime import datetime
 
 from flask import (
     Blueprint,
@@ -12,13 +39,13 @@ from flask import (
 )
 from app.db import get_datadao, get_projectdao, get_userdao
 from app.auth import login_required
-from datetime import datetime
 
 bp = Blueprint("data", __name__, url_prefix="/data")
 
 
 @bp.route("/")
 def display_page():
+    """Display data entries in a table."""
     data_entries = get_datadao().fetch_data_table(filters={})
     session["data"] = data_entries
     projects = get_projectdao().fetch_projects()
@@ -32,6 +59,7 @@ def display_page():
 
 @bp.post("/data_name")
 def check_data_exists():
+    """Check if data with a given name already exists."""
     data_name = request.form["data-name"]
     exists = get_datadao().fetch_data_by_name(data_name)
 
@@ -41,25 +69,29 @@ def check_data_exists():
 @bp.route("/create", methods=["GET", "POST"])
 @login_required
 def create_data():
+    """Create a new data entry in the database."""
     user_id = session["user_id"]
     project_list = get_projectdao().fetch_project_by_user(user_id)
 
     if request.method == "POST":
-        data_info = dict()
-        data_info["user_id"] = user_id
-        data_info["data_name"] = request.form["data-name"]
-        project1_id = data_info["project1_id"] = request.form["project1-id"]
-        project2_id = data_info["project2_id"] = request.form["project2-id"]
-        data_info["data_description"] = request.form["data-description"]
-        data_info["invenio"] = False if request.form.get("invenio") is None else True
-        data_info["data_location_type"] = request.form["data-location-type"]
-        data_info["data_location"] = request.form["data-location"]
-        created_date = datetime.now()
-        data_info["db_created"] = created_date.strftime("%Y-%m-%d %H:%M:%S")
-        id_date = created_date.strftime("%Y%m%d")
+        data_info = {
+            "user_id": user_id,
+            "data_name": request.form["data-name"],
+            "project1_id": request.form["project1-id"],
+            "project2_id": request.form["project2-id"],
+            "data_description": request.form["data-description"],
+            "invenio": request.form.get("invenio") is not None,
+            "data_location_type": request.form["data-location-type"],
+            "data_location": request.form["data-location"],
+            "db_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "uid": "",
+        }
+
+        project1_id = data_info["project1_id"]
+        project2_id = data_info["project2_id"]
 
         try:
-            if project2_id != "-1" and project1_id != project2_id:
+            if project1_id != project2_id and project2_id != "-1":
                 project1_code, project2_code = get_projectdao().get_projects_from_id(
                     project1_id, project2_id
                 )
@@ -69,12 +101,9 @@ def create_data():
                 )
                 data_info["project2_id"] = "-1"
 
-            # get id from last entry
-            data_id = get_datadao().fetch_last_data_id()
-            if data_id is None:
-                data_id = str(1).zfill(3)
-            else:
-                data_id = str((data_id[0] + 1) % 999).zfill(3)
+            data_id = get_datadao().fetch_last_data_id() or str(1).zfill(3)
+            data_id = str((data_id[0] + 1) % 999).zfill(3)
+            id_date = datetime.now().strftime("%Y%m%d")
             uid = f"CRC{id_date}{data_id}{project1_code}{project2_code}"
             data_info["uid"] = uid
 
@@ -96,6 +125,7 @@ def create_data():
 @bp.get("/download/<int:data_id>")
 @login_required
 def download_readme(data_id):
+    """Downloads the README file."""
     data = get_datadao().fetch_data_by_id(data_id)
     data_info = ""
     for key, value in data.items():
@@ -115,14 +145,15 @@ def download_readme(data_id):
 @bp.route("/update", methods=["GET", "POST"])
 @login_required
 def update_page():
+    """Update a data entry in the database."""
     user_id = session["user_id"]
-    # TODO Need to include project association
     data_entries = get_datadao().fetch_project_data(user_id)
     return render_template("data/update.html", data_entries=data_entries)
 
 
 @bp.get("/<int:data_id>")
 def fetch_data(data_id):
+    """Fetche a data entry from the database."""
     data = get_datadao().fetch_data_by_id(data_id)
     return data
 
@@ -130,24 +161,28 @@ def fetch_data(data_id):
 @bp.put("/<int:data_id>")
 @login_required
 def update_data(data_id):
-    data_info = dict()
-    data_info["data_name"] = request.form["data-name"]
-    data_info["data_description"] = request.form["data-description"]
-    data_info["data_location_type"] = request.form["data-location-type"]
-    data_info["data_location"] = request.form["data-location"]
-    data_info["invenio"] = False if request.form.get("invenio") is None else True
+    """Update a data entry in the database."""
+    data_info = {
+        "data_name": request.form["data-name"],
+        "data_description": request.form["data-description"],
+        "data_location_type": request.form["data-location-type"],
+        "data_location": request.form["data-location"],
+        "invenio": bool(request.form.get("invenio")),
+    }
     try:
         get_datadao().update_data(data_info=data_info, data_id=data_id)
     except Exception as e:
-        print("There was an error updated data: " + e)
+        print("There was an error updating data: " + str(e))
     else:
         data = get_datadao().fetch_data_by_id(id=data_id)
         return render_template("data/row.html", data=data)
+    return None
 
 
 @bp.delete("/<int:data_id>")
 @login_required
 def remove_data(data_id):
+    """Delete a data entry from the database."""
     try:
         get_datadao().remove_data(data_id)
     except Exception as e:
@@ -159,6 +194,7 @@ def remove_data(data_id):
 @bp.route("/<int:data_id>/row")
 @login_required
 def render_datarow(data_id):
+    """Render a data row."""
     data = get_datadao().fetch_data_by_id(data_id)
     return render_template("data/row.html", data=data)
 
@@ -166,6 +202,7 @@ def render_datarow(data_id):
 @bp.get("/<int:data_id>/edit")
 @login_required
 def edit_data(data_id):
+    """Renders a data row."""
     data = get_datadao().fetch_data_by_id(data_id)
     return render_template("data/edit2.html", data=data)
 
@@ -173,29 +210,33 @@ def edit_data(data_id):
 @bp.post("/location-type")
 @login_required
 def data_location_field():
+    """Fetche data by location type."""
     location = request.form["data-location-type"]
     return render_template("data/location.html", location=location)
 
 
 @bp.post("/filter")
 def filter_data_table():
-    filters = dict()
-    filters["data_name_match"] = request.form["data-name"]
-    filters["from_date"] = request.form["from-date"]
-    filters["to_date"] = request.form["to-date"]
-    filters["email"] = request.form["email"]
-    filters["data_location_type"] = request.form["data-location-type"]
-    filters["invenio"] = request.form["invenio"]
-    filters["project"] = request.form["project"]
-    filters["uid"] = request.form["uid"]
+    """Filters the data table."""
+    filters = {
+        "data_name_match": request.form["data-name"],
+        "from_date": request.form["from-date"],
+        "to_date": request.form["to-date"],
+        "email": request.form["email"],
+        "data_location_type": request.form["data-location-type"],
+        "invenio": request.form["invenio"],
+        "project": request.form["project"],
+        "uid": request.form["uid"],
+    }
 
-    session["data"] = data_entries = get_datadao().fetch_data_table(filters)
+    session["data"] = get_datadao().fetch_data_table(filters)
 
-    return render_template("data/table-body.html", data_entries=data_entries)
+    return render_template("data/table-body.html", data_entries=session["data"])
 
 
 @bp.get("/download-table-csv")
 def download_table_csv():
+    """Download the data table as a CSV."""
     data = session.get("data", {})
     output = get_datadao().write_to_csv(data)
 
@@ -208,4 +249,5 @@ def download_table_csv():
 
 @bp.get("/delete-confirmation/<int:data_id>")
 def delete_confirmation(data_id):
+    """Display delete confirmation before deletion."""
     return render_template("data/delete-confirmation.html", data_id=data_id)

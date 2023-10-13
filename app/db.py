@@ -1,15 +1,18 @@
+"""
+This module contains functions for handling database connections and initializing the application.
+"""
 import os
 import psycopg2
 import psycopg2.extras
 import click
 from flask import current_app, g, Flask
-from werkzeug.security import generate_password_hash, check_password_hash
 from app.dao.DataDao import Data
 from app.dao.ProjectDao import Project
 from app.dao.UserDao import User
 
 
 def get_db():
+    """Returns a database connection object."""
     if "db" not in g:
         g.db = (
             psycopg2.connect(
@@ -26,25 +29,30 @@ def get_db():
 
 
 def load_dao():
+    """Load DAO objects."""
     g.data_dao = Data(get_db())
 
 
 def get_datadao():
+    """Get Data DAO objects"""
     g.data_dao = Data(get_db())
     return g.data_dao
 
 
 def get_projectdao():
+    """Get project DAO objects"""
     g.project_dao = Project(get_db())
     return g.project_dao
 
 
 def get_userdao():
+    """Get user DAO object"""
     g.user_dao = User(get_db())
     return g.user_dao
 
 
 def close_db(e=None):
+    """Close Db connection."""
     db = g.pop("db", None)
 
     if db is not None:
@@ -52,38 +60,44 @@ def close_db(e=None):
 
 
 def init_db():
+    """Initialize the database."""
     db = get_db()
-    cur = db.cursor()
-    userdao = get_userdao()
-    with current_app.open_resource("schema.sql") as f:
-        sql = f.read()
-    cur.execute(sql)
+    cursor = db.cursor()
+    user_dao = get_userdao()
+
+    with current_app.open_resource("schema.sql") as file:
+        sql = file.read()
+
+    cursor.execute(sql)
     db.commit()
 
-    user1 = {
-        "email": "test123@gmail.com",
-        "firstname": "test",
-        "lastname": "asdf",
-        "role": "admin",
-        "password": "asdf",
-    }
-    user2 = {
-        "email": "asdf@gmail.com",
-        "firstname": "test",
-        "lastname": "asdf",
-        "role": "creator",
-        "password": "asdf",
-    }
+    users = [
+        {
+            "email": "test123@gmail.com",
+            "firstname": "test",
+            "lastname": "asdf",
+            "role": "admin",
+            "password": "asdf",
+        },
+        {
+            "email": "asdf@gmail.com",
+            "firstname": "test",
+            "lastname": "asdf",
+            "role": "creator",
+            "password": "asdf",
+        },
+    ]
 
-    userdao.create_user(user1)
-    userdao.create_user(user2)
+    for user in users:
+        user_dao.create_user(user)
 
-    userdao.assign_project(1, 1)
-    userdao.assign_project(1, 2)
-    userdao.assign_project(1, -1)
+    project_ids = [1, 2, -1]
+    for project_id in project_ids:
+        user_dao.assign_project(1, project_id)
 
 
 def init_app(app: Flask):
+    """Initialize the application."""
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.before_request(load_dao)

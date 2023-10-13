@@ -1,7 +1,12 @@
+"""
+This module provides a Project DAO class for interacting with a database table called 'project'.
+"""
 from psycopg2.extensions import connection
 
 
 class Project:
+    """Project DAO."""
+
     __db = None
     __cursor = None
 
@@ -10,22 +15,26 @@ class Project:
         self.__cursor = self.__db.cursor()
 
     def fetch_projects(self):
+        """Fetches all projects from the database."""
         self.__cursor.execute("SELECT * FROM project")
         return self.__cursor.fetchall()
 
     def fetch_project_by_name(self, project_name):
+        """Fetches projects by its name from the database."""
         self.__cursor.execute(
             "SELECT * FROM project WHERE project_name=%s", (project_name,)
         )
         return self.__cursor.fetchone()
 
     def fetch_project_by_id(self, project_id):
+        """Fetches a project from the database by its ID."""
         self.__cursor.execute(
             "SELECT * FROM project WHERE project_id=%s", (str(project_id))
         )
         return self.__cursor.fetchone()
 
     def fetch_project_by_user(self, user_id):
+        """Fetches projects associated with a given user."""
         base_query = """
                 SELECT DISTINCT *
                 FROM project p 
@@ -37,6 +46,7 @@ class Project:
         return project
 
     def create_project(self, project_info):
+        """Creates a new project."""
         create_date = project_info["created"]
         project_name = project_info["project_name"]
         project_code = project_info["code"]
@@ -53,6 +63,7 @@ class Project:
         self.__db.commit()
 
     def update_project(self, project_info, project_id):
+        """Updates a project."""
         project_name = project_info["project_name"]
         finished = project_info["finished"]
         self.__cursor.execute(
@@ -62,10 +73,12 @@ class Project:
         self.__db.commit()
 
     def remove_project(self, project_id):
+        """Removes a project."""
         self.__cursor.execute("DELETE FROM project WHERE project_id=%s", (project_id,))
         self.__db.commit()
 
     def get_projects_from_id(self, project1_id, project2_id=None):
+        """Get project codes."""
         if project2_id is not None:
             self.__cursor.execute(
                 "SELECT code FROM project WHERE project_id=%s OR project_id=%s ",
