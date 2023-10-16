@@ -22,5 +22,5 @@ jobs:
             cd $UID_TOOL
             git fetch
             git pull
-            docker-compose up --build -d
+            docker compose up --build -d
       
