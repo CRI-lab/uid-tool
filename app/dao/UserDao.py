@@ -18,7 +18,7 @@ class User:
 
     def fetch_user(self, user_id=None):
         """Fetches all users from the database."""
-        query = "SELECT * FROM users"
+        query = "SELECT user_id, email, firstname, lastname, role, inactive FROM users"
         if user_id is not None:
             query += " WHERE user_id = %s"
         query += " ORDER BY user_id"
@@ -38,8 +38,8 @@ class User:
         password = user_info["password"]
         try:
             self.__cursor.execute(
-                "INSERT INTO users (email, firstname, lastname, role, password) VALUES (%s, %s, %s, %s, %s) RETURNING user_id",
-                (email, firstname, lastname, role, generate_password_hash(password)),
+                "INSERT INTO users (email, firstname, lastname, role, password, inactive) VALUES (%s, %s, %s, %s, %s, %s) RETURNING user_id",
+                (email, firstname, lastname, role, generate_password_hash(password), False),
             )
             self.__db.commit()
             return self.__cursor.fetchone()
@@ -140,4 +140,29 @@ class User:
             return self.__cursor.fetchall()
         except psycopg2.Error as e:
             print("Error fetching user projects: ", e)
+            return None
+
+    def toggle_inactive_user(self, user_id: int):
+        """Sets a user as inactive."""
+        try:
+            self.__cursor.execute("SELECT inactive FROM users WHERE user_id=%s", (user_id,))
+            inactive = self.__cursor.fetchone()[0]
+            if inactive:
+                self.__cursor.execute("UPDATE users SET inactive=FALSE WHERE user_id=%s", (user_id,))
+            else:
+                self.__cursor.execute("UPDATE users SET inactive=TRUE WHERE user_id=%s", (user_id,))
+            self.__db.commit()
+        except psycopg2.Error as e:
+            print("Error setting inactive user: ", e)
+
+    def check_inactive_user(self, email: str):
+        """Checks if a user is inactive."""
+        try:
+            self.__cursor.execute(
+                "SELECT user_id FROM users WHERE email=%s AND inactive=TRUE",
+                (email,),
+            )
+            return self.__cursor.fetchone()
+        except psycopg2.Error as e:
+            print("Error checking inactive user: ", e)
             return None

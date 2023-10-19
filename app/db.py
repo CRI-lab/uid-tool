@@ -74,6 +74,7 @@ def init_db():
                 "lastname": "asdf",
                 "role": "admin",
                 "password": "asdf",
+                "inactive": False
             },
             {
                 "email": "asdf@gmail.com",
@@ -81,6 +82,7 @@ def init_db():
                 "lastname": "asdf",
                 "role": "creator",
                 "password": "asdf",
+                "inactive": False
             },
         ]
 

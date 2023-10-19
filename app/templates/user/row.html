@@ -4,6 +4,7 @@
   <td>{{user['firstname']}}</td>
   <td>{{user['lastname']}}</td>
   <td>{{user['role']}}</td>
+  <td>{{user['inactive']}}</td>
   <td>
     <button
       type="button"
@@ -14,8 +15,10 @@
     </button>
     <button
       type="button"
-      hx-delete="{{ url_for('user.remove_user', user_id=user_id) }}"
+      hx-get="{{ url_for('user.delete_confirmation_user', user_id=user_id) }}"
       class="btn btn-error btn-xs"
+      hx-target="closest td"
+      hx-swap="outerHTML"
     >
       remove
     </button>

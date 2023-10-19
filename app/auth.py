@@ -77,7 +77,7 @@ def get_current_user():
     if user_id is None:
         return None
 
-    user = get_userdao().fetch_user(user_id)[0]
+    user = get_userdao().fetch_user(user_id)[0] if len(get_userdao().fetch_user(user_id)) > 0 else None
     return user
 
 
@@ -135,6 +135,8 @@ def login():
             return "Incorrect Username."
         elif not check_password_hash(user["password"], password=password):
             return "Incorrect Password."
+        elif get_userdao().check_inactive_user(email):
+            return "User account is inactive."
 
         session.clear()
         session["user_id"] = user["user_id"]

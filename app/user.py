@@ -57,6 +57,14 @@ def remove_user(user_id):
     get_userdao().remove_user(user_id)
     return "<tr>User Deleted</tr>"
 
+@bp.put("/deactivate/<int:user_id>")
+@admin_permissions
+def deactivate_user(user_id):
+    """Deactivate a user."""
+    get_userdao().toggle_inactive_user(user_id)
+    user_info = get_userdao().fetch_user(user_id)[0]
+    return render_template("user/row.html", user_id=user_id, user=user_info)
+
 
 @bp.route("/create", methods=["GET", "POST"])
 @admin_permissions
@@ -81,7 +89,6 @@ def create_user():
 def user_input_fields(user_id):
     """Render input fields to edit a user."""
     user = get_userdao().fetch_user(user_id)[0]
-    print(user)
     return render_template("user/edit.html", user=user, user_id=user_id)
 
 
@@ -97,6 +104,7 @@ def update_user(user_id):
         "password": request.form["user-password"],
     }
 
+    user_info["inactive"] =  bool(get_userdao().check_inactive_user(user_info["email"]))
     get_userdao().update_user(user_info, user_id)
     return render_template("user/row.html", user=user_info, user_id=user_id)
 
