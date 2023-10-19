@@ -56,7 +56,7 @@ CREATE TABLE Coastal6 (
 
 INSERT INTO public.project(
 	project_id, created, project_name, code)
-	VALUES (-1, '2023-08-08 11:02:29', '', 'XX');
+	VALUES (0, '2023-08-08 11:02:29', '', 'XX');
 
 INSERT INTO public.project(
 	project_id, created, project_name, code, finished)
@@ -68,4 +68,4 @@ INSERT INTO public.project(
 
 INSERT INTO public.project(
 	project_id, created, project_name, code, finished)
-	VALUES (3, '2023-08-08 11:02:29', 'asdf', 'AS', False);
+	VALUES (3, '2023-08-08 12:00:00', 'asdf', 'AS', False);

@@ -89,7 +89,7 @@ def init_db():
         for user in users:
             user_dao.create_user(user)
 
-        project_ids = [1, 2, -1]
+        project_ids = [0, 1, 2]
         for project_id in project_ids:
             user_dao.assign_project(1, project_id)
     except psycopg2.Error as e:

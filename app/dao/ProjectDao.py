@@ -69,12 +69,17 @@ class Project:
         finished = project_info["finished"]
         try:
             self.__cursor.execute(
-                "INSERT INTO project(created, project_name, code, finished) VALUES(%s, %s, %s, %s) RETURNING project_id",
+                "SELECT project_id FROM project ORDER BY project_id DESC LIMIT 1",
+            )
+            project_id = self.__cursor.fetchone()[0] + 1
+            self.__cursor.execute(
+                "INSERT INTO project(created, project_name, code, finished, project_id) VALUES(%s, %s, %s, %s, %s) RETURNING project_id",
                 (
                     create_date,
                     project_name,
                     project_code,
                     finished,
+                    project_id
                 ),
             )
             self.__db.commit()
