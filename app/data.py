@@ -102,8 +102,8 @@ def create_data():
             data_info["project2_id"] = "-1"
             project2_code = "XX"
 
-        data_id = get_datadao().fetch_last_data_id() 
-        data_id = str(1).zfill(3) if data_id is None else str(data_id + 1).zfill(3)
+        data_id = get_datadao().fetch_last_data_id()
+        data_id = str(1).zfill(3) if data_id is None else str(data_id[0] + 1).zfill(3)
         id_date = datetime.now().strftime("%Y%m%d")
         uid = f"CRC{id_date}{data_id}{project1_code[0]}{project2_code[0]}"
         data_info["uid"] = uid
