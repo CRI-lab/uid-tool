@@ -46,7 +46,7 @@ endblock %} {% endblock %} {% block content %}
         </div>
       </label>
       <select class="select select-bordered" name="project2-id">
-        <option value="-1" selected>Pick one (if needed)</option>
+        <option value="0" selected>Pick one (if needed)</option>
         {% for project in projects %}
         <option value="{{ project.project_id }}">
           {{ project.project_name }}
