@@ -1,0 +1,36 @@
+{% for record in record_entries %}
+    <tr id="{{ record['record_id'] }}" class="hover border-b-0 border-t main-detail">
+    <td>{{ record['record_name'] }}</td>
+    <td>{{ record['created'] }}</td>
+    <td>
+        {{ record['email'] + " " + record['firstname'] + " " +
+    record['lastname'] }}
+    </td>
+    <td>{{ record['data_location_type'] }}</td>
+    <td>{{ record['invenio'] }}</td>
+    <td>{{ record['project1_name'] }}</td>
+    <td>{{ record['project2_name'] }}</td>
+    <td>
+        <div id="uid" class="tooltip" data-tip="Copy To Clipboard">
+            {{ record['uid'] }}
+        </div>
+    </td>
+    </tr>
+    <tr
+            class="border-t-0 expanded-detail"
+            style="display:none"
+    >
+        <td colspan="3" class="max-w-64 maxh-64">
+            Description: {{ record['record_description'] }}
+        </td>
+        <td colspan="4">Location: {{ record['data_location'] }}</td>
+        <td>
+            <a
+                    href="{{ url_for('record.download_readme', record_id=record['record_id']) }}"
+            >
+                <button class="btn btn-sm">Download UID</button>
+            </a
+            >
+        </td>
+    </tr>
+{% endfor %}

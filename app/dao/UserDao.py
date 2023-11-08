@@ -1,9 +1,9 @@
 """
 This module provides a User DAO class for interacting with a database table called 'user'.
 """
+import psycopg2
 from psycopg2.extensions import connection
 from werkzeug.security import generate_password_hash
-import psycopg2
 
 
 class User:
@@ -38,7 +38,8 @@ class User:
         password = user_info["password"]
         try:
             self.__cursor.execute(
-                "INSERT INTO users (email, firstname, lastname, role, password, inactive) VALUES (%s, %s, %s, %s, %s, %s) RETURNING user_id",
+                "INSERT INTO users (email, firstname, lastname, role, password, inactive) "
+                "VALUES (%s, %s, %s, %s, %s, %s) RETURNING user_id",
                 (email, firstname, lastname, role, generate_password_hash(password), False),
             )
             self.__db.commit()

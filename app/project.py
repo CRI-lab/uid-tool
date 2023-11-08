@@ -1,8 +1,10 @@
 """Project blueprint to manage project CRUD operations"""
 from datetime import datetime
+
 from flask import Blueprint, render_template, request
-from app.db import get_projectdao
+
 from app.auth import admin_permissions
+from app.db import get_projectdao
 
 bp = Blueprint("project", __name__, url_prefix="/project")
 
@@ -68,9 +70,7 @@ def fetch_project(project_id):
 @admin_permissions
 def update_project(project_id):
     """Update an existing project."""
-    project_info = {}
-    project_info["project_name"] = request.form["project_name"]
-    project_info["finished"] = bool(request.form.get("finished"))
+    project_info = {"project_name": request.form["project_name"], "finished": bool(request.form.get("finished"))}
     get_projectdao().update_project(project_info, project_id)
     project = get_projectdao().fetch_project_by_id(project_id)
     return render_template("project/row.html", project=project)

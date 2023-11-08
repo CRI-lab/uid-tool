@@ -1,0 +1,222 @@
+{% extends "base.html" %} {% block header %}
+    {% block title %}Record{% endblock %}
+{% endblock %} {% block content %}
+
+    <div class="flex items-center justify-center">
+        <div id="form" class="flex-none w-1/6 pl-5 pr-5 sticky">
+            <div class="flex justify-between items-center">
+                <a href="{{ url_for('record.download_table_csv') }}">
+                    <button class="btn btn-info btn-xs">Export to CSV</button>
+                </a>
+                <a>
+                    <button class="btn btn-primary btn-xs">Search</button>
+                </a>
+            </div>
+            <form
+                    hx-post="{{ url_for('record.filter_record_table') }}"
+                    hx-trigger="change"
+                    hx-target="tbody"
+                    hx-swap="innerHTML"
+                    class="pb-5"
+            >
+                <!-- Dataset Name Input -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Dataset Name:</span>
+                    </label>
+                    <input
+                            type="text"
+                            name="record-name"
+                            placeholder="Type here"
+                            class="input input-xs input-bordered w-full max-w-xs"
+                    />
+                </div>
+
+                <!-- Created Date Range -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">From Date:</span>
+                        <div class="tooltip tooltip-top" data-tip="hello">
+                            <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                                 alt="circle-question-regular"/>
+                        </div>
+                    </label>
+                    <input
+                            type="date"
+                            name="from-date"
+                            placeholder="Type here"
+                            class="input input-xs input-bordered w-full max-w-xs"
+                    />
+
+                    <label class="label">
+                        <span class="label-text">To Date:</span>
+                        <div class="tooltip tooltip-top" data-tip="hello">
+                            <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                                 alt="circle-question-regular"/>
+                        </div>
+                    </label>
+                    <input
+                            type="date"
+                            name="to-date"
+                            placeholder="Type here"
+                            class="input input-xs input-bordered w-full max-w-xs"
+                    />
+                </div>
+
+                <!-- Creator Dropdown -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Creator</span>
+                    </label>
+                    <select class="select select-bordered select-xs" name="email">
+                        <option selected value="">Who created record?</option>
+                        {% for email in emails %}
+                            <option value="{{ email }}">{{ email }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Record Location Type -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Data Location Type</span>
+                        <div class="tooltip tooltip-top" data-tip="hello">
+                            <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                                 alt="circle-question-regular"/>
+                        </div>
+                    </label>
+                    <select
+                            class="select select-bordered select-xs"
+                            name="data-location-type"
+                    >
+                        <option selected value="">Where is data stored?</option>
+                        <option value="local">Locally Stored</option>
+                        <option value="coastal6">Coastal6</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Invenio Toggle -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Invenio</span>
+                        <div class="tooltip tooltip-top" data-tip="hello">
+                            <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                                 alt="circle-question-regular"/>
+                        </div>
+                    </label>
+                    <select class="select select-bordered select-xs" name="invenio">
+                        <option selected value="">Is it stored in Invenio?</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
+                <!-- Project Dropdown -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Projects:</span>
+                        <div class="tooltip tooltip-top" data-tip="hello">
+                            <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                                 alt="circle-question-regular"/>
+                        </div>
+                    </label>
+                    <select class="select select-bordered select-xs" name="project">
+                        <option value="" selected>Pick a Project</option>
+                        {% for project in projects[1:] %}
+                            <option value="{{ project['project_id'] }}">
+                                {{ project['project_name'] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- UID Input -->
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">UID :</span>
+                        <div class="tooltip tooltip-top" data-tip="hello">
+                            <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                                 alt="circle-question-regular"/>
+                        </div>
+                    </label>
+                    <input
+                            type="text"
+                            placeholder="Type here"
+                            class="input input-bordered input-xs w-full max-w-xs"
+                            id="uid"
+                            name="uid"
+                    />
+                </div>
+
+                <!-- Clear Button-->
+                <div class="flex justify-between pt-5">
+                    <button class="btn btn-primary row-end-auto btn-xs" type="submit">
+                        Clear
+                    </button>
+                    <button class="btn btn-primary btn-xs" onclick="event.preventDefault()">Search</button>
+                </div>
+            </form>
+        </div>
+        <div id="table" class="w-full">
+            <div class="overflow-x-auto flex-grow">
+                <table class="table">
+                    <!-- head -->
+                    <thead>
+                    <tr>
+                        <th>Dataset Name</th>
+                        <th>Created</th>
+                        <th>Creator</th>
+                        <th>Location Type</th>
+                        <th>Invenio</th>
+                        <th>Project 1</th>
+                        <th>Project 2</th>
+                        <th>UID</th>
+                    </tr>
+                    </thead>
+
+                    <!-- body -->
+                    <tbody class="record-table-body" id="index-table-body">
+                    {% for record in record_entries %}
+                        <tr id="{{ record['record_id'] }}" class="hover border-b-0 border-t main-detail">
+                        <td>{{ record['record_name'] }}</td>
+                        <td>{{ record['created'] }}</td>
+                        <td>
+                            {{ record['email'] + " " + record['firstname'] + " " +
+              record['lastname'] }}
+                        </td>
+                        <td>{{ record['data_location_type'] }}</td>
+                        <td>{{ record['invenio'] }}</td>
+                        <td>{{ record['project1_name'] }}</td>
+                        <td>{{ record['project2_name'] }}</td>
+                        <td>
+                            <div id="uid" class="tooltip" data-tip="Copy To Clipboard">
+                                {{ record['uid'] }}
+                            </div>
+                        </td>
+                        </tr>
+                        <tr
+                                class="border-t-0 bg-base-200 expanded-detail "
+                                style="display:none;"
+                        >
+                            <td colspan="3" class="max-w-64 maxh-64">
+                                Description: {{ record['record_description'] }}
+                            </td>
+                            <td colspan="4">Location: {{ record['data_location'] }}</td>
+                            <td>
+                                <a
+                                        href="{{ url_for('record.download_readme', record_id=record['record_id']) }}"
+                                >
+                                    <button class="btn btn-sm btn-primary">Download Record README</button>
+                                </a
+                                >
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

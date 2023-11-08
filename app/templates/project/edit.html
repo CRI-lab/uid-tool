@@ -1,41 +1,37 @@
 <tr class="editting">
-  <td>
-    <input
-      type="text"
-      name="project_name"
-      class="input input-bordered w-full max-w-xs input-xs"
-      value="{{ project['project_name'] }}"
-    />
-  </td>
-  <td>{{project['created']}}</td>
-  <td>{{project['code']}}</td>
-  <td>
-    <input
-      type="checkbox"
-      name="finished"
-      {%
-      if
-      project.finished
-      %}checked{%
-      endif
-      %}
-    />
-  </td>
-  <td>
-    <button
-      type="button"
-      hx-put="{{ url_for('project.update_project', project_id=project_id) }}"
-      hx-include="closest tr"
-      class="btn btn-primary btn-xs"
-    >
-      Save
-    </button>
-    <button
-      type="button"
-      hx-get="{{ url_for('project.render_datarow', project_id=project_id)}}"
-      class="btn btn-error btn-xs"
-    >
-      Cancel
-    </button>
-  </td>
+    <td>
+        <input
+                type="text"
+                name="project_name"
+                class="input input-bordered w-full max-w-xs input-xs"
+                value="{{ project['project_name'] }}"
+        />
+    </td>
+    <td>{{ project['created'] }}</td>
+    <td>{{ project['code'] }}</td>
+    <td>
+        <input
+                type="checkbox"
+                name="finished"
+                {% if
+      project.finished %}checked{% endif %}
+        />
+    </td>
+    <td>
+        <button
+                type="button"
+                hx-put="{{ url_for('project.update_project', project_id=project_id) }}"
+                hx-include="closest tr"
+                class="btn btn-primary btn-xs"
+        >
+            Save
+        </button>
+        <button
+                type="button"
+                hx-get="{{ url_for('project.render_row', project_id=project_id) }}"
+                class="btn btn-error btn-xs"
+        >
+            Cancel
+        </button>
+    </td>
 </tr>

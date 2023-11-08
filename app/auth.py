@@ -1,7 +1,8 @@
 """
 This module defines a Flask blueprint for managing user authentication and registration.
 
-The blueprint, named 'auth', provides routes for registering new users, logging in registered users, and logging out users.
+The blueprint, named 'auth', provides routes for registering new users, logging in registered users,
+and logging out users.
 
 Blueprint Details:
 - Blueprint Name: auth
@@ -24,11 +25,12 @@ Helper Functions:
 
 """
 
-import re
 import functools
+import re
 
 from flask import Blueprint, redirect, render_template, request, session, url_for, g
 from werkzeug.security import check_password_hash
+
 from app.db import get_userdao
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -124,7 +126,7 @@ def register():
 def login():
     """Log in a registered user by adding the user id to the session."""
     if g.user is not None:
-        return redirect(url_for("data.display_page"))
+        return redirect(url_for("record.display_page"))
 
     if request.method == "POST":
         email = request.form["email"]
@@ -140,7 +142,7 @@ def login():
 
         session.clear()
         session["user_id"] = user["user_id"]
-        return redirect(url_for("data.display_page"))
+        return redirect(url_for("record.display_page"))
 
     return render_template("auth/login.html", title="Login Page")
 

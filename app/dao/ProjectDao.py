@@ -1,8 +1,8 @@
 """
 This module provides a Project DAO class for interacting with a database table called 'project'.
 """
-from psycopg2.extensions import connection
 import psycopg2
+from psycopg2.extensions import connection
 
 
 class Project:
@@ -73,7 +73,8 @@ class Project:
             )
             project_id = self.__cursor.fetchone()[0] + 1
             self.__cursor.execute(
-                "INSERT INTO project(created, project_name, code, finished, project_id) VALUES(%s, %s, %s, %s, %s) RETURNING project_id",
+                "INSERT INTO project(created, project_name, code, finished, project_id) "
+                "VALUES(%s, %s, %s, %s, %s) RETURNING project_id",
                 (
                     create_date,
                     project_name,
@@ -94,7 +95,7 @@ class Project:
         finished = project_info["finished"]
         try:
             self.__cursor.execute(
-                "UPDATE project SET project_name=%s, finished=%s WHERE project_id=%s",
+                "UPDATE project SET project_name = %s, finished = %s WHERE project_id=%s",
                 (project_name, finished, project_id),
             )
             self.__db.commit()

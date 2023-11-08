@@ -7,12 +7,13 @@ import os
 
 from flask import Flask, redirect, url_for
 from flask_assets import Bundle, Environment
+
 from config import ProdConfig, DevConfig
 from . import auth
-from . import data
-from . import project
-from . import user
 from . import db
+from . import project
+from . import record
+from . import user
 
 
 def create_app():
@@ -22,7 +23,7 @@ def create_app():
 
     app.register_blueprint(auth.bp)
 
-    app.register_blueprint(data.bp)
+    app.register_blueprint(record.bp)
 
     app.register_blueprint(project.bp)
 

@@ -1,7 +1,7 @@
 """
 This module defines a Flask blueprint for user-related functionality.
 
-The blueprint, named 'user', provides routes for managing user data,
+The blueprint, named 'user', provides routes for managing user record,
 including displaying users in a table, creating new users, editing
 existing users, and assigning projects to users.
 
@@ -29,8 +29,9 @@ from flask import (
     render_template,
     request,
 )
-from app.db import get_projectdao, get_userdao
+
 from app.auth import admin_permissions
+from app.db import get_projectdao, get_userdao
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
@@ -56,6 +57,7 @@ def remove_user(user_id):
     """Delete a user."""
     get_userdao().remove_user(user_id)
     return "<tr>User Deleted</tr>"
+
 
 @bp.put("/deactivate/<int:user_id>")
 @admin_permissions
@@ -104,14 +106,14 @@ def update_user(user_id):
         "password": request.form["user-password"],
     }
 
-    user_info["inactive"] =  bool(get_userdao().check_inactive_user(user_info["email"]))
+    user_info["inactive"] = bool(get_userdao().check_inactive_user(user_info["email"]))
     get_userdao().update_user(user_info, user_id)
     return render_template("user/row.html", user=user_info, user_id=user_id)
 
 
 @bp.route("/<int:user_id>/row")
 @admin_permissions
-def render_datarow(user_id):
+def render_row(user_id):
     """Render a single user row."""
     user = get_userdao().fetch_user(user_id)[0]
     return render_template("user/row.html", user=user, user_id=user_id)

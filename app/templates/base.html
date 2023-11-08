@@ -1,66 +1,66 @@
 <!DOCTYPE html>
 <html data-theme="cmyk" lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     {% assets 'css' %}
-    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+        <link rel="stylesheet" href="{{ ASSET_URL }}"/>
     {% endassets %} {% assets 'js' %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
+{% endassets %}
 
     <title>Unique Identifier - {% block title %}{% endblock %}</title>
-  </head>
-  <body id="body">
-    <nav class="navbar bg-base-100">
-      <div class="flex-1">
+</head>
+<body id="body">
+<nav class="navbar bg-base-100">
+    <div class="flex-1">
         <a
-          href="{{ url_for('data.display_page') }}"
-          class="btn btn-ghost normal-case text-xl"
-          >UID Tool</a
+                href="{{ url_for('record.display_page') }}"
+                class="btn btn-ghost normal-case text-xl"
+        >UID Tool</a
         >
-      </div>
-      <div class="flex-none">
+    </div>
+    <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
-          <li>
-            <details>
-              <summary>Data</summary>
-              <ul class="p-2 bg-base-100 z-20">
-                <li><a href="{{ url_for('data.create_data') }}">Create</a></li>
-                <li><a href="{{ url_for('data.update_page') }}">Update</a></li>
-                <li><a href="{{ url_for('data.display_page') }}">List</a></li>
-              </ul>
-            </details>
-          </li>
-          {% if g.user_role == "admin": %}
-          <li><a href="{{ url_for('project.update_page')}}">Projects</a></li>
-          <li>
-            <details>
-              <summary>Users</summary>
-              <ul class="p-2 bg-base-100 z-20">
-                <li><a href="{{ url_for('user.display_page') }}">List</a></li>
+            <li>
+                <details>
+                    <summary>Record</summary>
+                    <ul class="p-2 bg-base-100 z-20">
+                        <li><a href="{{ url_for('record.create_record') }}">Create</a></li>
+                        <li><a href="{{ url_for('record.update_page') }}">Update</a></li>
+                        <li><a href="{{ url_for('record.display_page') }}">List</a></li>
+                    </ul>
+                </details>
+            </li>
+            {% if g.user_role == "admin" %}
+                <li><a href="{{ url_for('project.update_page') }}">Projects</a></li>
                 <li>
-                  <a href="{{ url_for('user.assign_project') }}"
-                    >Assign Projects</a
-                  >
+                    <details>
+                        <summary>Users</summary>
+                        <ul class="p-2 bg-base-100 z-20">
+                            <li><a href="{{ url_for('user.display_page') }}">List</a></li>
+                            <li>
+                                <a href="{{ url_for('user.assign_project') }}"
+                                >Assign Projects</a
+                                >
+                            </li>
+                        </ul>
+                    </details>
                 </li>
-              </ul>
-            </details>
-          </li>
-          {% else %}
-          <li><a href="{{ url_for('project.display_page')}}">Projects</a></li>
-          {% endif %} {% if g.user: %}
-          <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-          {% else %}
-          <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-          {% endif %}
+            {% else %}
+                <li><a href="{{ url_for('project.display_page') }}">Projects</a></li>
+            {% endif %} {% if g.user %}
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+        {% endif %}
         </ul>
-      </div>
-    </nav>
-    <header class="flex">
-      <h1 class="text-3xl pl-[21rem]">{% block header %}{% endblock %}</h1>
-    </header>
-    {% block content %} {% endblock content %}
-  </body>
+    </div>
+</nav>
+<header class="flex">
+    <h1 class="text-3xl pl-[21rem]">{% block header %}{% endblock %}</h1>
+</header>
+{% block content %} {% endblock content %}
+</body>
 </html>

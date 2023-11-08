@@ -1,31 +1,31 @@
 {% if action == "assign" %}
-<label for="projects" class="label">Select Projects:</label>
-<select
-  class="select select-bordered w-full max-w-xs"
-  name="projects"
-  id="projects"
-  multiple
->
-  {% for project in filtered_projects %}
-  <option value="{{ project.project_id }}">
-    {{ project.project_id }} {{ project.project_name }} {{ project.code }}
-  </option>
-  {% endfor %}
-</select>
-<button class="btn btn-primary row-end-auto" type="submit">Submit</button>
+    <label for="projects" class="label">Select Projects:</label>
+    <select
+            class="select select-bordered w-full max-w-xs"
+            name="projects"
+            id="projects"
+            multiple
+    >
+        {% for project in filtered_projects %}
+            <option value="{{ project.project_id }}">
+                {{ project.project_id }} {{ project.project_name }} {{ project.code }}
+            </option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-primary row-end-auto" type="submit">Submit</button>
 {% elif action == "unassign" %}
-<label for="projects" class="label">Select User Projects:</label>
-<select
-  class="select select-bordered w-full max-w-xs"
-  name="projects"
-  id="projects"
-  multiple
->
-  {% for project in user_projects %}
-  <option value="{{ project.project_id }}">
-    {{ project.project_id }} {{ project.project_name }} {{ project.code }}
-  </option>
-  {% endfor %}
-</select>
-<button class="btn btn-primary row-end-auto" type="submit">Submit</button>
+    <label for="projects" class="label">Select User Projects:</label>
+    <select
+            class="select select-bordered w-full max-w-xs"
+            name="projects"
+            id="projects"
+            multiple
+    >
+        {% for project in user_projects %}
+            <option value="{{ project.project_id }}">
+                {{ project.project_id }} {{ project.project_name }} {{ project.code }}
+            </option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-primary row-end-auto" type="submit">Submit</button>
 {% endif %}

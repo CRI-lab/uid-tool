@@ -1,0 +1,127 @@
+{% extends "base.html" %} {% block header %} {% block title %}Curate Dataset{% endblock %} {% endblock %}
+{% block content %}
+    <div class="flex justify-center items-center pt-4">
+        <form hx-post="{{ url_for('record.create_record') }}" hx-target="#download-popup" class="w-80">
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Dataset Name:</span>
+                    <div class="tooltip tooltip-top" data-tip="hello">
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <input
+                        type="text"
+                        placeholder="Type here"
+                        class="input input-bordered w-full max-w-xs"
+                        maxlength="200"
+                        id="record-name"
+                        name="record-name"
+                        hx-target="#error"
+                        hx-swap="innerHTML"
+                        hx-post="{{ url_for('record.check_record_name') }}"
+                        required
+                />
+            </div>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Project 1:</span>
+                    <div class="tooltip tooltip-top" data-tip="hello">
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <select class="select select-bordered" name="project1-id" required>
+                    <option disabled selected value="">Pick one</option>
+                    {% for project in projects %}
+                        <option value="{{ project.project_id }}">
+                            {{ project.project_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Project 2:</span>
+                    <div class="tooltip tooltip-top" data-tip="hello">
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <select class="select select-bordered" name="project2-id">
+                    <option value="0" selected>Pick one (if needed)</option>
+                    {% for project in projects %}
+                        <option value="{{ project.project_id }}">
+                            {{ project.project_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Dataset Location:</span>
+                    <div class="tooltip tooltip-top" data-tip="hello">
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <select
+                        class="select select-bordered"
+                        name="data-location-type"
+                        id="data-location-type"
+                        hx-post="{{ url_for('record.record_location_field') }}"
+                        hx-target="#location-field"
+                        hx-trigger="change"
+                        required
+                >
+                    <option value="" disabled selected>
+                        Where do you plan on storing data?
+                    </option>
+                    <option value="local">Locally Stored</option>
+                    <option value="coastal6">Coastal6</option>
+                    <option value="other">Other</option>
+                </select>
+                <div class="label">
+                    <span class="label-text-alt"></span>
+                </div>
+            </div>
+            <div id="location-field"></div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Description: </span>
+                    <div
+                            class="tooltip tooltip-top"
+                            data-tip="Format for Description: {Type of file} {Location that represents data} {Date that represents data}"
+                    >
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <!-- TODO: Add additional examples for placeholder-->
+                <textarea
+                        class="textarea textarea-bordered h-24"
+                        placeholder="Example Descriptions: Table of Historical Shorelines positions of Kihei Maui compiled October 20, 2023"
+                        name="record-description"
+                        required
+                ></textarea>
+                <label class="label">
+        <span class="label-text-alt"
+        >Enter any additional information about data.</span
+        >
+                </label>
+            </div>
+            <div class="form-control max-w-xs w-full">
+                <label class="label cursor-pointer">
+                    <span class="label-text pr-10">Planning on uploading to Invenio?</span>
+                    <p class="text-sm">Yes</p>
+                    <input class="checkbox" type="checkbox" id="invenio" name="invenio"/>
+                </label>
+            </div>
+            <div class="grid grid-rows-2 mt-5" id="error">
+                <button class="btn btn-primary row-end-auto" type="submit">Submit</button>
+            </div>
+        </form>
+        <div id="download-popup"></div>
+    </div>
+
+{% endblock content %}

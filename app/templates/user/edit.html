@@ -1,62 +1,62 @@
 <tr class="editting">
-  <td>{{ user_id }}</td>
-  <td>
-    <input
-      type="text"
-      name="user-email"
-      class="input inpt-bordered w-full max-w-xs input-xs"
-      value="{{ user['email'] }}"
-      hx-trigger="click delay:500, keyup delay:200ms"
-      hx-target="#error"
-      hx-swap="innerHTML"
-      hx-post="{{ url_for('auth.validate_email') }}"
-      maxlength="100"
-    />
-    <input
-      type="password"
-      name="user-password"
-      placeholder="Password"
-      class="input input-bordered w-full max-w-xs input-xs"
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="user-firstname"
-      class="input input-bordered w-full max-w-xs input-xs"
-      value="{{ user['firstname'] }}"
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="user-lastname"
-      class="input input-bordered w-full max-w-xs input-xs"
-      value="{{ user['lastname'] }}"
-    />
-  </td>
-  <td>
-    <select class="select select-bordered select-xs" name="user-role">
-      <option value="admin" {% if user['role'] == "admin" %}selected{% endif %}>admin</option>
-      <option value="creator" {% if user['role'] == "creator" %}selected{% endif %}>creator</option>
-    </select>
-  </td>
-  <td>
-    <button
-      type="button"
-      class="btn btn-primary btn-xs"
-      hx-put="{{ url_for('user.update_user', user_id=user_id) }}"
-      hx-include="closest tr"
-    >
-      Save
-    </button>
-    <button
-      type="button"
-      class="btn btn-error btn-xs"
-      hx-get="{{ url_for('user.render_datarow', user_id=user_id) }}"
-    >
-      Cancel
-    </button>
-  </td>
-  <td id="error"></td>
+    <td>{{ user_id }}</td>
+    <td>
+        <input
+                type="text"
+                name="user-email"
+                class="input inpt-bordered w-full max-w-xs input-xs"
+                value="{{ user['email'] }}"
+                hx-trigger="click delay:500, keyup delay:200ms"
+                hx-target="#error"
+                hx-swap="innerHTML"
+                hx-post="{{ url_for('auth.validate_email') }}"
+                maxlength="100"
+        />
+        <input
+                type="password"
+                name="user-password"
+                placeholder="Password"
+                class="input input-bordered w-full max-w-xs input-xs"
+        />
+    </td>
+    <td>
+        <input
+                type="text"
+                name="user-firstname"
+                class="input input-bordered w-full max-w-xs input-xs"
+                value="{{ user['firstname'] }}"
+        />
+    </td>
+    <td>
+        <input
+                type="text"
+                name="user-lastname"
+                class="input input-bordered w-full max-w-xs input-xs"
+                value="{{ user['lastname'] }}"
+        />
+    </td>
+    <td>
+        <select class="select select-bordered select-xs" name="user-role">
+            <option value="admin" {% if user['role'] == "admin" %}selected{% endif %}>admin</option>
+            <option value="creator" {% if user['role'] == "creator" %}selected{% endif %}>creator</option>
+        </select>
+    </td>
+    <td>
+        <button
+                type="button"
+                class="btn btn-primary btn-xs"
+                hx-put="{{ url_for('user.update_user', user_id=user_id) }}"
+                hx-include="closest tr"
+        >
+            Save
+        </button>
+        <button
+                type="button"
+                class="btn btn-error btn-xs"
+                hx-get="{{ url_for('user.render_datarow', user_id=user_id) }}"
+        >
+            Cancel
+        </button>
+    </td>
+    <td id="error"></td>
 </tr>

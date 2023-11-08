@@ -1,5 +1,6 @@
 """Config file for Flask."""
 from os import environ, path
+
 from dotenv import load_dotenv
 
 basedir = path.abspath(path.dirname(__file__))

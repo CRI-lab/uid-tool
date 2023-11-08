@@ -1,48 +1,48 @@
 <tr class="" id="add-project">
-  <td>
-    <input
-      type="text"
-      name="project-name"
-      placeholder="Project Name"
-      class="input input-bordered w-full max-w-xs input-xs"
-      hx-target="#error"
-      hx-swap="innerHTML"
-      hx-post="{{ url_for('project.project_name')}}"
-    />
-  </td>
-  <td>{{created_date}}</td>
-  <td>
-    <input
-      type="text"
-      name="project-code"
-      placeholder="Project Code"
-      class="input input-bordered w-full max-w-xs input-xs"
-      maxlength="2"
-    />
-  </td>
-  <td>
-    <input type="checkbox" name="finished" />
-  </td>
-  <td>
-    <button
-      type="button"
-      hx-post="{{ url_for('project.create_project') }}"
-      hx-include="closest tr"
-      hx-target="#add-project"
-      hx-swap="outerHTML"
-      class="btn btn-primary btn-xs"
-    >
-      Create
-    </button>
-    <button
-      type="button"
-      hx-target="#add-project"
-      hx-swap="outerHTML"
-      hx-get="{{ url_for('project.clear_content')}}"
-      class="btn btn-error btn-xs"
-    >
-      Cancel
-    </button>
-  </td>
-  <td id="error"></td>
+    <td>
+        <input
+                type="text"
+                name="project-name"
+                placeholder="Project Name"
+                class="input input-bordered w-full max-w-xs input-xs"
+                hx-target="#error"
+                hx-swap="innerHTML"
+                hx-post="{{ url_for('project.project_name') }}"
+        />
+    </td>
+    <td>{{ created_date }}</td>
+    <td>
+        <input
+                type="text"
+                name="project-code"
+                placeholder="Project Code"
+                class="input input-bordered w-full max-w-xs input-xs"
+                maxlength="2"
+        />
+    </td>
+    <td>
+        <input type="checkbox" name="finished"/>
+    </td>
+    <td>
+        <button
+                type="button"
+                hx-post="{{ url_for('project.create_project') }}"
+                hx-include="closest tr"
+                hx-target="#add-project"
+                hx-swap="outerHTML"
+                class="btn btn-primary btn-xs"
+        >
+            Create
+        </button>
+        <button
+                type="button"
+                hx-target="#add-project"
+                hx-swap="outerHTML"
+                hx-get="{{ url_for('project.clear_content') }}"
+                class="btn btn-error btn-xs"
+        >
+            Cancel
+        </button>
+    </td>
+    <td id="error"></td>
 </tr>

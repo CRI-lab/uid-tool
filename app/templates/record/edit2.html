@@ -1,0 +1,128 @@
+<dialog id="edit-form-modal" class="modal">
+    <div class="modal-box flex items-center justify-center max-w-2xl">
+        <form hx-put="{{ url_for('record.update_record', record_id=record['record_id']) }}"
+              hx-target=".update-row-{{ record['record_id'] }}" hx-swap="outerHTML" class="w-80"
+              onsubmit="closeModal()">
+            <h1 class="text-xl">Update Record Form</h1>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Dataset Name:</span>
+                    <div class="tooltip tooltip-top" data-tip="hello">
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <!-- Make this into a reusable component -->
+                <input
+                        type="text"
+                        placeholder="Type here"
+                        class="input input-bordered w-full max-w-xs"
+                        maxlength="200"
+                        id="record-name"
+                        name="record-name"
+                        hx-target="#error"
+                        hx-swap="innerHTML"
+                        hx-post="{{ url_for('record.check_record_name') }}"
+                        value="{{ record['record_name'] }}"
+                        required
+                />
+            </div>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Dataset Location:</span>
+                    <div class="tooltip tooltip-top" data-tip="hello">
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <select
+                        class="select select-bordered"
+                        name="data-location-type"
+                        id="data-location-type"
+                        required
+                >
+                    <option value="" disabled selected>
+                        Where do you plan on storing data?
+                    </option>
+                    <option value="local" {% if record.data_location_type == "local" %} selected {% endif %}>Locally
+                        Stored
+                    </option>
+                    <option value="coastal6" {% if record.data_location_type == "coastal6" %} selected {% endif %}>
+                        Coastal6
+                    </option>
+                    <option value="other" {% if record.data_location_type == "other" %} selected {% endif %}>Other
+                    </option>
+                </select>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Data Location:</span>
+                </label>
+                <input
+                        type="text"
+                        placeholder="Type here"
+                        name="data-location"
+                        id="data-location"
+                        value="{{ record['data_location'] }}"
+                        class="input input-bordered w-full"
+                />
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Description: </span>
+                    <div
+                            class="tooltip tooltip-top"
+                            data-tip="Format for Description: {Type of file} {Location that represents data} {Date that represents data}"
+                    >
+                        <img src="{{ url_for('static', filename='img/circle-question-regular.svg') }}"
+                             alt="circle-question-regular"/>
+                    </div>
+                </label>
+                <textarea
+                        class="textarea textarea-bordered h-24"
+                        placeholder="Example Descriptions: Table of Historical Shorelines positions of Kihei Maui compiled October 20, 2023"
+                        name="record-description"
+                        required
+                > {{ record['record_description'] }}
+      </textarea>
+                <label class="label">
+            <span class="label-text-alt"
+            >Enter any additional information about data.</span
+            >
+                </label>
+            </div>
+            <div class="form-control max-w-xs w-full">
+                <label class="label cursor-pointer">
+            <span class="label-text pr-10"
+            >Planning on uploading to Invenio?</span
+            >
+                    <p class="text-sm">Yes</p>
+                    <input class="checkbox" type="checkbox" id="invenio" name="invenio"
+                           {% if record.invenio %}checked{% endif %}
+                    />
+                </label>
+            </div>
+            <div class="grid grid-rows-2 mt-5" id="error">
+                <button class="btn btn-primary row-end-auto" type="submit">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button onclick="closeModal()">close</button>
+    </form>
+</dialog>
+
+<script type="text/javascript">
+    var modal = document.getElementById("edit-form-modal");
+    var editting_row = document.querySelector("tr[id='{{ record['record_id'] }}']")
+    console.log(editting_row)
+    modal.showModal();
+
+    function closeModal() {
+        editting_row.removeAttribute("record-being-removed")
+        console.log(editting_row)
+        modal.close();
+    }
+</script>

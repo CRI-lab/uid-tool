@@ -2,12 +2,14 @@
 This module contains functions for handling database connections and initializing the application.
 """
 import os
+
+import click
 import psycopg2
 import psycopg2.extras
-import click
 from flask import current_app, g, Flask
-from app.dao.DataDao import Data
+
 from app.dao.ProjectDao import Project
+from app.dao.RecordDao import Record
 from app.dao.UserDao import User
 
 
@@ -15,7 +17,8 @@ def get_db():
     """Returns a database connection object."""
     try:
         if "db" not in g:
-            db_uri = os.getenv("DEV_DATABASE_URI") if os.environ.get("FLASK_ENV") == "development" else os.getenv("PROD_DATABASE_URI")
+            db_uri = os.getenv("DEV_DATABASE_URI") if os.environ.get("FLASK_ENV") == "development" \
+                else os.getenv("PROD_DATABASE_URI")
             g.db = psycopg2.connect(db_uri, cursor_factory=psycopg2.extras.DictCursor)
         return g.db
     except psycopg2.OperationalError as e:
@@ -25,12 +28,12 @@ def get_db():
 
 def load_dao():
     """Load DAO objects."""
-    g.data_dao = Data(get_db())
+    g.data_dao = Record(get_db())
 
 
-def get_datadao():
-    """Get Data DAO objects"""
-    g.data_dao = Data(get_db())
+def get_recorddao():
+    """Get Record DAO objects"""
+    g.data_dao = Record(get_db())
     return g.data_dao
 
 
@@ -60,7 +63,7 @@ def init_db():
     cursor = db.cursor()
     user_dao = get_userdao()
 
-    try: 
+    try:
         with current_app.open_resource("schema.sql") as file:
             sql = file.read()
 
@@ -93,7 +96,7 @@ def init_db():
         for project_id in project_ids:
             user_dao.assign_project(1, project_id)
     except psycopg2.Error as e:
-        print("Error adding data to database: ", e)
+        print("Error adding record to database: ", e)
     except (FileNotFoundError, IOError) as e:
         print("Error reading schema.sql file: ", e)
 
@@ -107,6 +110,6 @@ def init_app(app: Flask):
 
 @click.command("init-db")
 def init_db_command():
-    """Clear existing data and create new table"""
+    """Clear existing record and create new table"""
     init_db()
     click.echo("Initialized the database")

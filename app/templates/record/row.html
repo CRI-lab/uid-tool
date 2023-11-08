@@ -1,0 +1,54 @@
+<tr
+        id="{{ record['record_id'] }}"
+        class="hover main-detail update-row-{{ record['record_id'] }} border-b-0 border-t main-detail"
+>
+    <td>{{ record['record_name'] }}</td>
+    <td>{{ record['created'] }}</td>
+    <td>
+        {{ record['email'] + " " + record['firstname'] + " " + record['lastname'] }}
+    </td>
+    <td>{{ record['data_location_type'] }}</td>
+    <td>{{ record['invenio'] }}</td>
+    <td>{{ record['project1_name'] }}</td>
+    <td>{{ record['project2_name'] }}</td>
+    <td>{{ record['uid'] }}</td>
+    <td>
+        <div class="flex">
+            <button
+                    id="edit-button"
+                    type="button"
+                    hx-get="{{ url_for('record.edit_record', record_id=record['record_id']) }}"
+                    class="btn btn-primary btn-xs"
+            >
+                edit
+            </button>
+            <button
+                    id="remove-button"
+                    type="button"
+                    hx-get="{{ url_for('record.delete_confirmation', record_id=record['record_id']) }}"
+                    hx-target="closest td"
+                    hx-swap="outerHTML"
+                    class="btn btn-error btn-xs"
+                    onclick=""
+            >
+                remove
+            </button>
+        </div>
+    </td>
+</tr>
+<tr
+        class="border-t-0 expanded-detail update-row-{{ record['record_id'] }} bg-base-200"
+        style="display: none"
+>
+    <td colspan="4" class="max-w-64 maxh-64">
+        Description: {{ record['record_description'] }}
+    </td>
+    <td colspan="4">Location: {{ record['data_location'] }}</td>
+    <td>
+        <a href="{{ url_for('record.download_readme', record_id=record['record_id']) }}"
+        >
+            <button class="btn btn-sm btn-primary">Download UID</button>
+        </a
+        >
+    </td>
+</tr>

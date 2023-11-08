@@ -1,10 +1,10 @@
 {% if email_is_valid %}
-<p>This email is valid.</p>
-<button type="submit">Submit</button>
+    <p>This email is valid.</p>
+    <button type="submit">Submit</button>
 {% elif email_exists %}
-<p>This email already exists.</p>
-<button type="submit" disabled>Submit</button>
+    <p>This email already exists.</p>
+    <button type="submit" disabled>Submit</button>
 {% else %}
-<p>This email is not valid.</p>
-<button type="submit" disabled>Submit</button>
+    <p>This email is not valid.</p>
+    <button type="submit" disabled>Submit</button>
 {% endif %}

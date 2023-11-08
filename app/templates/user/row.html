@@ -1,26 +1,26 @@
 <tr>
-  <td>{{ user_id }}</td>
-  <td>{{user['email']}}</td>
-  <td>{{user['firstname']}}</td>
-  <td>{{user['lastname']}}</td>
-  <td>{{user['role']}}</td>
-  <td>{{user['inactive']}}</td>
-  <td>
-    <button
-      type="button"
-      hx-get="{{ url_for('user.user_input_fields', user_id=user_id) }}"
-      class="btn btn-primary btn-xs"
-    >
-      edit
-    </button>
-    <button
-      type="button"
-      hx-get="{{ url_for('user.delete_confirmation_user', user_id=user_id) }}"
-      class="btn btn-error btn-xs"
-      hx-target="closest td"
-      hx-swap="outerHTML"
-    >
-      remove
-    </button>
-  </td>
+    <td>{{ user_id }}</td>
+    <td>{{ user['email'] }}</td>
+    <td>{{ user['firstname'] }}</td>
+    <td>{{ user['lastname'] }}</td>
+    <td>{{ user['role'] }}</td>
+    <td>{{ user['inactive'] }}</td>
+    <td>
+        <button
+                type="button"
+                hx-get="{{ url_for('user.user_input_fields', user_id=user_id) }}"
+                class="btn btn-primary btn-xs"
+        >
+            edit
+        </button>
+        <button
+                type="button"
+                hx-get="{{ url_for('user.delete_confirmation_user', user_id=user_id) }}"
+                class="btn btn-error btn-xs"
+                hx-target="closest td"
+                hx-swap="outerHTML"
+        >
+            remove
+        </button>
+    </td>
 </tr>

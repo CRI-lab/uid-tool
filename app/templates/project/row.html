@@ -1,22 +1,22 @@
 <tr>
-  <td>{{project['project_name']}}</td>
-  <td>{{project['created']}}</td>
-  <td>{{project['code']}}</td>
-  <td>{{project['finished']}}</td>
-  <td>
-    <button
-      type="button"
-      hx-get="{{ url_for('project.project_input_fields', project_id=project['project_id']) }}"
-      class="btn btn-primary btn-xs"
-    >
-      edit
-    </button>
-    <button
-      type="button"
-      hx-delete="{{ url_for('project.delete_project', project_id=project['project_id']) }}"
-      class="btn btn-error btn-xs"
-    >
-      remove
-    </button>
-  </td>
+    <td>{{ project['project_name'] }}</td>
+    <td>{{ project['created'] }}</td>
+    <td>{{ project['code'] }}</td>
+    <td>{{ project['finished'] }}</td>
+    <td>
+        <button
+                type="button"
+                hx-get="{{ url_for('project.project_input_fields', project_id=project['project_id']) }}"
+                class="btn btn-primary btn-xs"
+        >
+            edit
+        </button>
+        <button
+                type="button"
+                hx-delete="{{ url_for('project.delete_project', project_id=project['project_id']) }}"
+                class="btn btn-error btn-xs"
+        >
+            remove
+        </button>
+    </td>
 </tr>

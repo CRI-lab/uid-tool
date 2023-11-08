@@ -1,52 +1,52 @@
-{% extends "base.html" %} {% block header %} {% block title %}Assign User to Project{%
-endblock %} {% endblock %} {% block content %}
-<div class="flex justify-center items-center pt-4">
-  <form
-    hx-boost="true"
-    method="PUT"
-    class="w-80"
-  >
-    <div
-      id="form-actions"
-      hx-post="{{ url_for('user.project_action') }}"
-      hx-target="#projects-action"
-      hx-swap="innerHTML"
-      hx-trigger="change"
-    >
-      <div class="form-control w-full max-w-xs">
-        <label class="label">
-          <span class="label-text">User:</span>
-          </label>
-          <select
-            class="select select-bordered w-full max-w-xs"
-            name="user-id"
-            id="user-id"
-            required
-          >
-            <option disabled selected>Select User</option>
-            {% for user in users %}
-            <option value="{{ user.user_id }}">{{ user.email }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-      <div class="form-control w-full max-w-xs">
-        <label class="label">
-          <span class="label-text">Action:</span>
-        </label>
-        <select
-          class="select select-bordered w-full max-w-xs"
-          name="action"
-          id="action"
+{% extends "base.html" %} {% block header %} {% block title %}Assign User to Project{% endblock %} {% endblock %}
+{% block content %}
+    <div class="flex justify-center items-center pt-4">
+        <form
+                hx-boost="true"
+                method="PUT"
+                class="w-80"
         >
-          <option disabled selected>Select Action</option>
-          <option value="assign">assign</option>
-          <option value="unassign">unassign</option>
-        </select>
-      </div>
+            <div
+                    id="form-actions"
+                    hx-post="{{ url_for('user.project_action') }}"
+                    hx-target="#projects-action"
+                    hx-swap="innerHTML"
+                    hx-trigger="change"
+            >
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">User:</span>
+                    </label>
+                    <select
+                            class="select select-bordered w-full max-w-xs"
+                            name="user-id"
+                            id="user-id"
+                            required
+                    >
+                        <option disabled selected>Select User</option>
+                        {% for user in users %}
+                            <option value="{{ user.user_id }}">{{ user.email }}</option>
+                        {% endfor %}
+                    </select>
+                    </label>
+                </div>
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Action:</span>
+                    </label>
+                    <select
+                            class="select select-bordered w-full max-w-xs"
+                            name="action"
+                            id="action"
+                    >
+                        <option disabled selected>Select Action</option>
+                        <option value="assign">assign</option>
+                        <option value="unassign">unassign</option>
+                    </select>
+                </div>
+            </div>
+            <div id="projects-action"></div>
+        </form>
     </div>
-    <div id="projects-action"></div>
-  </form>
-</div>
 
 {% endblock content %}
