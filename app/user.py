@@ -86,7 +86,7 @@ def create_user():
     return render_template("user/create.html")
 
 
-@bp.get("/<int:user_id>/edit")
+@bp.get("/edit/<int:user_id>")
 @admin_permissions
 def user_input_fields(user_id):
     """Render input fields to edit a user."""
@@ -111,7 +111,7 @@ def update_user(user_id):
     return render_template("user/row.html", user=user_info, user_id=user_id)
 
 
-@bp.route("/<int:user_id>/row")
+@bp.route("/row/<int:user_id>")
 @admin_permissions
 def render_row(user_id):
     """Render a single user row."""

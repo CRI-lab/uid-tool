@@ -1,4 +1,28 @@
-"""Project blueprint to manage project CRUD operations"""
+"""
+This module defines a Flask blueprint for managing project-related functionality.
+
+The blueprint, named 'project', provides routes for displaying projects in a table,
+creating new project entries, updating existing project entries, and deleting project entries.
+
+Blueprint Details:
+- Blueprint Name: project
+- URL Prefix: /project
+- Decorators: admin_permissions (update_page, create_project, delete_project, project_input_fields)
+
+Routes:
+- GET /project : Display project entries in a table
+- GET /project/update : Display update project page
+- POST /project/project_name : Check if project with given name already exists in database 
+- GET /project/create : Display project creation form 
+- POST /project/create : Create project in database
+- GET /project/edit/<int:project_id> : Display edit project form
+- GET /project/<int:project_id> : Get project information from database
+- PUT /project/<int:project_id> : Update project information in database
+- DELETE /project/<int:project_id> : Delete project from database
+- GET /project/row/<int:project_id> : Get the project information in html row format
+- GET /project/clear : Clear 
+
+"""
 from datetime import datetime
 
 from flask import Blueprint, render_template, request
@@ -16,7 +40,7 @@ def display_page():
     return render_template("project/index.html", projects=projects)
 
 
-@bp.route("/update")
+@bp.get("/update")
 @admin_permissions
 def update_page():
     """Display page for updating projects."""
@@ -51,7 +75,7 @@ def create_project():
     return render_template("project/create.html", created_date=created_date)
 
 
-@bp.get("/<int:project_id>/edit")
+@bp.get("/edit/<int:project_id>")
 @admin_permissions
 def project_input_fields(project_id):
     """Render input fields to edit a project."""
@@ -84,8 +108,8 @@ def delete_project(project_id):
     return "<tr>Project deleted</tr>"
 
 
-@bp.route("/<int:project_id>/row")
-def render_datarow(project_id):
+@bp.route("/row/<int:project_id>/")
+def render_row(project_id):
     """Render a single project row"""
     project = get_projectdao().fetch_project_by_id(project_id)
     return render_template("project/row.html", project=project)

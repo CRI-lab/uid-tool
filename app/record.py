@@ -17,8 +17,8 @@ Routes:
 - GET/POST /record/update : Update a record entry
 - DELETE /record/<int:record_id> : Remove a record entry
 - GET /record/<int:record_id> : Fetch a record entry
-- GET /record/<int:record_id>/row : Render a single record row
-- GET /record/<int:record_id>/edit : Render input fields to edit a record entry
+- GET /record/row/<int:record_id> : Render a single record row
+- GET /record/edit/<int:record_id> : Render input fields to edit a record entry
 - POST /record/location-type : Fetch record by location type
 - POST /record/filter : Filter the record table
 - GET /record/download-table-csv : Download the record table as a CSV
@@ -183,7 +183,7 @@ def remove_record(record_id):
     return "<tr>Delete Successful</tr>"
 
 
-@bp.route("/<int:record_id>/row")
+@bp.route("/row/<int:record_id>")
 @login_required
 def render_row(record_id):
     """Render a record row."""
@@ -191,7 +191,7 @@ def render_row(record_id):
     return render_template("record/row.html", record=record)
 
 
-@bp.get("/<int:record_id>/edit")
+@bp.get("/edit/<int:record_id>")
 @login_required
 def edit_record(record_id):
     """Renders a record row."""
