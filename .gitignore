@@ -12,11 +12,10 @@ instance/
 .coverage
 htmlcov/
 
-dist/
 build/
 *.egg-info/
 
-app/static/.webassets-cache/
+.webassets-cache/
 
 node_modules/
 package-lock.json
