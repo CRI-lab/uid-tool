@@ -8,12 +8,9 @@ import os
 from flask import Flask, redirect, url_for
 from flask_assets import Bundle, Environment
 
-from config import ProdConfig, DevConfig
-from . import auth
-from . import db
-from . import project
-from . import record
-from . import user
+from config import DevConfig, ProdConfig
+
+from . import auth, db, project, record, user
 
 
 def create_app():
@@ -28,13 +25,6 @@ def create_app():
     app.register_blueprint(project.bp)
 
     app.register_blueprint(user.bp)
-
-    db.init_app(app)
-
-    if os.environ.get("FLASK_ENV") == "production":
-        app.config.from_object(ProdConfig)
-    else:
-        app.config.from_object(DevConfig)
 
     assets = Environment(app)
     css = Bundle("src/main.css", output="dist/main.css")
